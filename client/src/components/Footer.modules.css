@@ -1,0 +1,10 @@
+.footer-container {
+    background: var(--turquoise);
+    padding: 2em;
+    text-align: center;
+}
+
+.footer-container span {
+    font-weight: bold;
+}
+
