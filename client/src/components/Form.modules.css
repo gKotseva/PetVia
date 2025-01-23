@@ -1,0 +1,43 @@
+.form-container form {
+    display: flex;
+    flex-direction: column;
+    max-width: 30%;
+    padding: 2em;
+    align-self: center;
+}
+
+.form-container form label {
+    text-transform: uppercase;
+    margin-bottom: 5px;
+    margin-top: 1em;
+}
+
+.form-container form input {
+    margin-bottom: 1em;
+    padding: 0.5em 0.5em;
+    border: none;
+    border-bottom: 1px solid var(--vibrant-pink);
+    background: inherit;
+    outline: none;
+}
+
+.form-container form button {
+    margin-top: 1em;
+    padding: 1em;
+    width: 50%;
+    align-self: center;
+    border-radius: 2em;
+    outline: none;
+    border: none;
+    background: var(--vibrant-pink);
+    color: white;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: bold;
+    transition: all 0.3s ease-in-out;
+}
+
+.form-container form button:hover {
+    background: var(--light-pink);
+    color: black;
+}
