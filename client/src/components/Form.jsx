@@ -1,8 +1,6 @@
 import './Form.modules.css'
 
-export function Form() {
-    const formName = 'register'
-
+export function Form({ formName }) {
     const forms = {
         login: [
             { type: "email", label: "Имейл" },
