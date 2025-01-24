@@ -7,7 +7,21 @@ export function Profile () {
 
     return (
         <div className="customer-profile-container">
-            <div className="customer-update-info"></div>
+            <div className="customer-update-info">
+                <h2>Моята информация</h2>
+                <form>
+                    <label>Име</label>
+                    <input type='text'></input>
+                    <label>Имейл</label>
+                    <input type='email'></input>
+                    <label>Мобилен телефон</label>
+                    <input type='text'></input>
+                    <label>Парола</label>
+                    <input type='password'></input>
+                    <button>Запази</button>
+                </form>
+                <button>Изтриване на моя профил</button>
+            </div>
             <div className="customer-outstanding-appointments">
                 {outstanding.length > 0 ? (
                     <h2>Предстоящи часове</h2>

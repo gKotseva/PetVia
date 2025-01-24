@@ -10,6 +10,7 @@ export function Form({ formName }) {
             { type: "text", label: "Име" },
             { type: "text", label: "Фамилия" },
             { type: "email", label: "Имейл" },
+            { type: "text", label: "Мобилен телефон" },
             { type: "password", label: "Парола" },
             { type: "password", label: "Повтори парола" }
         ]
