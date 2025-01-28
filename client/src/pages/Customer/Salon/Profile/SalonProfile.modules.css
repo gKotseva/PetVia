@@ -1,0 +1,34 @@
+.team-member {
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+    align-items: center;
+}
+
+.team-member img {
+    width: 20%;
+    border-radius: 50%;
+}
+
+.salon-reviews,
+.salon-our-team {
+    display: flex;
+    gap: 2em;
+    justify-content: space-evenly;
+    flex-wrap: wrap;
+    padding: 4em;
+}
+
+.review-container {
+    border: 1px solid var(--vibrant-pink);
+    border-radius: 2em;
+    padding: 2em;
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+}
+
+.review-container h2 {
+    text-align: center;
+    border-bottom: 1px solid var(--vibrant-pink);
+}
