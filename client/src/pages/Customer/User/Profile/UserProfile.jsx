@@ -1,7 +1,7 @@
 import { useState } from 'react'
-import './Profile.modules.css'
+import './UserProfile.modules.css'
 
-export function Profile() {
+export function UserProfile() {
     const [outstanding, setOutstanding] = useState([
         { img: "booking.png", placeName: "Test1", date: "01/02/2025", hour: "10:00" },
         { img: "booking.png", placeName: "Test2", date: "02/02/2025", hour: "11:30" },
