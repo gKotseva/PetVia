@@ -43,3 +43,8 @@
 .navigation-links-container ul li:hover::after {
     width: 100%;
 }
+
+.navigation-container a {
+    text-decoration: none;
+    color: inherit;
+}
