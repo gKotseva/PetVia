@@ -1,9 +1,9 @@
 import {Route, Routes} from 'react-router-dom'
-import { Home } from './pages/Customer/Home/Home'
+import { Home } from './pages/Customer/User/Home/Home'
 import { paths } from './paths/customer'
 import { Footer } from './components/Footer'
 import { Navigation } from './components/Navigation'
-import { Profile } from './pages/Customer/Profile/Profile'
+import { Profile } from './pages/Customer/User/Profile/Profile'
 
 function App() {
 
