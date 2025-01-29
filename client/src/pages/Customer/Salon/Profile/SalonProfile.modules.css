@@ -5,6 +5,47 @@
     align-items: center;
 }
 
+.salon-gallery {
+    display: flex;
+    justify-content: center;
+  }
+  
+  .salon-gallery img {
+    height: 30vh;
+    object-fit: cover;
+  }
+  
+  .salon-gallery.five-or-more img {
+    width: 20%;
+  }
+  
+  .salon-gallery.less-than-five img {
+    width: 40%;
+  }
+  
+
+.salon-name {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    padding: 1% 30%;
+    background: var(--vibrant-pink);
+    color: white;
+    letter-spacing: 1px;
+}
+
+.salon-name .salon-reviews-short {
+    display: flex;
+    gap: 2em;
+    align-items: center;
+}
+
+.salon-name .salon-information {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
 .about-us-container {
     display: flex;
     flex-direction: column;

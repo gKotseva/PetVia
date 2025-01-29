@@ -17,17 +17,23 @@ export function SalonProfile() {
         { image: 'man1.jpg', name: 'Иван' },
     ])
 
+    const [images, setImages] = useState(['salon-header-1.jpg', 'salon-header-2.jpg', 'salon-header-3.jpg', 'salon-header-4.jpg', 'salon-header-5.jpg'])
+
     return (
         <div className="salon-profile-container">
-            <div className="salon-gallery"></div>
+            <div className={`salon-gallery ${images.length >= 5 ? "five-or-more" : "less-than-five"}`}>
+                {images.map((e, index) => (
+                    <img key={index} src={e} alt={`Salon ${index + 1}`} />
+                ))}
+            </div>
             <div className="salon-name">
                 <div className="salon-information">
-                    <h1>Име Салон</h1>
-                    <h2>Адрес</h2>
+                    <h1>Пухкавото Кралство</h1>
+                    <h3>ул. Васил Левски 42, гр. Пловдив, 4000</h3>
                 </div>
                 <div className="salon-reviews-short">
-                    <h1>Звезди</h1>
-                    <h2>{reviews.length} ревюта</h2>
+                    <h1><IoStar color="gold" /><IoStar color="gold" /><IoStar color="gold" /><IoStar color="gold" /></h1>
+                    <h5>{reviews.length} ревюта</h5>
                 </div>
             </div>
             <div className="salon-services"></div>
@@ -38,12 +44,12 @@ export function SalonProfile() {
                         <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Nihil nulla ipsa quasi corporis iste iusto at officia, nesciunt fugiat necessitatibus eligendi odio distinctio atque qui aliquam autem incidunt nisi rerum.</p>
                     </div>
                     <div className="salon-our-team">
-                            {team.map(e => (
-                                <div className="team-member">
-                                    <img src={e.image} />
-                                    <h1>{e.name}</h1>
-                                </div>
-                            ))}
+                        {team.map(e => (
+                            <div className="team-member">
+                                <img src={e.image} />
+                                <h1>{e.name}</h1>
+                            </div>
+                        ))}
                     </div>
                 </div>
             </div>
