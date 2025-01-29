@@ -1,22 +1,72 @@
+.salon-profile-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.about-us-container {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    padding: 2em;
+    gap: 4em;
+    background: linear-gradient(135deg, var(--light-pink) 50%, var(--turquoise) 50%);
+}
+
+.about-us-container .container1 {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 100%;
+}
+
+.salon-about-us {
+    display: flex;
+    justify-content: center;
+}
+
+.salon-about-us p {
+    max-width: 60%;
+    text-align: center;
+}
+
+.salon-our-team {
+    display: flex;
+    gap: 2em;
+    flex-wrap: wrap;
+    max-width: 50%;
+}
+
 .team-member {
     display: flex;
     flex-direction: column;
-    gap: 1em;
+    max-width: 20%;
+    text-align: center;
     align-items: center;
 }
 
 .team-member img {
-    width: 20%;
+    width: 50%;
+    height: 50%;
     border-radius: 50%;
+    object-fit: cover;
 }
 
-.salon-reviews,
-.salon-our-team {
+.salon-reviews {
     display: flex;
-    gap: 2em;
-    justify-content: space-evenly;
+    flex-direction: column;
+    justify-content: center;
     flex-wrap: wrap;
     padding: 4em;
+    align-items: center;
+    gap: 2em;
+}
+
+.salon-reviews div {
+    display: flex;
+    gap: 2em;
+    text-align: center;
 }
 
 .review-container {
