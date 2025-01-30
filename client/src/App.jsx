@@ -5,11 +5,13 @@ import { Footer } from './components/Footer'
 import { Navigation } from './components/Navigation'
 import { SalonProfile } from './pages/Customer/Salon/Profile/SalonProfile'
 import { UserProfile } from './pages/Customer/User/Profile/UserProfile'
+import { DateProvider } from './context/DateContext'
 
 function App() {
 
   return (
     <>
+    <DateProvider>
     <Navigation />
       <Routes>
         <Route path={paths.home} element={<Home />} />
@@ -17,6 +19,7 @@ function App() {
         <Route path={paths.salonProfile} element={<SalonProfile />} />
       </Routes>
       <Footer />
+      </DateProvider>
     </>
   )
 }
