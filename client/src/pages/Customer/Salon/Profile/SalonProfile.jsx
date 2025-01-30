@@ -2,6 +2,7 @@ import './SalonProfile.modules.css'
 
 import { useState } from 'react'
 import { IoStar } from "react-icons/io5";
+import { IoIosArrowForward } from "react-icons/io";
 
 export function SalonProfile() {
     const [reviews, setReviews] = useState([
@@ -18,6 +19,21 @@ export function SalonProfile() {
     ])
 
     const [images, setImages] = useState(['salon-header-1.jpg', 'salon-header-2.jpg', 'salon-header-3.jpg', 'salon-header-4.jpg', 'salon-header-5.jpg'])
+
+    const [services, setServices] = useState([
+        { name: 'Къпане и сушене', price: 35 },
+        { name: 'Подстригване', price: 50 },
+        { name: 'Разресване', price: 25 },
+        { name: 'Рязане нокти', price: 22 },
+        { name: 'Почистване уши', price: 18 },
+        { name: 'Почистване на зъби', price: 30 },
+        { name: 'Ароматна баня', price: 40 },
+        { name: 'Масаж', price: 45 },
+        { name: 'Обезпаразитяване', price: 38 },
+        { name: 'Почистване на очи', price: 20 },
+        { name: 'Цялостен грууминг', price: 80 }
+    ])
+
 
     return (
         <div className="salon-profile-container">
@@ -36,7 +52,15 @@ export function SalonProfile() {
                     <h5>{reviews.length} ревюта</h5>
                 </div>
             </div>
-            <div className="salon-services"></div>
+            <div className="salon-services">
+                {services.map(e => (
+                    <div className='service'>
+                        <h2 className='name'>{e.name}</h2>
+                        <h2 className='price'>{e.price}лв</h2>
+                        <IoIosArrowForward color='#f31559' className='arrow'/>
+                    </div>
+                ))}
+            </div>
             <div className="about-us-container">
                 <h1>Запознай се с нас</h1>
                 <div className='container1'>
