@@ -1,56 +1,56 @@
-import './Home.modules.css'
+import './Home.modules.css';
 
 export function Home() {
     return (
         <div className="home-container">
             <div className="home-section-1">
                 <div className='home-form-container'>
-                    <h3>Запази час за пухкаво обновление</h3>
+                    <h3>Book an appointment for a fluffy refresh</h3>
                     <form>
-                    <select name="location" id="location">
-                        <option value="" disabled selected hidden>Изберете град</option>
-                            <option value="sofia">София</option>
-                            <option value="varna">Варна</option>
-                            <option value="burgas">Бургас</option>
-                            <option value="plovdiv">Пловдив</option>
+                        <select name="location" id="location">
+                            <option value="" disabled selected hidden>Select a city</option>
+                            <option value="sofia">Sofia</option>
+                            <option value="varna">Varna</option>
+                            <option value="burgas">Burgas</option>
+                            <option value="plovdiv">Plovdiv</option>
                         </select>
                         <select name="service" id="service">
-                        <option value="" disabled selected hidden>Изберете услуга</option>
-                            <option value="paws">Почистване лапи</option>
-                            <option value="fullGrooming">Цялостен грууминг</option>
-                            <option value="bath">Къпане</option>
-                            <option value="brushing">Ресане</option>
+                            <option value="" disabled selected hidden>Select a service</option>
+                            <option value="paws">Paw Cleaning</option>
+                            <option value="fullGrooming">Full Grooming</option>
+                            <option value="bath">Bathing</option>
+                            <option value="brushing">Brushing</option>
                         </select>
                         <select name="dateAndTime" id="dateAndTime">
-                        <option value="" disabled selected hidden>Изберете ден и час</option>
-                            <option value="today">Днес</option>
-                            <option value="tomorrow">Утре</option>
-                            <option value="other">Друг ден</option>
+                            <option value="" disabled selected hidden>Select a date and time</option>
+                            <option value="today">Today</option>
+                            <option value="tomorrow">Tomorrow</option>
+                            <option value="other">Other day</option>
                         </select>
-                        <button>Покажи салоните</button>
+                        <button>Show salons</button>
                     </form>
                 </div>
             </div>
             <div className="home-section-2">
                 <div className="div">
-                    <img src="./booking.png" />
-                    <h3>Записваш час онлайн, по всяко време, без такса!</h3>
+                    <img src="./booking.png" alt="Booking"/>
+                    <h3>Book an appointment online, anytime, free of charge!</h3>
                 </div>
                 <div className="div">
-                    <img src="./book.png" />
-                    <h3>1 запазени часа през ПетВиа!</h3>
+                    <img src="./book.png" alt="Appointments"/>
+                    <h3>1 appointment booked through PetVia!</h3>
                 </div>
                 <div className="div">
-                    <img src="./grooming.png" />
-                    <h3>12 грууминг салона!</h3>
+                    <img src="./grooming.png" alt="Grooming salons"/>
+                    <h3>12 grooming salons!</h3>
                 </div>
             </div>
             <div className="home-section-3">
                 <div>
-                    <h2>Разгледай нашите грууминг салони</h2>
-                    <h4>Когато козината има нужда от малко любов и ножица.</h4>
+                    <h2>Explore our grooming salons</h2>
+                    <h4>When fur needs a little love and a pair of scissors.</h4>
                 </div>
             </div>
         </div>
-    )
+    );
 }
