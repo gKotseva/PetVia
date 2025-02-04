@@ -28,7 +28,7 @@
     display: flex;
     width: 100%;
     justify-content: space-between;
-    padding: 1% 30%;
+    padding: 1% 20%;
     background: var(--vibrant-pink);
     color: white;
     letter-spacing: 1px;
@@ -131,17 +131,33 @@
     flex-direction: column;
 }
 
+.services-wrapper {
+    display: flex;
+    align-items: flex-start;
+}
+
+.services-container {
+    display: flex;
+    flex-direction: column;
+    width: 40%;
+}
+
+.service-container {
+    margin-bottom: 1em;
+}
+
 .service {
     display: flex;
     justify-content: space-between;
     background: #d3d3d346;
     align-items: center;
     padding: 1.5em;
-    max-width: 40%;
-    margin-bottom: 0.5em;
     transition: all 0.3s ease-in-out;
+    flex-shrink: 0;
+    cursor: pointer;
 }
 
+.day:hover,
 .service:hover {
     background: #d3d3d3b4;
 }
@@ -162,5 +178,20 @@
     margin-left: 10px;
 }
 
+.dates {
+    display: flex;
+    flex-wrap: wrap;
+    width: calc(60% - 1em);
+    margin-left: 2em;
+}
 
-  
+.day {
+    background: var(--light-pink);
+    padding: 0.6em;
+    margin: 0.3em;
+    text-align: center;
+    width: 15%;
+    border-radius: 200px;
+    box-sizing: border-box;
+    cursor: pointer;
+}
