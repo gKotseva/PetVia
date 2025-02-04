@@ -4,9 +4,9 @@ export function Modal({ children, onClose }) {
     return (
         <div className="modal-backdrop" onClick={onClose}>
             <div className="modal-content">
-                <button className="modal-close" onClick={onClose}>
+                <p className="modal-close" onClick={onClose}>
                     ✖
-                </button>
+                </p>
                 {children}
             </div>
         </div>
