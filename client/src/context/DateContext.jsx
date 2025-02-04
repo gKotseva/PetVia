@@ -18,10 +18,9 @@
         
             const daysInCurrentMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
         
-            // Get the current day
             const currentDay = currentDate.getDate();
         
-            for (let day = currentDay; day <= daysInCurrentMonth; day++) {
+            for (let day = 1; day <= daysInCurrentMonth; day++) {
               const formattedDay = String(day).padStart(2, '0');
               const formattedMonth = String(currentMonth + 1).padStart(2, '0');
               daysInMonth.push(`${formattedDay}.${formattedMonth}.${currentYear}`);
