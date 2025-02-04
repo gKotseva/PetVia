@@ -3,7 +3,7 @@ import './Footer.modules.css'
 export function Footer () {
     return (
         <div className="footer-container">
-            <p>	&#169; <span>ПетВиа</span> Всички права са запазени!</p>
+            <p>	&#169; <span>PetVia</span> All rights reserved!</p>
         </div>
     )
 }

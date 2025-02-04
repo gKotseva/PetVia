@@ -1,10 +1,10 @@
 import { useState } from 'react';
-import { Form } from './Form'
-import { Modal } from './Modal'
-import './Navigation.modules.css'
+import { Form } from './Form';
+import { Modal } from './Modal';
+import './Navigation.modules.css';
 import { Link } from 'react-router-dom';
 
-export function Navigation () {
+export function Navigation() {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [formName, setFormName] = useState("login");
 
@@ -18,25 +18,24 @@ export function Navigation () {
     return (
         <div className="navigation-container">
             <div className="navigation-logo-container">
-                <img src="./logo.png"/>
+                <img src="./logo.png" alt="Logo"/>
             </div>
             <div className="navigation-links-container">
                 <ul>
-                    <li><Link to='/'>Начало</Link></li>
-                    <li onClick={() => openModal("login")}>Влизане</li>
-                    <li onClick={() => openModal("register")}>Регистриране</li>
-                    <li>Излез</li>
-                    <li><Link to='/profile'>Профил</Link></li>
-                    <li><Link to='/salon-profile'>Салон</Link></li>
+                    <li><Link to='/'>Home</Link></li>
+                    <li onClick={() => openModal("login")}>Login</li>
+                    <li onClick={() => openModal("register")}>Register</li>
+                    <li>Logout</li>
+                    <li><Link to='/profile'>Profile</Link></li>
+                    <li><Link to='/salon-profile'>Salon</Link></li>
                 </ul>
 
                 {isModalOpen && (
-                <Modal onClose={closeModal}>
-                    <Form formName={formName} />
-                </Modal>
-            )}
-
+                    <Modal onClose={closeModal}>
+                        <Form formName={formName} />
+                    </Modal>
+                )}
             </div>
         </div>
-    )
+    );
 }
