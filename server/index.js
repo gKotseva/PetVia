@@ -1,12 +1,11 @@
 const express = require('express')
+const routes = require('./router')
+const { executeQuery } = require('./db')
 
 const app = express()
 const PORT = 8888
 
 app.use(express.json())
-
-app.get('/', (req, res) => {
-    res.send('hello world')
-})
+app.use('/', routes)
 
 app.listen(PORT, console.log(`Server is listening on port: ${PORT}`))
