@@ -1,15 +1,15 @@
 import { useState } from 'react';
 import './Form.modules.css'
 import { useForm } from '../hooks/useForm';
+import { login, register } from '../handlers/userHandler';
 
 export function Form({ formName }) {
-    const handler = formName === 'login' ? 'login' : formName === 'register' ? 'register' : null;
+    const handler = formName === 'login' ? login : formName === 'register' ? register : null;
     const initialValues =
         formName === 'login' ? { email: '', password: '' } : 
         formName === 'register' ? { firstName: '', lastName: '', email: '', mobilePhone: '', password: '', confirmPassword: '' } : {};
 
     const { values, errors, success, onChange, onSubmit } = useForm(handler, initialValues);
-
 
     const forms = {
         login: [
