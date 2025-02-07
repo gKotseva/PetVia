@@ -3,7 +3,7 @@ import { useState } from "react";
 export function useForm (handler, initialValues) {
     const [errors, setErrors] = useState([]);
     const [success, setSuccess] = useState([]);
-    const [values, setValues] = useState([])
+    const [values, setValues] = useState(initialValues)
 
     const onChange = (e) => {
         setValues(state => ({
@@ -15,8 +15,16 @@ export function useForm (handler, initialValues) {
     const onSubmit = async (e) => {
         e.preventDefault();
 
-        console.log(values)
-        console.log(handler)
+        try {
+            const response = await handler(values);
+
+            if (response.success) {
+                setSuccessMessage(response.message);
+                setErrors([])
+            }
+        } catch (error) {
+            setErrors([error.message]);
+        }
     };
 
     return {
@@ -25,7 +33,6 @@ export function useForm (handler, initialValues) {
         success,
         onChange,
         onSubmit,
-        setValues,
     };
 
 }
