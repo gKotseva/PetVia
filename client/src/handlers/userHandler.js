@@ -1,3 +1,4 @@
+import { toast } from 'react-toastify';
 import * as request from '../lib/request'
 
 export const login = async (values) => {
@@ -8,9 +9,10 @@ export const login = async (values) => {
             throw new Error(response.message || 'Login failed');
         }
 
+        toast.success(response.message)
         return response;
     } catch (error) {
-        console.error(error.message);
+        toast.error(error.message)
         throw error;
     }
 };
@@ -22,10 +24,11 @@ export const register = async (values) => {
         if (!response.success) {
             throw new Error(response.message || 'Registration failed');
         }
-
+        
+        toast.success(response.message)
         return response;
     } catch (error) {
-        console.error(error.message);
+        toast.error(error.message)
         throw error;
     }
 };
