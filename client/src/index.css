@@ -28,7 +28,7 @@ h1, h2, h3, h4, h5, h6 {
     font-style: normal;
 }
 
-button {
+.custom-button {
     margin-top: 1em;
     padding: 1em;
     width: 50%;
@@ -44,7 +44,7 @@ button {
     transition: all 0.3s ease-in-out;
 }
 
-button:hover {
+.custom-button:hover {
     cursor: pointer;
     background: var(--light-pink);
     color: black;

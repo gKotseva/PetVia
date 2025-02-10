@@ -27,7 +27,7 @@ export function Home() {
                             <option value="tomorrow">Tomorrow</option>
                             <option value="other">Other day</option>
                         </select>
-                        <button>Show salons</button>
+                        <button className='custom-button'>Show salons</button>
                     </form>
                 </div>
             </div>

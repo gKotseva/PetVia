@@ -36,7 +36,7 @@ export function Form({ formName }) {
                         <input type={el.type} name={el.name} value={values[formName]} onChange={onChange}></input>
                     </>
                 ))}
-                <button>{formName === "login" ? "Login" : "Register"}</button>
+                <button className='custom-button'>{formName === "login" ? "Login" : "Register"}</button>
             </form>
         </div>
     );

@@ -32,7 +32,7 @@ export function UserProfile() {
                     <input type='text'></input>
                     <label>Password</label>
                     <input type='password'></input>
-                    <button>Save</button>
+                    <button className='custom-button'>Save</button>
                 </form>
                 <button className='delete-button'>Delete Profile</button>
             </div>
