@@ -5,5 +5,11 @@ const registerUser = (userData) => {
     )
 }
 
-module.exports = { registerUser }
+const getUserData = (userEmail) => {
+    return (
+        `select * from users where email = '${userEmail}';`
+    )
+}
+
+module.exports = { registerUser, getUserData }
 

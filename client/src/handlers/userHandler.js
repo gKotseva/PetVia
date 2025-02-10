@@ -1,19 +1,31 @@
 import * as request from '../lib/request'
 
 export const login = async (values) => {
-    const response = await request.post('/api/users/login', values);
-    if (!response.success) {
-        throw new Error(response.message || 'Login failed');
-    }
+    try {
+        const response = await request.post('/api/users/login', values);
+        
+        if (!response.success) {
+            throw new Error(response.message || 'Login failed');
+        }
 
-    return response
+        return response;
+    } catch (error) {
+        console.error(error.message);
+        throw error;
+    }
 };
 
 export const register = async (values) => {
-    const response = await request.post('/api/users/register', values);
-    if (!response.success) {
-        throw new Error(response.message || 'Registration failed');
-    }
+    try {
+        const response = await request.post('/api/users/register', values);
+        
+        if (!response.success) {
+            throw new Error(response.message || 'Registration failed');
+        }
 
-    return response
+        return response;
+    } catch (error) {
+        console.error(error.message);
+        throw error;
+    }
 };
