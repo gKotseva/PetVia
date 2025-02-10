@@ -1,4 +1,7 @@
 import {Route, Routes} from 'react-router-dom'
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 import { Home } from './pages/Customer/Home/Home'
 import { paths } from './paths/customer'
 import { Footer } from './components/Footer'
@@ -18,8 +21,9 @@ function App() {
         <Route path={paths.userProfile} element={<UserProfile />} />
         <Route path={paths.salonProfile} element={<SalonProfile />} />
       </Routes>
-      <Footer />
-      </DateProvider>
+    <Footer />
+    </DateProvider>
+    <ToastContainer position="top-right" autoClose={3000} />
     </>
   )
 }
