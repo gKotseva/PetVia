@@ -1,24 +1,58 @@
 import { useEffect, useState } from 'react';
 import './Home.modules.css';
-import { getAllCities, getAllStates } from '../../../handlers/salonHandler';
+import { getAllCities, getAllStates, getAllServices } from '../../../handlers/salonHandler';
 
 export function Home() {
-    const [states, setStates] = useState([])
-    const [cities, setCities] = useState([])
+    const [states, setStates] = useState([]);
+    const [cities, setCities] = useState([]);
+    const [services, setServices] = useState([]);
+    const [selectedState, setSelectedState] = useState('');
+    const [selectedCity, setSelectedCity] = useState('');
 
     useEffect(() => {
-        const getStates = async () => {
-            const result = await getAllStates()
-            setStates(result)
-        }
-        getStates()
+        const fetchStates = async () => {
+            const result = await getAllStates();
+            setStates(result);
+        };
+        fetchStates();
+    }, []);
 
-    }, [])
+    useEffect(() => {
+        const fetchCities = async () => {
+            if (selectedState) {
+                const result = await getAllCities(selectedState);
+                setCities(result);
+            } else {
+                setCities([]);
+                setServices([]);
+            }
+        };
+        fetchCities();
+    }, [selectedState]);
 
-    const onChange = async (e) => {
-        const result = await getAllCities(e.target.value)
-        setCities(result)
-    }
+
+    useEffect(() => {
+        const fetchServices = async () => {
+            if (selectedState && selectedCity) {
+                const servicesResult = await getAllServices(selectedState, selectedCity);
+                setServices(servicesResult);
+            } else {
+                setServices([]);
+            }
+        };
+        fetchServices();
+    }, [selectedState, selectedCity]);
+
+    const onStateChange = (e) => {
+        const state = e.target.value;
+        setSelectedState(state);
+        setSelectedCity('');
+    };
+
+    const onCityChange = (e) => {
+        const city = e.target.value;
+        setSelectedCity(city);
+    };
 
     return (
         <div className="home-container">
@@ -26,13 +60,13 @@ export function Home() {
                 <div className='home-form-container'>
                     <h3>Book an appointment for a fluffy refresh</h3>
                     <form>
-                        <select name="state" id="state" onChange={onChange}>
+                        <select name="state" id="state" onChange={onStateChange}>
                             <option value="" disabled selected>Select a state</option>
                             {states.map(e => (
                                 <option value={e.state}>{e.state}</option>
                             ))}
                         </select>
-                        <select name="city" id="city">
+                        <select name="city" id="city" onChange={onCityChange} value={selectedCity}>
                             <option value="" disabled selected>Select a city</option>
                             {cities.map(e => (
                                 <option value={e.city}>{e.city}</option>
@@ -40,17 +74,16 @@ export function Home() {
                         </select>
                         <select name="service" id="service">
                             <option value="" disabled selected hidden>Select a service</option>
-                            <option value="paws">Paw Cleaning</option>
-                            <option value="fullGrooming">Full Grooming</option>
-                            <option value="bath">Bathing</option>
-                            <option value="brushing">Brushing</option>
+                            {services.map(e => (
+                                <option value={e.service_name}>{e.service_name}</option>
+                            ))}
                         </select>
-                        <select name="dateAndTime" id="dateAndTime">
+                        {/* <select name="dateAndTime" id="dateAndTime">
                             <option value="" disabled selected hidden>Select a date and time</option>
                             <option value="today">Today</option>
                             <option value="tomorrow">Tomorrow</option>
                             <option value="other">Other day</option>
-                        </select>
+                        </select> */}
                         <button className='custom-button'>Show salons</button>
                     </form>
                 </div>

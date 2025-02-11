@@ -27,3 +27,12 @@ export const getAllStates = async () => {
         throw error;
     }
 };
+
+export const getAllServices = async (state, city) => {
+    try {
+        const response = await request.get(`/api/salon/services?state=${state}&city=${city}`);
+        return response;
+    } catch (error) {
+        throw error;
+    }
+};
