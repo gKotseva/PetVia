@@ -28,3 +28,11 @@ exports.getAllStates = () => {
         `select distinct state from salons`
     )
 }
+
+exports.getAllServices = (state, city) => {
+    return (
+        `select service_name from salon_services
+        join salons on salon_services.salon_id = salons.id
+        where salons.state = '${state}' and salons.city = '${city}'`
+    )
+}
