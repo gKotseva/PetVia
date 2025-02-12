@@ -36,3 +36,30 @@ exports.getAllServices = (state, city) => {
         where salons.state = '${state}' and salons.city = '${city}'`
     )
 }
+
+exports.getSalonsPerData = (state, city, service) => {
+    return (
+        `SELECT 
+    s.id AS salon_id,
+    s.name AS salon_name,
+    s.state,
+    s.city,
+    s.address,
+    ss.id AS service_id,
+    ss.service_name,
+    JSON_ARRAYAGG(
+        JSON_OBJECT(
+            'name', r.name,
+            'stars', r.stars,
+            'review', r.review
+        )
+    ) AS reviews
+FROM salons s
+JOIN salon_services ss ON ss.salon_id = s.id
+LEFT JOIN salon_reviews r ON r.salon_id = s.id
+WHERE s.state = '${state}'
+  AND s.city = '${city}'
+  AND ss.service_name = '${service}'
+GROUP BY s.id, s.name, s.state, s.city, ss.id, ss.service_name;`
+    )
+}
