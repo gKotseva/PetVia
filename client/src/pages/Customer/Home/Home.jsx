@@ -1,13 +1,16 @@
 import { useEffect, useState } from 'react';
 import './Home.modules.css';
 import { getAllCities, getAllStates, getAllServices } from '../../../handlers/salonHandler';
+import { useNavigate } from 'react-router-dom';
 
 export function Home() {
+    const navigate = useNavigate()
     const [states, setStates] = useState([]);
     const [cities, setCities] = useState([]);
     const [services, setServices] = useState([]);
     const [selectedState, setSelectedState] = useState('');
     const [selectedCity, setSelectedCity] = useState('');
+    const [selectedService, setSelectedService] = useState('');
 
     useEffect(() => {
         const fetchStates = async () => {
@@ -54,6 +57,16 @@ export function Home() {
         setSelectedCity(city);
     };
 
+    const onServiceChange = (e) => {
+        const service = e.target.value;
+        setSelectedService(service);
+    }
+
+    const showSalons = (e) => {
+        e.preventDefault()
+        navigate('/salons', {state: {selectedCity, selectedState, selectedService}})
+    }
+
     return (
         <div className="home-container">
             <div className="home-section-1">
@@ -72,7 +85,7 @@ export function Home() {
                                 <option value={e.city}>{e.city}</option>
                             ))}
                         </select>
-                        <select name="service" id="service">
+                        <select name="service" id="service" onChange={onServiceChange}>
                             <option value="" disabled selected hidden>Select a service</option>
                             {services.map(e => (
                                 <option value={e.service_name}>{e.service_name}</option>
@@ -84,7 +97,7 @@ export function Home() {
                             <option value="tomorrow">Tomorrow</option>
                             <option value="other">Other day</option>
                         </select> */}
-                        <button className='custom-button'>Show salons</button>
+                        <button className='custom-button' onClick={showSalons}>Show salons</button>
                     </form>
                 </div>
             </div>
