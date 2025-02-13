@@ -47,6 +47,7 @@ exports.getSalonsPerData = (state, city, service) => {
     s.address,
     ss.id AS service_id,
     ss.service_name,
+    si.image,
     JSON_ARRAYAGG(
         JSON_OBJECT(
             'name', r.name,
@@ -56,10 +57,11 @@ exports.getSalonsPerData = (state, city, service) => {
     ) AS reviews
 FROM salons s
 JOIN salon_services ss ON ss.salon_id = s.id
+JOIN salon_images si ON si.salon_id = s.id
 LEFT JOIN salon_reviews r ON r.salon_id = s.id
 WHERE s.state = '${state}'
   AND s.city = '${city}'
   AND ss.service_name = '${service}'
-GROUP BY s.id, s.name, s.state, s.city, ss.id, ss.service_name;`
+GROUP BY s.id, s.name, s.state, s.city, ss.id, ss.service_name, si.image;`
     )
 }

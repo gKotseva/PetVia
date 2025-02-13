@@ -35,19 +35,20 @@ export function Salons() {
                     const averageStars = reviewCount > 0
                         ? reviews.reduce((acc, review) => acc + review.stars, 0) / reviewCount
                         : 0;
+                        const backgroundImage = e.image ? `url(${e.image})` : '';
 
-                    return (
-                        <div
-                            className="salon-card"
-                            style={{
-                                backgroundImage: `url('./salon-header-4.jpg')`,
-                                backgroundSize: 'cover',
-                                backgroundPosition: 'center',
-                                backgroundRepeat: 'no-repeat',
-                                height: '200px',
-                            }}
-                            key={e.id}
-                        >
+                        return (
+                            <div
+                                className="salon-card"
+                                style={{
+                                    backgroundImage: backgroundImage,
+                                    backgroundSize: 'cover',
+                                    backgroundPosition: 'center',
+                                    backgroundRepeat: 'no-repeat',
+                                    height: '200px',
+                                }}
+                                key={e.salon_id}
+                            >
                             <div className="salon-details">
                                 <div>
                                     <h3>{e.salon_name}</h3>
