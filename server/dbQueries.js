@@ -37,6 +37,44 @@ exports.getAllServices = (state, city) => {
     )
 }
 
+exports.getSalonDetails = (id) => {
+    return (
+        `select 
+s.name,
+s.state,
+s.city,
+s.address,
+s.salon_description,
+si.image,
+    JSON_ARRAYAGG(
+        JSON_OBJECT(
+            'firstName', st.first_name,
+            'lastName', st.last_name
+        )
+    ) AS team,
+    JSON_ARRAYAGG(
+        JSON_OBJECT(
+			'id', ss.id,
+            'name', ss.service_name
+        )
+    ) AS services,
+    JSON_ARRAYAGG(
+        JSON_OBJECT(
+            'name', sr.name,
+            'stars', sr.stars,
+            'review', sr.review
+        )
+    ) AS reviews
+    from salons as s
+join salon_images si on si.salon_id = s.id
+join salon_reviews sr on sr.salon_id = s.id
+join salon_services ss on ss.salon_id = s.id
+join salon_team st on st.salon_id = s.id
+where s.id = ${id}
+group by s.name, s.state, s.city, s.address, s.salon_description, si.image;`
+    )
+}
+
 exports.getSalonsPerData = (state, city, service) => {
     return (
         `SELECT 

@@ -18,6 +18,15 @@ export const getSalonsPerData = async (state, city, service) => {
     }
 };
 
+export const getSalonDetails = async (id) => {
+    try {
+        const response = await request.get(`/api/salon/id?id=${id}`);
+        return response;
+    } catch (error) {
+        throw error;
+    }
+};
+
 export const getAllCities = async (state) => {
     try {
         const response = await request.get(`/api/salon/cities?state=${state}`);
