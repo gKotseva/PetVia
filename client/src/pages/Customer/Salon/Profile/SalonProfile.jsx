@@ -11,6 +11,8 @@ export function SalonProfile() {
     const { id } = useParams();
     const [salonData, setSalonData] = useState([])
     const [team, setTeam] = useState([])
+    const [reviews, setReviews] = useState([])
+    const [services, setServices] = useState([])
 
     useEffect(() => {
         const fetchSalonDetails = async () => {
@@ -25,6 +27,8 @@ export function SalonProfile() {
         if (salonData.length > 0 && salonData[0]?.team) {
             try {
                 setTeam(JSON.parse(salonData[0].team));
+                setReviews(JSON.parse(salonData[0].reviews))
+                setServices(JSON.parse(salonData[0].services))
             } catch (error) {
                 console.error("Error parsing team data:", error);
             }
@@ -41,9 +45,6 @@ export function SalonProfile() {
     const showSchedule = (index) => {
         setSelectedServiceIndex(selectedServiceIndex === index ? null : index);
     }
-
-    console.log(salonData)
-    console.log(team)
 
     return (
         salonData.length > 0 ?
@@ -64,13 +65,14 @@ export function SalonProfile() {
                 </div> */}
             </div>
             <div className="salon-services">
-                {/* <div className="services-wrapper">
+                <div className="services-wrapper">
                     <div className="services-container">
                         {services.map((e, index) => (
                             <div key={index} className="service-container">
                                 <div className="service" onClick={() => showSchedule(index)}>
                                     <h2 className="name">{e.name}</h2>
-                                    <h2 className="price">{e.price} BGN</h2>
+                                    <h2>({e.duration}min)</h2>
+                                    <h2 className="price">{e.price} $</h2>
                                     <IoIosArrowForward color="#f31559" className="arrow" />
                                 </div>
                             </div>
@@ -85,7 +87,7 @@ export function SalonProfile() {
                             ))}
                         </div>
                     )}
-                </div> */}
+                </div>
             </div>
             <div className="about-us-container">
                 <h1>Meet Us</h1>
@@ -105,7 +107,7 @@ export function SalonProfile() {
             </div>
             <div className="salon-reviews">
                 <h1>Our Reviews</h1>
-                {/* <div>
+                <div>
                     {reviews.map((e) => (
                         <div className="review-container" key={e.name}>
                             <h1>
@@ -116,11 +118,11 @@ export function SalonProfile() {
                                     ))}
                             </h1>
                             <h2>{e.name}</h2>
-                            <p>{e.comment}</p>
-                            <p>{e.date}</p>
+                            <p>{e.review}</p>
+                            <p>{e.review_date}</p>
                         </div>
                     ))}
-                </div> */}
+                </div>
             </div>
         </div>
         : <p>Loading</p>
