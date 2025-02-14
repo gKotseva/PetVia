@@ -39,22 +39,27 @@ exports.getAllServices = (state, city) => {
 
 exports.getSalonDetails = (id) => {
     return (
-        `select 
-s.name,
-s.state,
-s.city,
-s.address,
-s.salon_description,
-si.image,
-    JSON_ARRAYAGG(
+        `SELECT 
+    s.name,
+    s.state,
+    s.city,
+    s.address,
+    s.salon_description,
+    si.image,
+    (SELECT JSON_ARRAYAGG(
         JSON_OBJECT(
-            'firstName', st.first_name,
-            'lastName', st.last_name
+            'firstName', t.firstName,
+            'lastName', t.lastName
         )
-    ) AS team,
+    ) 
+    FROM (
+        SELECT DISTINCT st.first_name AS firstName, st.last_name AS lastName
+        FROM salon_team st 
+        WHERE st.salon_id = s.id
+    ) t) AS team,
     JSON_ARRAYAGG(
         JSON_OBJECT(
-			'id', ss.id,
+            'id', ss.id,
             'name', ss.service_name
         )
     ) AS services,
@@ -65,13 +70,13 @@ si.image,
             'review', sr.review
         )
     ) AS reviews
-    from salons as s
-join salon_images si on si.salon_id = s.id
-join salon_reviews sr on sr.salon_id = s.id
-join salon_services ss on ss.salon_id = s.id
-join salon_team st on st.salon_id = s.id
-where s.id = ${id}
-group by s.name, s.state, s.city, s.address, s.salon_description, si.image;`
+FROM salons s
+LEFT JOIN salon_images si ON si.salon_id = s.id
+LEFT JOIN salon_reviews sr ON sr.salon_id = s.id
+LEFT JOIN salon_services ss ON ss.salon_id = s.id
+WHERE s.id = ${id}
+GROUP BY s.name, s.state, s.city, s.address, s.salon_description, si.image;
+`
     )
 }
 
