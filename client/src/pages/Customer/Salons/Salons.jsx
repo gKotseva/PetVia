@@ -63,12 +63,12 @@ export function Salons() {
                                     </div>
                                     <div className="review-summary">
                                         <div className="stars">
-                                            {Array.from({ length: Math.round(averageStars) }, (_, i) => (
-                                                <IoStar key={i} color="gold" />
-                                            ))}
-                                            {averageStars && !Number.isInteger(averageStars) && (
-                                                <IoStar color="gray" />
-                                            )}
+                                        {Array.from({ length: 5 }, (_, i) => (
+            <IoStar 
+                key={i} 
+                color={i < Math.round(averageStars) ? "gold" : "gray"} 
+            />
+        ))}
                                         </div>
                                         <p>{reviewCount} reviews</p>
                                         <p>Average Rating: {averageStars.toFixed(1)}</p>
