@@ -1,6 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
+import { DateContext } from "../../../../context/DateContext";
+import { Loading } from "../../../../components/Loading";
 
 export function SalonAdmin() {
+    const { datesOfTheMonth } = useContext(DateContext) || { datesOfTheMonth: [] };
     const [workingHours, setWorkingHours] = useState([
         { day: "Monday", open: "09:00", close: "18:00", isOpen: true },
         { day: "Tuesday", open: "09:00", close: "18:00", isOpen: true },
@@ -11,18 +14,10 @@ export function SalonAdmin() {
         { day: "Sunday", open: "Closed", close: "Closed", isOpen: false },
     ]);
 
-    const [workdays, setWorkdays] = useState([]);
-
     const updateWorkingHours = (index, field, value) => {
         const updatedHours = [...workingHours];
         updatedHours[index][field] = value;
         setWorkingHours(updatedHours);
-    };
-
-    const toggleWorkday = (date) => {
-        setWorkdays((prev) =>
-            prev.includes(date) ? prev.filter((d) => d !== date) : [...prev, date]
-        );
     };
 
     return (
@@ -40,7 +35,8 @@ export function SalonAdmin() {
                 </form>
             </div>
             <div className="working-hours">
-            <h2>Manage Working Hours</h2>
+                <div className="manage-working-hours">
+                <h2>Manage Working Hours</h2>
                 {workingHours.map((day, index) => (
                     <div key={index} className="day-setting">
                         <label>{day.day}</label>
@@ -64,6 +60,13 @@ export function SalonAdmin() {
                         <label>Open</label>
                     </div>
                 ))}
+                </div>
+                <div className="manage-working-days">
+                    {datesOfTheMonth.map(e => (
+                        <h5>{e}</h5>
+                    ))}
+
+                </div>
             </div>
             <div className="images"></div>
             <div className="services">
@@ -111,4 +114,20 @@ export function SalonAdmin() {
             </div>
         </div>
     )
+
+    const [loading, setLoading] = useState(true);
+    const [data, setData] = useState(null);
+
+    useEffect(() => {
+        setTimeout(() => {
+            setData("Data loaded!");
+            setLoading(false);
+        }, 2000); // Simulate API call
+    }, []);
+
+    return (
+        <div>
+            {loading ? <Loading /> : <p>{data}</p>}
+        </div>
+    );
 }
