@@ -18,7 +18,7 @@ export function Navigation() {
     return (
         <div className="navigation-container">
             <div className="navigation-logo-container">
-                <img src="./logo.png" alt="Logo"/>
+                <img src="/logo.png" alt="Logo"/>
             </div>
             <div className="navigation-links-container">
                 <ul>
@@ -27,7 +27,6 @@ export function Navigation() {
                     <li onClick={() => openModal("register")}>Register</li>
                     <li>Logout</li>
                     <li><Link to='/profile'>Profile</Link></li>
-                    <li><Link to='/salon-profile'>Salon</Link></li>
                 </ul>
 
                 {isModalOpen && (
