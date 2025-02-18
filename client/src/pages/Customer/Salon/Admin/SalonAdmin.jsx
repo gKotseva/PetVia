@@ -1,3 +1,5 @@
+import './SalonAdmin.modules.css'
+
 import { useState, useEffect, useContext } from "react";
 import { DateContext } from "../../../../context/DateContext";
 import { Loading } from "../../../../components/Loading";
@@ -31,7 +33,7 @@ export function SalonAdmin() {
                     <input></input>
                     <label>Description</label>
                     <input></input>
-                    <button>Edit</button>
+                    <button className='custom-button'>Edit</button>
                 </form>
             </div>
             <div className="working-hours">
@@ -69,9 +71,10 @@ export function SalonAdmin() {
                 </div>
             </div>
             <div className="images"></div>
-            <div className="services">
+            <div className="edit-services">
             <h2>Your services</h2>
-                <form>
+            <div className="services-forms">
+            <form>
                     <h2>Add service</h2>
                     <label>Name</label>
                     <input></input>
@@ -79,20 +82,23 @@ export function SalonAdmin() {
                     <input></input>
                     <label>Price</label>
                     <input></input>
+                    <button className='custom-button'>Sumbit</button>
                 </form>
                 <form>
-                    <h2>Current services members</h2>
-                    <div className="member">
+                    <h2>Current services</h2>
+                    <div className="edit-service">
                         <h3>Full Groom</h3>
                         <h3>Price</h3>
                         <h3>Durration</h3>
-                        <button>Edit</button>
-                        <button>Delete</button>
+                        <button className='edit-button'>Edit</button>
+                        <button className='delete-button'>Delete</button>
                     </div>
                 </form>
             </div>
+            </div>
             <div className="team">
                 <h2>Your team</h2>
+                <div className="team-forms">
                 <form>
                     <h2>Add team members</h2>
                     <label>Name</label>
@@ -101,33 +107,18 @@ export function SalonAdmin() {
                     <input></input>
                     <label>Name</label>
                     <input></input>
-                    <button>Sumbit</button>
+                    <button className='custom-button'>Sumbit</button>
                 </form>
                 <form>
                     <h2>Current team members</h2>
                     <div className="member">
                         <h3>Jason</h3>
                         <img />
-                        <button>Delete</button>
+                        <button className='delete-button'>Delete</button>
                     </div>
                 </form>
+                </div>
             </div>
         </div>
     )
-
-    const [loading, setLoading] = useState(true);
-    const [data, setData] = useState(null);
-
-    useEffect(() => {
-        setTimeout(() => {
-            setData("Data loaded!");
-            setLoading(false);
-        }, 2000); // Simulate API call
-    }, []);
-
-    return (
-        <div>
-            {loading ? <Loading /> : <p>{data}</p>}
-        </div>
-    );
 }

@@ -1,0 +1,109 @@
+.salon-settings-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2em;
+    justify-content: center;
+    margin: 0.5em;
+}
+
+.information form {
+    display: flex;
+    flex-direction: column;
+}
+
+.information form h2,
+.working-hours h2,
+.team h2,
+.edit-services h2 {
+    padding-bottom: 0.3em;
+    margin-bottom: 1em;
+    text-align: center;
+    border-bottom: 2px solid var(--vibrant-pink);
+}
+
+.working-hours {
+    display: flex;
+    gap: 3em;
+}
+
+.services-forms,
+.team-forms {
+    display: flex;
+    gap: 3em;
+}
+
+.services-forms form,
+.team-forms form {
+    display: flex;
+    flex-direction: column;
+}
+
+.member {
+    display: flex;
+    gap: 1em;
+    justify-content: center;
+}
+
+.edit-service {
+    display: flex;
+    gap: 1em;
+}
+
+.working-hours [type="checkbox"] {
+    width: 15px;
+    height: 15px;
+    accent-color: var(--vibrant-pink);
+    cursor: pointer;
+}
+
+.day-setting {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+}
+
+.day-setting label {
+    min-width: 80px;
+}
+
+.day-setting input[type="time"] {
+    flex: 1;
+    min-width: 100px;
+}
+
+.day-setting input[type="checkbox"] {
+    margin-left: 10px;
+    transform: scale(1.2);
+}
+
+.information,
+.working-hours,
+.edit-services,
+.team {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    padding: 2em;
+    border-radius: 1em;
+}
+
+.information form label,
+.working-hours form label,
+.edit-services form label,
+.team form label {
+    text-transform: uppercase;
+    margin-bottom: 5px;
+    margin-top: 1em;
+}
+
+.information form input ,
+.working-hours form input ,
+.edit-services form input ,
+.team form input {
+    margin-bottom: 1em;
+    padding: 0.5em 0.5em;
+    border: none;
+    border-bottom: 1px solid var(--vibrant-pink);
+    background: inherit;
+    outline: none;
+}
