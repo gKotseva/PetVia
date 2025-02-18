@@ -24,24 +24,3 @@
     background: inherit;
     outline: none;
 }
-
-.form-container form button {
-    margin-top: 1em;
-    padding: 1em;
-    width: 50%;
-    align-self: center;
-    border-radius: 2em;
-    outline: none;
-    border: none;
-    background: var(--vibrant-pink);
-    color: white;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    font-weight: bold;
-    transition: all 0.3s ease-in-out;
-}
-
-.form-container form button:hover {
-    background: var(--light-pink);
-    color: black;
-}
