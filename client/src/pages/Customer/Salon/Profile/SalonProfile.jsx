@@ -13,6 +13,8 @@ export function SalonProfile() {
     const [team, setTeam] = useState([])
     const [reviews, setReviews] = useState([])
     const [services, setServices] = useState([])
+    const [bookings, setBookings] = useState([])
+    const [schedule, setSchedule] = useState([])
 
     useEffect(() => {
         const fetchSalonDetails = async () => {
@@ -22,15 +24,14 @@ export function SalonProfile() {
         fetchSalonDetails()
     }, [id])
 
-    console.log(salonData)
-
-
     useEffect(() => {
         if (salonData.length > 0 && salonData[0]?.team) {
             try {
                 setTeam(JSON.parse(salonData[0].team));
                 setReviews(JSON.parse(salonData[0].reviews))
                 setServices(JSON.parse(salonData[0].services))
+                setBookings(JSON.parse(salonData[0].bookings))
+                setSchedule(JSON.parse(salonData[0].schedule))
             } catch (error) {
                 console.error("Error parsing team data:", error);
             }
@@ -81,7 +82,7 @@ export function SalonProfile() {
                             {services.map((e, index) => (
                                 <div key={index} className="service-container">
                                     <div className="service" onClick={() => showSchedule(index)}>
-                                        <h2 className="name">{e.name}</h2>
+                                        <h2 className="name">{e.service_name}</h2>
                                         <h2>({e.duration}min)</h2>
                                         <h2 className="price">{e.price} $</h2>
                                         <IoIosArrowForward color="#f31559" className="arrow" />
@@ -110,7 +111,7 @@ export function SalonProfile() {
                             {team.map((e) => (
                                 <div className="team-member" key={e.firstName}>
                                     <img src={'/woman1.jpg'} alt={e.firstName} />
-                                    <h1>{e.firstName} {e.lastName}</h1>
+                                    <h1>{e.first_name} {e.last_name}</h1>
                                 </div>
                             ))}
                         </div>
@@ -128,9 +129,9 @@ export function SalonProfile() {
                                             <IoStar key={index} color="gold" />
                                         ))}
                                 </h1>
-                                <h2>{e.name}</h2>
+                                <h2>{e.user.first_name} {e.user.last_name}</h2>
                                 <p>{e.review}</p>
-                                <p>{e.review_date}</p>
+                                <p>{e.date}</p>
                             </div>
                         ))}
                     </div>

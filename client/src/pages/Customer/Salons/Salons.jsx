@@ -19,6 +19,7 @@ export function Salons() {
         const fetchSalons = async () => {
             setLoading(true);
             const response = await getSalonsPerData(data.selectedState, data.selectedCity, data.selectedService);
+            console.log(response)
             setSalonsData(response);
             setLoading(false);
         };
@@ -58,7 +59,7 @@ export function Salons() {
                             >
                                 <div className="salon-details">
                                     <div>
-                                        <h3>{e.salon_name}</h3>
+                                        <h3>{e.name}</h3>
                                         <p><MdLocationPin /> {e.address}</p>
                                     </div>
                                     <div className="review-summary">
