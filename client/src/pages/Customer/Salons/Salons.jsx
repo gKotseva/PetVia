@@ -7,29 +7,26 @@ import { IoStar } from "react-icons/io5";
 import { MdLocationPin } from "react-icons/md";
 
 import { Link } from "react-router-dom";
+import { useLoading } from '../../../context/LoadingContext';
 
 
 export function Salons() {
     const location = useLocation();
     const data = location.state;
     const [salonsData, setSalonsData] = useState([]);
-    const [loading, setLoading] = useState(true);
+    const { setGlobalLoading } = useLoading();
+
 
     useEffect(() => {
         const fetchSalons = async () => {
-            setLoading(true);
+            setGlobalLoading(true);
             const response = await getSalonsPerData(data.selectedState, data.selectedCity, data.selectedService);
-            console.log(response)
             setSalonsData(response);
-            setLoading(false);
+            setGlobalLoading(false);
         };
         fetchSalons();
     }, [data]);
-
-    if (loading) {
-        return <div>Loading salons...</div>;
-    }
-
+    
     return (
         <div className="salons-container">
             {salonsData.length > 0 ? (

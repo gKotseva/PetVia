@@ -6,32 +6,36 @@ import { IoIosArrowForward } from "react-icons/io";
 import { DateContext } from '../../../../context/DateContext';
 import { useParams } from 'react-router-dom';
 import { getSalonDetails } from '../../../../handlers/salonHandler';
+import { useLoading } from '../../../../context/LoadingContext';
 
 export function SalonProfile() {
     const { id } = useParams();
-    const [salonData, setSalonData] = useState([])
-    const [team, setTeam] = useState([])
-    const [reviews, setReviews] = useState([])
-    const [services, setServices] = useState([])
-    const [bookings, setBookings] = useState([])
-    const [schedule, setSchedule] = useState([])
+    const [salonData, setSalonData] = useState([]);
+    const [team, setTeam] = useState([]);
+    const [reviews, setReviews] = useState([]);
+    const [services, setServices] = useState([]);
+    const [bookings, setBookings] = useState([]);
+    const [schedule, setSchedule] = useState([]);
+    const { setGlobalLoading } = useLoading(); 
 
     useEffect(() => {
         const fetchSalonDetails = async () => {
-            const result = await getSalonDetails(id)
-            setSalonData(result)
-        }
-        fetchSalonDetails()
-    }, [id])
+            setGlobalLoading(true);
+            const result = await getSalonDetails(id);
+            setSalonData(result);
+            setGlobalLoading(false);
+        };
+        fetchSalonDetails();
+    }, [id, setGlobalLoading]);
 
     useEffect(() => {
         if (salonData.length > 0 && salonData[0]?.team) {
             try {
                 setTeam(JSON.parse(salonData[0].team));
-                setReviews(JSON.parse(salonData[0].reviews))
-                setServices(JSON.parse(salonData[0].services))
-                setBookings(JSON.parse(salonData[0].bookings))
-                setSchedule(JSON.parse(salonData[0].schedule))
+                setReviews(JSON.parse(salonData[0].reviews));
+                setServices(JSON.parse(salonData[0].services));
+                setBookings(JSON.parse(salonData[0].bookings));
+                setSchedule(JSON.parse(salonData[0].schedule));
             } catch (error) {
                 console.error("Error parsing team data:", error);
             }
@@ -44,23 +48,17 @@ export function SalonProfile() {
         ? reviews.reduce((acc, review) => acc + review.stars, 0) / reviews.length
         : 0;
 
-
     const [showDates, setShowDates] = useState(null);
     const { datesOfTheMonth } = useContext(DateContext);
     const [selectedServiceIndex, setSelectedServiceIndex] = useState(null);
 
     const showSchedule = (index) => {
         setSelectedServiceIndex(selectedServiceIndex === index ? null : index);
-    }
+    };
 
     return (
-        salonData.length > 0 ?
+        salonData.length > 0 ? (
             <div className="salon-profile-container">
-                {/* <div className={`salon-gallery ${images.length >= 5 ? "five-or-more" : "less-than-five"}`}>
-                {images.map((e, index) => (
-                    <img key={index} src={e} alt={`Salon ${index + 1}`} />
-                ))}
-            </div> */}
                 <div className="salon-name">
                     <div className="salon-information">
                         <h1>{salonData[0].name}</h1>
@@ -137,6 +135,8 @@ export function SalonProfile() {
                     </div>
                 </div>
             </div>
-            : <p>Loading</p>
+        ) : (
+            <p>Loading...</p>
+        )
     );
 }
