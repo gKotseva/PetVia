@@ -1,6 +1,6 @@
 const router = require('express').Router()
 const db = require('../db');
-const { getAllSalons, getAllCities, getAllStates, getAllServices, getSalonsPerData, getSalonDetails } = require('../dbQueries');
+const { getAllSalons, getAllCities, getAllStates, getAllServices, getSalonsPerData, getSalonDetails, getSalonBookings, getSalonSchedule } = require('../dbQueries');
 
 router.get('/all', async(req, res) => {
     const query = getAllSalons()
@@ -48,5 +48,22 @@ router.get('/id', async(req, res) => {
 
     res.status(200).json(results);
 })
+
+router.get('/bookings', async(req, res) => {
+    const {id} = req.query
+    const query = getSalonBookings(id)
+    const results = await db.executeQuery(query);
+
+    res.status(200).json(results);
+})
+
+router.get('/schedule', async(req, res) => {
+    const {id} = req.query
+    const query = getSalonSchedule(id)
+    const results = await db.executeQuery(query);
+
+    res.status(200).json(results);
+})
+
 
 module.exports = router

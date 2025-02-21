@@ -162,3 +162,18 @@ exports.getSalonDetails = (id) => {
         `
     )
 }
+
+exports.getSalonBookings = (id) => {
+    return `
+    select * from bookings b
+    join salon_services ss on ss.service_id = b.service_id
+    where b.salon_id = ${id};
+`
+}
+
+exports.getSalonSchedule = (id) => {
+    return `
+    select * from salon_schedule
+    where salon_id = ${id};
+`
+}

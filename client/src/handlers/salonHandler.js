@@ -54,3 +54,21 @@ export const getAllServices = async (state, city) => {
         throw error;
     }
 };
+
+export const getBookings = async (id) => {
+    try {
+        const response = await request.get(`/api/salon/bookings?id=${id}`);
+        return response;
+    } catch (error) {
+        throw error;
+    }
+}
+
+export const getSchedule = async (id) => {
+    try {
+        const response = await request.get(`/api/salon/schedule?id=${id}`);
+        return response;
+    } catch (error) {
+        throw error;
+    }
+}
