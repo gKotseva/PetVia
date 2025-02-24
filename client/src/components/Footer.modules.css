@@ -1,0 +1,11 @@
+.footer-container {
+    background: var(--dark-color);
+    padding: 2em;
+    text-align: center;
+    color: white;
+}
+
+.footer-container span {
+    font-weight: bold;
+}
+
