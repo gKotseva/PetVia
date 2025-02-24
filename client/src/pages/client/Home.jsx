@@ -69,10 +69,6 @@ export function Home() {
         navigate('/salons', { state: { selectedCity, selectedState, selectedService } })
     }
 
-    console.log(states)
-    console.log(cities)
-    console.log(services)
-
     return (
         <div className="home-container">
             <div className="home-section-1">
