@@ -1,21 +1,21 @@
 import './Navigation.modules.css';
 
-// import { useState } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 
-// import { Form } from './Form';
-// import { Modal } from './Modal';
+import { Form } from './Form';
+import { Modal } from './Modal';
 
 export function Navigation() {
-    // const [isModalOpen, setIsModalOpen] = useState(false);
-    // const [formName, setFormName] = useState("login");
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [formName, setFormName] = useState("login");
 
-    // const openModal = (formType) => {
-    //     setFormName(formType);
-    //     setIsModalOpen(true); 
-    // };
+    const openModal = (formType) => {
+        setFormName(formType);
+        setIsModalOpen(true); 
+    };
 
-    // const closeModal = () => setIsModalOpen(false);
+    const closeModal = () => setIsModalOpen(false);
 
     return (
         <div className="navigation-container">
@@ -31,11 +31,11 @@ export function Navigation() {
                     <li><Link to='/profile'>Profile</Link></li>
                 </ul>
 
-                {/* {isModalOpen && (
+                {isModalOpen && (
                     <Modal onClose={closeModal}>
                         <Form formName={formName} />
                     </Modal>
-                )} */}
+                )}
             </div>
         </div>
     );
