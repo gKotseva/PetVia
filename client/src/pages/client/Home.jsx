@@ -1,8 +1,9 @@
 import './Home.modules.css';
 
 import { useEffect, useState } from 'react';
+import { MdLocationPin } from "react-icons/md";
 
-import { getAllCities, getAllStates, getAllServices } from '../../handlers/salonHandlers';
+import { getAllCities, getAllStates, getAllServices, getAllSalons } from '../../handlers/salonHandlers';
 import { useNavigate } from 'react-router-dom';
 
 export function Home() {
@@ -10,6 +11,7 @@ export function Home() {
     const [states, setStates] = useState([]);
     const [cities, setCities] = useState([]);
     const [services, setServices] = useState([]);
+    const [salons, setSalons] = useState([])
     const [selectedState, setSelectedState] = useState('');
     const [selectedCity, setSelectedCity] = useState('');
     const [selectedService, setSelectedService] = useState('');
@@ -69,6 +71,15 @@ export function Home() {
         navigate('/salons', { state: { selectedCity, selectedState, selectedService } })
     }
 
+    useEffect(() => {
+        const getSalons = async () => {
+            const result = await getAllSalons()
+            setSalons(result)
+        }
+
+        getSalons()
+    }, [])
+
     return (
         <div className="home-container">
             <div className="home-section-1">
@@ -119,6 +130,16 @@ export function Home() {
                 <div>
                     <h2>Explore our grooming salons</h2>
                     <h4>When fur needs a little love and a pair of scissors.</h4>
+                </div>
+                <div className="salon-cards">
+                    {salons.map(e => (
+                        <div className="salon-card" key={e.id}>
+                            <img src='image.png' className='salon-image'/>
+                            <h2>{e.name}</h2>
+                            <h3><MdLocationPin /> {e.state}</h3>
+                            <p>{e.city}, {e.address}</p>
+                        </div>
+                    ))}
                 </div>
             </div>
         </div>
