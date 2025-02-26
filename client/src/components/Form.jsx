@@ -1,15 +1,15 @@
-import './Form.modules.css'
-
-import { useForm } from '../hooks/useForm';
+import React from 'react';
 import { login, register } from '../handlers/userHandlers';
+import { useForm } from '../hooks/useForm';
+import './Form.modules.css';
 
-export function Form({ formName }) {
+export function Form({ formName, closeModal, openModal }) {
     const handler = formName === 'login' ? login : formName === 'register' ? register : null;
     const initialValues =
         formName === 'login' ? { email: '', password: '' } : 
         formName === 'register' ? { firstName: '', lastName: '', email: '', mobilePhone: '', password: '', confirmPassword: '' } : {};
 
-    const { values, errors, success, onChange, onSubmit } = useForm(handler, initialValues);
+    const { values, errors, success, successMessage, onChange, onSubmit } = useForm(handler, initialValues, formName, closeModal, openModal);
 
     const forms = {
         login: [
@@ -31,10 +31,10 @@ export function Form({ formName }) {
             <h2 className='form-heading'>{formName}</h2>
             <form onSubmit={onSubmit}>
                 {forms[formName].map(el => (
-                    <>
+                    <div key={el.name}>
                         <label>{el.label}</label>
-                        <input type={el.type} name={el.name} value={values[formName]} onChange={onChange}></input>
-                    </>
+                        <input type={el.type} name={el.name} value={values[el.name]} onChange={onChange}></input>
+                    </div>
                 ))}
                 <button className='custom-button'>{formName === "login" ? "Login" : "Register"}</button>
             </form>

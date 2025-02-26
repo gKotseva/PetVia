@@ -1,9 +1,14 @@
-import { useState } from "react";
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useUser } from '../context/userContext';
 
-export function useForm (handler, initialValues) {
+export function useForm(handler, initialValues, formName, closeModal, openModal) {
+    const { login } = useUser();
     const [errors, setErrors] = useState([]);
-    const [success, setSuccess] = useState([]);
-    const [values, setValues] = useState(initialValues)
+    const [success, setSuccess] = useState(false);
+    const [successMessage, setSuccessMessage] = useState([]);
+    const [values, setValues] = useState(initialValues);
+    const navigate = useNavigate();
 
     const onChange = (e) => {
         setValues(state => ({
@@ -19,10 +24,20 @@ export function useForm (handler, initialValues) {
             const response = await handler(values);
 
             if (response.success) {
+                setSuccess(true);
                 setSuccessMessage(response.message);
-                setErrors([])
+                setErrors([]);
+
+                if (formName === 'register') {
+                    openModal('login')
+                } 
+                else if (formName === 'login') {
+                    login(response.results[0]);
+                    closeModal(); 
+                }
             }
         } catch (error) {
+            setSuccess(false);
             setErrors([error.message]);
         }
     };
@@ -31,8 +46,8 @@ export function useForm (handler, initialValues) {
         values,
         errors,
         success,
+        successMessage,
         onChange,
         onSubmit,
     };
-
 }
