@@ -7,9 +7,9 @@ const pool = mysql.createPool({
     database: 'petvia'
 });
 
-function executeQuery(sql) {
+function executeQuery(sql, params) {
     return new Promise((resolve, reject) => {
-        pool.query(sql, function(error, results, fields) {
+        pool.query(sql, params, function(error, results, fields) {
             if (error) {
                 console.error('Error executing query: ' + error.message);
                 reject(error);
