@@ -11,6 +11,20 @@ exports.getUserData = (userEmail) => {
     )
 }
 
+exports.getUserDataById = (id) => {
+    return (
+        `select * from users where id = '${id}'`
+    )
+}
+
+exports.getUserBookings = (id) => {
+    return (
+        `select b.date, b.start_time, s.name from bookings b
+        join salons s on s.salon_id = b.salon_id
+        where b.user_id = ${id};`
+    )
+}
+
 exports.getAllSalons = () => {
     return (
         `select * from salons`

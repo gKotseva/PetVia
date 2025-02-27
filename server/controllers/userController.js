@@ -1,6 +1,6 @@
 const router = require('express').Router()
 const db = require('../db');
-const { registerUser, getUserData } = require('../dbQueries');
+const { registerUser, getUserData, getUserDataById, getUserBookings} = require('../dbQueries');
 const { hashPassword, comparePassword } = require('../utils/hash');
 
 router.post('/login', async(req, res) => {
@@ -16,7 +16,10 @@ router.post('/login', async(req, res) => {
       if (!compare){
         return res.status(400).send({ message: 'Wrong email or password!' });
       }
-      return res.status(200).send({success: true, message: 'Login successful!', results})
+      const firstName = results[0].first_name
+      const lastName = results[0].last_name
+      const id = results[0].id
+      return res.status(200).send({success: true, message: 'Login successful!', results: {firstName, lastName, id} })
     }
 })
 
@@ -37,6 +40,19 @@ router.post('/register', async(req, res) => {
         console.error('Error executing query:', error);
         res.status(500).json({ error: 'Internal server error' });
       }
+})
+
+router.get('/getAllUserData', async(req, res) => {
+  const {id} = req.query
+
+  const query = getUserDataById(id)
+  const results = await db.executeQuery(query);
+
+  const bookingsQuery = getUserBookings(id)
+  const bookings = await db.executeQuery(bookingsQuery)
+
+  res.status(200).send({userData: results[0], bookings: bookings})
+
 })
 
 module.exports = router

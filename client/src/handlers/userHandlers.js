@@ -32,3 +32,12 @@ export const register = async (values) => {
         throw error;
     }
 };
+
+export const getAllUserData = async(id) => {
+    try {
+        const response = await request.get(`/api/users/getAllUserData?id=${id}`);
+        return response;
+    } catch (error) {
+        throw error;
+    }
+}
