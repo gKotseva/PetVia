@@ -33,7 +33,7 @@ export function Navigation() {
                         </>
                     ) : (
                         <>
-                            <li><Link to='/profile'>Profile</Link></li>
+                            <li><Link to='/my-profile'>Profile</Link></li>
                             <li onClick={logout}>Logout</li>
                         </>
                     )}
