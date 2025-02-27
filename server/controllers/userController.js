@@ -1,6 +1,6 @@
 const router = require('express').Router()
 const db = require('../db');
-const { registerUser, getUserData, getUserDataById, getUserBookings} = require('../dbQueries');
+const { registerUser, getUserData, getUserDataById, getUserBookings, updateUserData} = require('../dbQueries');
 const { hashPassword, comparePassword } = require('../utils/hash');
 
 router.post('/login', async(req, res) => {
@@ -54,5 +54,25 @@ router.get('/getAllUserData', async(req, res) => {
   res.status(200).send({userData: results[0], bookings: bookings})
 
 })
+
+router.put('/updateUserData', async (req, res) => {
+  try {
+      const { userId, changedFields } = req.body;
+
+      const fields = Object.keys(changedFields);
+      const values = Object.values(changedFields);
+
+      const query = `UPDATE users SET ${fields.map(field => `${field} = ?`).join(', ')} WHERE id = ?`;
+
+      const queryParams = [...values, userId];
+
+      await db.executeQuery(query, queryParams);
+
+      res.status(200).send({ message: 'User data updated successfully' });
+  } catch (err) {
+      console.error('Error executing query:', err);
+      res.status(500).send({ message: 'An error occurred while updating user data' });
+  }
+});
 
 module.exports = router

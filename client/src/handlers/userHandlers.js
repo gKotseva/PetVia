@@ -41,3 +41,15 @@ export const getAllUserData = async(id) => {
         throw error;
     }
 }
+
+export const editUserData = async(data) => {
+    const {userId, changedFields} = data
+
+    try {
+        const response = await request.put(`/api/users/updateUserData`, {userId, changedFields});
+        return response;
+    } catch (error) {
+        throw error;
+    }
+}
+

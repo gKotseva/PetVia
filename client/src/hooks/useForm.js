@@ -1,14 +1,12 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useUser } from '../context/userContext';
 
 export function useForm(handler, initialValues, formName, closeModal, openModal) {
-    const { login } = useUser();
+    const { login, user } = useUser();
     const [errors, setErrors] = useState([]);
     const [success, setSuccess] = useState(false);
     const [successMessage, setSuccessMessage] = useState([]);
     const [values, setValues] = useState(initialValues);
-    const navigate = useNavigate();
 
     const onChange = (e) => {
         setValues(state => ({
@@ -17,11 +15,33 @@ export function useForm(handler, initialValues, formName, closeModal, openModal)
         }));
     };
 
+    const getChangedFields = () => {
+        const changedFields = {};
+
+        Object.keys(values).forEach(key => {
+            if (values[key] !== initialValues[key] && values[key] !== '') {
+                changedFields[key] = values[key];
+            }
+        });
+    
+        return {userId: user.id, changedFields};
+    };
+
     const onSubmit = async (e) => {
         e.preventDefault();
 
+        const changedFields = getChangedFields();
+
+        console.log(changedFields)
+
         try {
-            const response = await handler(values);
+            let response
+
+            if(formName === 'editUser'){
+                response = await handler(changedFields);
+            } else {
+                response = await handler(values);
+            }
 
             if (response.success) {
                 setSuccess(true);
@@ -44,6 +64,7 @@ export function useForm(handler, initialValues, formName, closeModal, openModal)
 
     return {
         values,
+        setValues,
         errors,
         success,
         successMessage,
