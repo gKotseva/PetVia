@@ -32,7 +32,7 @@ export function useForm(handler, initialValues, formName, closeModal, openModal)
                     openModal('login')
                 } 
                 else if (formName === 'login') {
-                    login(response.results[0]);
+                    login(response.results);
                     closeModal(); 
                 }
             }
