@@ -57,22 +57,31 @@ router.get('/getAllUserData', async(req, res) => {
 
 router.put('/updateUserData', async (req, res) => {
   try {
-      const { userId, changedFields } = req.body;
+    const { userId, changedFields } = req.body;
 
-      const fields = Object.keys(changedFields);
-      const values = Object.values(changedFields);
+    const fields = Object.keys(changedFields);
+    const values = Object.values(changedFields);
 
-      const query = `UPDATE users SET ${fields.map(field => `${field} = ?`).join(', ')} WHERE id = ?`;
+    if (fields.includes('password')) {
+      const passwordIndex = fields.indexOf('password');
+      
+      const hashedPassword = await hashPassword(values[passwordIndex]);
 
-      const queryParams = [...values, userId];
+      values[passwordIndex] = hashedPassword;
+    }
 
-      await db.executeQuery(query, queryParams);
+    const query = `UPDATE users SET ${fields.map(field => `${field} = ?`).join(', ')} WHERE id = ?`;
 
-      res.status(200).send({ message: 'User data updated successfully' });
+    const queryParams = [...values, userId];
+
+    await db.executeQuery(query, queryParams);
+
+    res.status(200).send({ message: 'User data updated successfully' });
   } catch (err) {
-      console.error('Error executing query:', err);
-      res.status(500).send({ message: 'An error occurred while updating user data' });
+    console.error('Error executing query:', err);
+    res.status(500).send({ message: 'An error occurred while updating user data' });
   }
 });
+
 
 module.exports = router
