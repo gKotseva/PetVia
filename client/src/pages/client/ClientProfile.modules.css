@@ -1,0 +1,66 @@
+.customer-profile-container {
+    display: flex;
+    padding: 1em;
+    justify-content: space-evenly;
+}
+
+.customer-profile-container div:nth-child(1) {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    border-radius: 1em;
+    padding: 2em 3em;
+}
+
+.customer-update-info form {
+    display: flex;
+    flex-direction: column;
+    margin-top: 2em;
+}
+
+.customer-update-info form label {
+    text-transform: uppercase;
+    margin-bottom: 5px;
+    margin-top: 1em;
+}
+
+.customer-update-info form input {
+    margin-bottom: 1em;
+    padding: 0.5em 0.5em;
+    border: none;
+    border-bottom: 1px solid var(--dark-color);
+    background: inherit;
+    outline: none;
+}
+
+.customer-past-appointments img,
+.customer-outstanding-appointments img {
+    width: 10%;
+    height: auto;
+}
+
+.customer-outstanding-appointments,
+.customer-past-appointments {
+    max-width: 30em;
+}
+
+.places-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 2em;
+}
+
+.place-details {
+    display: flex;
+    gap: 2em;
+    align-items: center;
+    justify-content: center;
+}
+
+.delete-button {
+    margin-top: 1em;
+    display: block; 
+    margin-left: auto; 
+    margin-right: auto;
+    min-width: 10em;
+}

@@ -5,6 +5,7 @@ import { Salons } from "./pages/client/Salons"
 import { paths } from "./paths"
 import {Route, Routes} from 'react-router-dom'
 import { UserProvider } from "./context/userContext"
+import { ClientProfile } from "./pages/client/ClientProfile"
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
       <Routes>
         <Route path={paths.home} element={<Home />} />
         <Route path={paths.salons} element={<Salons />} />
+        <Route path={paths.clientProfile} element={<ClientProfile />} />
       </Routes>
     <Footer />
     </UserProvider>
