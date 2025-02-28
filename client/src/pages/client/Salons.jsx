@@ -7,38 +7,44 @@ import { MdLocationPin } from "react-icons/md";
 
 import { getSalonsPerData } from "../../handlers/salonHandlers";
 import { averageRating } from '../../utils/averageRating';
+import { displayReviewStars } from '../../utils/displayReviewStars';
+import { Loading } from '../../components/Loading';
 
 export function Salons() {
     const location = useLocation();
     const data = location.state;
     const [salonsData, setSalonsData] = useState([]);
-    const [ratings, setRatings] = useState([]);
+    const [ratings, setRatings] = useState(null);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchSalons = async () => {
-            const response = await getSalonsPerData(data.selectedState, data.selectedCity, data.selectedService);
-            setSalonsData(response);
+            try {
+                const response = await getSalonsPerData(data.selectedState, data.selectedCity, data.selectedService);
+                setSalonsData(response);
+                setRatings(averageRating(response));
+                setLoading(false);
+            } catch (error) {
+                console.error(error);
+                setLoading(false);
+            }
         };
         fetchSalons();
     }, [data]);
 
-    useEffect(() => {
-        if (salonsData.length > 0) {
-            const result = averageRating(salonsData);
-            setRatings(result);
-        }
-    }, [salonsData]);
+    if (loading) {
+        return <Loading />;
+    }
 
     return (
         <div className="salons-container">
             {salonsData.length > 0 ? (
-                salonsData.map((salon, index) => {
-                    const backgroundImage = salon.image ? `url(image.png)` : './image.png';
+                salonsData.map((salon) => {
+                    const backgroundImage = salon.image ? `url(${salon.image})` : './image.png';
 
-                    const ratingData = ratings.find(r => r.salonName === salon.name) || {
-                        averageRating: "No reviews ⭐",
-                        totalReviews: 0
-                    };
+                    const ratingData = ratings && Array.isArray(ratings)
+                        ? ratings.find(r => r.salonName === salon.name) || { averageRating: "No reviews ⭐", totalReviews: 0 }
+                        : ratings;
 
                     return (
                         <Link
@@ -63,12 +69,7 @@ export function Salons() {
                                     </div>
                                     <div className="review-summary">
                                         <div className="stars">
-                                            {Array.from({ length: 5 }, (_, i) => (
-                                                <IoStar
-                                                    key={i}
-                                                    color={i < Math.round(ratingData.averageRating) ? "gold" : "gray"}
-                                                />
-                                            ))}
+                                            {displayReviewStars(ratingData.averageRating)}
                                         </div>
                                         <p>{ratingData.totalReviews} reviews</p>
                                     </div>
