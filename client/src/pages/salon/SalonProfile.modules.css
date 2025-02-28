@@ -1,0 +1,36 @@
+.salon-information {
+    display: flex;
+    justify-content: space-between;
+    padding: 2em;
+    text-align: center;
+}
+
+.service-container {
+    display: flex;
+    justify-content: space-between;
+    max-width: 20em;
+}
+
+.salon-team,
+.salon-reviews {
+    display: flex;
+    text-align: center;
+    justify-content: center;
+    gap: 5em;
+    padding: 3em;
+}
+
+.salon-team img {
+    max-width: 5em;
+}
+
+.review-container {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    padding: 2em;
+    border-radius: 2em;
+    background: var(--dark-color);
+    color: white;
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+}
