@@ -6,6 +6,7 @@ import { paths } from "./paths"
 import {Route, Routes} from 'react-router-dom'
 import { UserProvider } from "./context/userContext"
 import { ClientProfile } from "./pages/client/ClientProfile"
+import { SalonProfile } from "./pages/salon/SalonProfile"
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
         <Route path={paths.home} element={<Home />} />
         <Route path={paths.salons} element={<Salons />} />
         <Route path={paths.clientProfile} element={<ClientProfile />} />
+        <Route path={paths.salonProfile} element={<SalonProfile />} />
       </Routes>
     <Footer />
     </UserProvider>
