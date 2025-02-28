@@ -37,7 +37,7 @@ export function ClientProfile() {
                 setInitialValues(userValues);
             }
         };
-        fetchUserData();
+        user?.id && fetchUserData();
     }, [user]);
 
     useEffect(() => {
@@ -113,7 +113,7 @@ export function ClientProfile() {
                     <div className='places-container'>
                         <h2>Upcoming Appointments</h2>
                         {outstanding.map(e => (
-                            <div className='place-details' key={e.id}>
+                            <div className='place-details' key={e.booking_id}>
                                 <img src='/image.png' alt={e.name} />
                                 <h3>{e.name}</h3>
                                 <h4>{new Date(e.date).toLocaleDateString('bg-BG')}</h4>
@@ -135,7 +135,7 @@ export function ClientProfile() {
                     <div className='places-container'>
                         <h2>Past Appointments</h2>
                         {past.map(e => (
-                            <div className='place-details' key={e.id}>
+                            <div className='place-details' key={e.booking_id}>
                                 <img src='/image.png' alt={e.name} />
                                 <h3>{e.name}</h3>
                                 <h4>{new Date(e.date).toLocaleDateString('bg-BG')}</h4>

@@ -19,7 +19,7 @@ exports.getUserDataById = (id) => {
 
 exports.getUserBookings = (id) => {
     return (
-        `select b.date, b.start_time, s.name from bookings b
+        `select b.booking_id, b.date, b.start_time, s.name from bookings b
         join salons s on s.salon_id = b.salon_id
         where b.user_id = ${id};`
     )

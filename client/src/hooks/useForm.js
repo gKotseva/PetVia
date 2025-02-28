@@ -31,9 +31,7 @@ export function useForm(handler, initialValues, formName, closeModal, openModal)
         e.preventDefault();
 
         const changedFields = getChangedFields();
-
-        console.log(changedFields)
-
+        
         try {
             let response
 
