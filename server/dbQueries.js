@@ -96,9 +96,9 @@ exports.getSalonDetails = (id) => {
     s.salon_description, 
     s.image, 
 
-    -- Get unique team members
     (SELECT JSON_ARRAYAGG(
         JSON_OBJECT(
+            'team_member_id', st.team_id,
             'first_name', st.first_name,
             'last_name', st.last_name
         )
