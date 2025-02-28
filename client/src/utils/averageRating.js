@@ -1,6 +1,8 @@
 export const averageRating = (salonsData) => {
-    return salonsData.map(salon => {
-        const reviews = JSON.parse(salon.reviews) || [];
+    const salonsArray = Array.isArray(salonsData) ? salonsData : [salonsData];
+    
+    const ratings =  salonsArray.map(salon => {
+        const reviews = typeof salon.reviews === 'string' ? JSON.parse(salon.reviews) : salon.reviews || [];
         const totalReviews = reviews.length;
 
         const averageRating = totalReviews > 0
@@ -15,4 +17,6 @@ export const averageRating = (salonsData) => {
             averageRating: rounded
         };
     });
+    return salonsArray.length === 1 ? ratings[0] : ratings;
+
 };
