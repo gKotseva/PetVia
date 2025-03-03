@@ -28,14 +28,11 @@ export function useForm(handler, initialValues, formName, closeModal, openModal)
     };
 
     const onSubmit = async (e) => {
-        e.preventDefault();
-
-        const changedFields = getChangedFields();
-        
+        e.preventDefault();  
         try {
             let response
-
             if(formName === 'editUser'){
+                const changedFields = getChangedFields();
                 response = await handler(changedFields);
             } else {
                 response = await handler(values);
