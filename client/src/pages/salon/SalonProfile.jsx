@@ -6,6 +6,8 @@ import { parseInfo } from '../../utils/parseInfo';
 import { displayReviewStars } from '../../utils/displayReviewStars';
 import { Loading } from '../../components/Loading';
 import { averageRating } from '../../utils/averageRating';
+import { IoIosArrowForward } from "react-icons/io";
+
 
 export function SalonProfile() {
     const { id } = useParams();
@@ -26,7 +28,7 @@ export function SalonProfile() {
                 setLoading(false);
             }
         };
-    
+
         fetchSalonInfo();
     }, [id]);
 
@@ -51,17 +53,22 @@ export function SalonProfile() {
                 {salon.services.map(service => (
                     <div className="service-container" key={service.service_id}>
                         <h2>{service.service_name}</h2>
-                        <h2>{service.duration}</h2>
+                        <h2>{service.duration} minutes</h2>
+                        <h2>{service.price}$</h2>
+                        <IoIosArrowForward color='white' />
                     </div>
                 ))}
             </div>
             <div className="salon-team">
-                {salon.team.map(member => (
-                    <div className="team-member" key={member.team_member_id}>
-                        <img src='/image.png' />
-                        <h1>{member.first_name} {member.last_name}</h1>
-                    </div>
-                ))}
+                <h1>Meet Our Team</h1>
+                <div className="team-members">
+                    {salon.team.map(member => (
+                        <div className="team-member" key={member.team_member_id}>
+                            <img src='/image.png' />
+                            <h2>{member.first_name} {member.last_name}</h2>
+                        </div>
+                    ))}
+                </div>
             </div>
             <div className="salon-reviews">
                 {salon.reviews.length > 0 ? (
