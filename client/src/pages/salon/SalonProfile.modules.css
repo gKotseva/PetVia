@@ -7,17 +7,29 @@
 
 .salon-services {
     margin: 2em;
+    display: flex;
+    justify-content: space-evenly;
 }
 
 .service-container {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-between; 
     margin: 0.2em;
-    max-width: 35em;
+    min-width: 35em;
     padding: 1em 2em;
     background: var(--light-color);
     border-radius: 1em;
     align-items: center;
+}
+
+.service-container h2 {
+    flex: 1;
+    margin: 0;
+    text-align: center;
+}
+
+.service-container:hover {
+    background: #94cff0;
 }
 
 .salon-team {

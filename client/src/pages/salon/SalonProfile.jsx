@@ -7,6 +7,7 @@ import { displayReviewStars } from '../../utils/displayReviewStars';
 import { Loading } from '../../components/Loading';
 import { averageRating } from '../../utils/averageRating';
 import { IoIosArrowForward } from "react-icons/io";
+import { SalonCalendar } from './SalonCalendar';
 
 
 export function SalonProfile() {
@@ -14,6 +15,7 @@ export function SalonProfile() {
     const [salon, setSalon] = useState({ reviews: [] });
     const [loading, setLoading] = useState(true);
     const [totalRating, setTotalRating] = useState()
+    const [showCalendar, setShowCalendar] = useState(false)
 
     useEffect(() => {
         const fetchSalonInfo = async () => {
@@ -36,6 +38,10 @@ export function SalonProfile() {
         return <Loading />;
     }
 
+    const handleCalendarOpen = (e) => {
+        setShowCalendar(!showCalendar)
+    }
+
     return (
         <div className="salon-profile-container">
             <div className="salon-information">
@@ -50,14 +56,21 @@ export function SalonProfile() {
                 </div>
             </div>
             <div className="salon-services">
-                {salon.services.map(service => (
-                    <div className="service-container" key={service.service_id}>
-                        <h2>{service.service_name}</h2>
-                        <h2>{service.duration} minutes</h2>
-                        <h2>{service.price}$</h2>
-                        <IoIosArrowForward color='white' />
+                <div className="services-container">
+                    {salon.services.map(service => (
+                        <div className="service-container" key={service.service_id} onClick={handleCalendarOpen}>
+                            <h2>{service.service_name}</h2>
+                            <h2>{service.duration} minutes</h2>
+                            <h2>{service.price}$</h2>
+                            <IoIosArrowForward color='white' />
+                        </div>
+                    ))}
+                </div>
+                {showCalendar && (
+                    <div className="salon-calendar-container">
+                        <SalonCalendar />
                     </div>
-                ))}
+                )}
             </div>
             <div className="salon-team">
                 <h1>Meet Our Team</h1>
