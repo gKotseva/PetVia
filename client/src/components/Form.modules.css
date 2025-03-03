@@ -4,6 +4,11 @@
     padding: 2em;
 }
 
+.form-container form div {
+    display: flex;
+    flex-direction: column;
+}
+
 .form-heading {
     text-transform: uppercase;
     text-align: center;
