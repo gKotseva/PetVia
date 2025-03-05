@@ -56,17 +56,46 @@
     border-radius: 30px;
     font-size: 16px;
     font-weight: bold;
-    margin: 2px;
+    margin: 1px;
     cursor: pointer;
 }
 
 .today {
-    background-color: #007BFF;
-    color: white;
+    border: 1px solid #007BFF;
 }
 
 .past {
-    color: gray;
+    color: gray !important;
+}
+
+.not-working {
+    color: red;
+}
+
+.booked {
+    background-color: red;
+    color: white;
+    pointer-events: none;
+}
+
+.available {
+    background-color: green;
+    color: white;
+}
+
+.selected {
+    border: 1px solid black;
+}
+
+.available-hours {
+    display: flex;
+    gap: 2em;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.available-hours h5 {
+    padding: 0.3em 0.5em;
 }
 
 .schedule-hours { 
@@ -86,31 +115,4 @@
 .hour-button {
     cursor: pointer;
     margin: 5px;
-}
-
-.booked {
-    background-color: red;
-    color: white;
-    pointer-events: none;
-}
-
-.available {
-    background-color: green;
-    color: white;
-}
-
-.selected {
-    background-color: var(--lighter-color);
-    color: white
-}
-
-.available-hours {
-    display: flex;
-    gap: 2em;
-    flex-wrap: wrap;
-    justify-content: center;
-}
-
-.available-hours h5 {
-    padding: 0.3em 0.5em;
 }

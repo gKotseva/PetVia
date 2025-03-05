@@ -4,25 +4,23 @@ import { useEffect, useState } from "react";
 import { IoArrowForwardCircle } from "react-icons/io5";
 import { IoArrowBackCircleSharp } from "react-icons/io5";
 import { getBookings, getSchedule } from "../../handlers/salonHandlers";
-import { isPastDate, months, today } from "../../utils/calendar";
+import { dayScheduleBookings, isPastDate, months, today } from "../../utils/calendar";
 
 export function SalonCalendar() {
     const currentYear = today.getFullYear();
     const currentMonth = today.getMonth();
     const [visibleMonth, setVisibleMonth] = useState(currentMonth);
     const [isScheduleVisible, setIsScheduleVisible] = useState(false);
-    const [bookings, setBookings] = useState([]);
-    const [dayBookings, setDayBookings] = useState([]);
+    const [dayBookings, setDayBookings] = useState({});
     const [selectedDate, setSelectedDate] = useState(null);
-    const [schedule, setSchedule] = useState(null);
 
     useEffect(() => {
         const fetchSchedule = async () => {
-            const bookings = await getBookings(1);
-            const schedule = await getSchedule(1);
+            const fetchBookings = await getBookings(1);
+            const fetchSchedule = await getSchedule(1);
 
-            setBookings(bookings);
-            setSchedule(schedule);
+            const bookings = dayScheduleBookings(fetchSchedule, fetchBookings)
+            setDayBookings(bookings)
         };
         fetchSchedule();
     }, []);
@@ -34,11 +32,11 @@ export function SalonCalendar() {
     const prevMonth = () => {
         setVisibleMonth((prev) => (prev === 0 ? 11 : prev - 1));
     };
-    
+
     const nextMonth = () => {
         setVisibleMonth((prev) => (prev === 11 ? 0 : prev + 1));
     };
-    
+
     const showSchedule = (day, monthIndex, monthName, year) => {
         setSelectedDate({ day, month: monthName, year });
         const selectedDate = new Date(year, monthIndex, day);
@@ -61,14 +59,19 @@ export function SalonCalendar() {
                     <div className="calendar-grid">
                         {[...Array(getDaysInMonth(currentYear, visibleMonth))].map((_, day) => {
                             const date = new Date(currentYear, visibleMonth, day + 1);
+
+                            const formattedDate = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`;
+
                             const isPast = isPastDate(date);
                             const isToday = date.toDateString() === today.toDateString();
                             const isSelected = selectedDate && selectedDate.day === day + 1;
 
+                            const isDateInBookings = formattedDate in dayBookings;
+
                             return (
                                 <div
                                     key={day}
-                                    className={`calendar-day ${isToday ? "today" : ""} ${isPast ? "past" : ""} ${isSelected ? "selected" : ""}`}
+                                    className={`calendar-day ${isToday ? "today" : ""} ${isPast ? "past" : ""} ${isSelected ? "selected" : ""} ${!isDateInBookings ? "not-working" : ""}`}
                                     onClick={() => showSchedule(day + 1, visibleMonth, months[visibleMonth], currentYear)}
                                 >
                                     {day + 1}
