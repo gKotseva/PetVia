@@ -179,15 +179,16 @@ exports.getSalonDetails = (id) => {
 
 exports.getSalonBookings = (id) => {
     return `
-    select * from bookings b
+    select *, DATE_FORMAT(date, '%Y-%m-%d') as date from bookings b
     join salon_services ss on ss.service_id = b.service_id
+    join users u on b.user_id = u.id
     where b.salon_id = ${id};
 `
 }
 
 exports.getSalonSchedule = (id) => {
     return `
-    select * from salon_schedule
-    where salon_id = ${id};
+        select *, DATE_FORMAT(date, '%Y-%m-%d') as date from salon_schedule
+        where salon_id = ${id};
 `
 }
