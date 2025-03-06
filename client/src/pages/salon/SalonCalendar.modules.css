@@ -61,7 +61,8 @@
 }
 
 .today {
-    border: 1px solid #007BFF;
+    background: var(--dark-color);
+    color: white;
 }
 
 .past {
