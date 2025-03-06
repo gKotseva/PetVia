@@ -12,27 +12,16 @@ export const checkDateStatus = (date, selectedDate = null) => {
 
     const isPast = formattedDate < formattedToday;
 
-    const isToday = formattedDate.getFullYear() === formattedToday.getFullYear() &&
-                    formattedDate.getMonth() === formattedToday.getMonth() &&
-                    formattedDate.getDate() === formattedToday.getDate();
+    const isToday = formattedDate.getTime() === formattedToday.getTime();
 
-    const isSelected = selectedDate && selectedDate.day === date.getDate() &&
-                       selectedDate.month === date.getMonth() &&
-                       selectedDate.year === date.getFullYear();
+    const isSelected = selectedDate && formattedDate.getTime() === new Date(selectedDate).setHours(0, 0, 0, 0);
 
     return { isPast, isToday, isSelected };
 };
 
-
-
 export const getFullMonth = (monthIndex) => {
     return (`${new Date(2025, monthIndex).toLocaleString('en-US', { month: 'long' })}`)
 }
-
-export const months = {
-    0: "January", 1: "February", 2: "March", 3: "April", 4: "May", 5: "June",
-    6: "July", 7: "August", 8: "September", 9: "October", 10: "November", 11: "December"
-};
 
 export const getDaysInMonth = (year, month) => {
     return new Date(year, month + 1, 0).getDate();
@@ -100,10 +89,36 @@ export const dayScheduleBookings = (scheduleDays, bookings) => {
     return appointments;
 }
 
-export const checkAvailableSlots = (bookings, serviceInfo, selectedDate) => {
-    // console.log(bookings)
-    // console.log(serviceInfo)
-    // console.log(selectedDate)
-}
+export const checkAvailableSlots = (bookings, serviceInfo) => {
+    const neededSlots = serviceInfo.duration / 30;
+    const dates = {};
 
-  
+    console.log(bookings['2025-03-26'])
+
+    Object.entries(bookings).forEach(([date, booking]) => {
+        const appointments = booking.appointments;
+        let availableCount = 0;
+        let isAvailable = false;
+
+        console.log(booking.appointments)
+        for (let el of appointments) {
+            if (el.status === 'free') {
+                availableCount++;
+            } else {
+                availableCount = 0;
+            }
+
+            if (availableCount === neededSlots) {
+                isAvailable = true;
+                break;
+            }
+        }
+
+        dates[date] = isAvailable
+    });
+
+    return dates;
+};
+
+
+
