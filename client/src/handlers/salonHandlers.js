@@ -71,3 +71,12 @@ export const getSchedule = async (id) => {
         throw error;
     }
 }
+
+export const getSigleServiceInfo = async (serviceId, salonId) => {
+    try {
+        const response = await request.get(`/api/salon/singleService?serviceId=${serviceId}&salonId=${salonId}`);
+        return response;
+    } catch (error) {
+        throw error;
+    }
+}

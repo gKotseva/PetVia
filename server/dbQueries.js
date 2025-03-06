@@ -192,3 +192,10 @@ exports.getSalonSchedule = (id) => {
         where salon_id = ${id};
 `
 }
+
+exports.getSingleServiceInfo = (serviceId, salonId) => {
+    return `
+        select * from salon_services
+        where salon_id = ${salonId} and service_id = ${serviceId};
+`
+}
