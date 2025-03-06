@@ -61,31 +61,26 @@
 }
 
 .today {
-    background: var(--dark-color);
-    color: white;
+    background: var(--light-color)
+}
+
+.selected {
+    font-size: 2em;
 }
 
 .past {
     color: gray !important;
-}
-
-.not-working {
-    color: red;
+    pointer-events: none;
 }
 
 .booked {
-    background-color: red;
-    color: white;
+    color: red;
     pointer-events: none;
 }
 
 .available {
-    background-color: green;
-    color: white;
-}
-
-.selected {
-    border: 1px solid black;
+    color: green;
+    font-weight: bold;
 }
 
 .available-hours {

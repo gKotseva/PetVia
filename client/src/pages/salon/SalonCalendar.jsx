@@ -11,6 +11,8 @@ export function SalonCalendar({ serviceId, salonId }) {
     const [dayBookings, setDayBookings] = useState({});
     const [isScheduleVisible, setIsScheduleVisible] = useState(false);
     const [selectedDate, setSelectedDate] = useState(today);
+    const [selectedService, setSelectedService] = useState({})
+    const [availableDates, setAvailableDates] = useState({})
 
 
     useEffect(() => {
@@ -20,11 +22,18 @@ export function SalonCalendar({ serviceId, salonId }) {
             const fetchServiceInfo = await getSigleServiceInfo(serviceId, salonId)
 
             const bookings = dayScheduleBookings(fetchSchedule, fetchBookings)
-            // const isAvailable = checkAvailableSlots(bookings, fetchServiceInfo, selectedDate)
             setDayBookings(bookings)
+            setSelectedService(fetchServiceInfo[0])
         };
         fetchSchedule();
     }, []);
+
+    useEffect(() => {
+        if (dayBookings && selectedDate) {
+            const isAvailable = checkAvailableSlots(dayBookings, selectedService, selectedDate);
+            setAvailableDates(isAvailable)
+        }
+    }, [selectedDate, dayBookings, selectedService]);
 
     const prevMonth = () => {
         setVisibleMonth((prev) => (prev === 0 ? 11 : prev - 1));
@@ -60,14 +69,21 @@ export function SalonCalendar({ serviceId, salonId }) {
                         {[...Array(getDaysInMonth(today.getFullYear(), visibleMonth))].map((_, day) => {
                             const date = new Date(today.getFullYear(), visibleMonth, day + 1);
                             const formattedDate = formatDate(date)
-                            const dateStatus = checkDateStatus(date)
+                            const dateStatus = checkDateStatus(date, selectedDate)
                             const isDateInBookings = formattedDate in dayBookings;
-                            const additionalClass = dateStatus.isToday ? "today" : "" || dateStatus.isPast ? "past" : "" || dateStatus.isSelected ? "selected" : "" || !isDateInBookings ? "past" : ""
+                            const secondClass = availableDates[formattedDate] ? "available" : "booked"
+                            const additionalClass = dateStatus.isSelected
+                                ? "selected"
+                                : dateStatus.isToday
+                                    ? "today"
+                                    : dateStatus.isPast || !isDateInBookings
+                                        ? "past"
+                                        : "";
 
                             return (
                                 <div
                                     key={day}
-                                    className={`calendar-day ${additionalClass}`}
+                                    className={`calendar-day ${additionalClass} ${secondClass}`}
                                     onClick={() => showSchedule(new Date(today.getFullYear(), visibleMonth, day + 1))}
                                 >
                                     {day + 1}
