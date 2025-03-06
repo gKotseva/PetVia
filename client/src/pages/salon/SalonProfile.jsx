@@ -16,6 +16,7 @@ export function SalonProfile() {
     const [loading, setLoading] = useState(true);
     const [totalRating, setTotalRating] = useState()
     const [showCalendar, setShowCalendar] = useState(false)
+    const [selectedServiceId, setSelectedServiceId] = useState(null);
 
     useEffect(() => {
         const fetchSalonInfo = async () => {
@@ -38,7 +39,8 @@ export function SalonProfile() {
         return <Loading />;
     }
 
-    const handleCalendarOpen = (e) => {
+    const handleCalendarOpen = (service_id) => {
+        setSelectedServiceId(service_id);
         setShowCalendar(!showCalendar)
     }
 
@@ -58,7 +60,7 @@ export function SalonProfile() {
             <div className="salon-services">
                 <div className="services-container">
                     {salon.services.map(service => (
-                        <div className="service-container" key={service.service_id} onClick={handleCalendarOpen}>
+                        <div className="service-container" key={service.service_id} onClick={() => handleCalendarOpen(service.service_id)}>
                             <h2>{service.service_name}</h2>
                             <h2>{service.duration} minutes</h2>
                             <h2>{service.price}$</h2>
@@ -68,7 +70,7 @@ export function SalonProfile() {
                 </div>
                 {showCalendar && (
                     <div className="salon-calendar-container">
-                        <SalonCalendar />
+                        <SalonCalendar serviceId={selectedServiceId} salonId={id}/>
                     </div>
                 )}
             </div>
