@@ -1,5 +1,34 @@
 export const today = new Date();
 
+export const formatDate = (date) => {
+    return `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`
+}
+
+export const checkDateStatus = (date, selectedDate = null) => {
+    const today = new Date();
+
+    const formattedToday = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+    const formattedDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+
+    const isPast = formattedDate < formattedToday;
+
+    const isToday = formattedDate.getFullYear() === formattedToday.getFullYear() &&
+                    formattedDate.getMonth() === formattedToday.getMonth() &&
+                    formattedDate.getDate() === formattedToday.getDate();
+
+    const isSelected = selectedDate && selectedDate.day === date.getDate() &&
+                       selectedDate.month === date.getMonth() &&
+                       selectedDate.year === date.getFullYear();
+
+    return { isPast, isToday, isSelected };
+};
+
+
+
+export const getFullMonth = (monthIndex) => {
+    return (`${new Date(2025, monthIndex).toLocaleString('en-US', { month: 'long' })}`)
+}
+
 export const months = {
     0: "January", 1: "February", 2: "March", 3: "April", 4: "May", 5: "June",
     6: "July", 7: "August", 8: "September", 9: "October", 10: "November", 11: "December"
@@ -71,6 +100,10 @@ export const dayScheduleBookings = (scheduleDays, bookings) => {
     return appointments;
 }
 
-
+export const checkAvailableSlots = (bookings, serviceInfo, selectedDate) => {
+    // console.log(bookings)
+    // console.log(serviceInfo)
+    // console.log(selectedDate)
+}
 
   
