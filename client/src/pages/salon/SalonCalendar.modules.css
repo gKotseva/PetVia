@@ -60,29 +60,6 @@
     cursor: pointer;
 }
 
-.today {
-    background: var(--light-color)
-}
-
-.selected {
-    font-size: 2em;
-}
-
-.past {
-    color: gray !important;
-    pointer-events: none;
-}
-
-.booked {
-    color: red;
-    pointer-events: none;
-}
-
-.available {
-    color: green;
-    font-weight: bold;
-}
-
 .available-hours {
     display: flex;
     gap: 2em;
@@ -111,4 +88,23 @@
 .hour-button {
     cursor: pointer;
     margin: 5px;
+}
+
+.today {
+    border: 1px solid var(--dark-color);
+}
+
+.dayOff,
+.past {
+    color: grey !important;
+    pointer-events: none;
+}
+
+.available {
+    color: green;
+}
+
+.booked {
+    color: red !important;
+    pointer-events: none;
 }

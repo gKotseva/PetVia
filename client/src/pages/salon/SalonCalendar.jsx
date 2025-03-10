@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { IoArrowForwardCircle } from "react-icons/io5";
 import { IoArrowBackCircleSharp } from "react-icons/io5";
 import { getBookings, getSchedule, getSigleServiceInfo } from "../../handlers/salonHandlers";
-import { checkAvailableSlots, checkDateStatus, dayScheduleBookings, formatDate, getFullMonth, today } from "../../utils/calendar";
+import { today, getFullMonth, checkSalonAvailability, checkDateStatus } from "../../utils/calendar";
 
 export function SalonCalendar({ serviceId, salonId }) {
     const [visibleMonth, setVisibleMonth] = useState(today.getMonth());
@@ -12,28 +12,30 @@ export function SalonCalendar({ serviceId, salonId }) {
     const [isScheduleVisible, setIsScheduleVisible] = useState(false);
     const [selectedDate, setSelectedDate] = useState(today);
     const [selectedService, setSelectedService] = useState({})
-    const [availableDates, setAvailableDates] = useState({})
+    const [salonSchedule, setSalonSchedule] = useState([])
 
 
     useEffect(() => {
         const fetchSchedule = async () => {
-            const fetchBookings = await getBookings(salonId);
-            const fetchSchedule = await getSchedule(salonId);
-            const fetchServiceInfo = await getSigleServiceInfo(serviceId, salonId)
+            const bookingsResult = await getBookings(salonId);
+            const scheduleResult = await getSchedule(salonId);
 
-            const bookings = dayScheduleBookings(fetchSchedule, fetchBookings)
-            setDayBookings(bookings)
-            setSelectedService(fetchServiceInfo[0])
+            const salonAvailability = checkSalonAvailability(scheduleResult, bookingsResult)
+            setSalonSchedule(salonAvailability)
+
+            // const bookings = dayScheduleBookings(fetchSchedule, fetchBookings)
+            // setDayBookings(bookings)
+            // setSelectedService(fetchServiceInfo[0])
         };
         fetchSchedule();
     }, []);
 
-    useEffect(() => {
-        if (dayBookings && selectedDate) {
-            const isAvailable = checkAvailableSlots(dayBookings, selectedService, selectedDate);
-            setAvailableDates(isAvailable)
-        }
-    }, [selectedDate, dayBookings, selectedService]);
+    // useEffect(() => {
+    //     if (dayBookings && selectedDate) {
+    //         const isAvailable = checkAvailableSlots(dayBookings, selectedService, selectedDate);
+    //         setAvailableDates(isAvailable)
+    //     }
+    // }, [selectedDate, dayBookings, selectedService]);
 
     const prevMonth = () => {
         setVisibleMonth((prev) => (prev === 0 ? 11 : prev - 1));
@@ -68,22 +70,14 @@ export function SalonCalendar({ serviceId, salonId }) {
                     <div className="calendar-grid">
                         {[...Array(getDaysInMonth(today.getFullYear(), visibleMonth))].map((_, day) => {
                             const date = new Date(today.getFullYear(), visibleMonth, day + 1);
-                            const formattedDate = formatDate(date)
-                            const dateStatus = checkDateStatus(date, selectedDate)
-                            const isDateInBookings = formattedDate in dayBookings;
-                            const secondClass = availableDates[formattedDate] ? "available" : "booked"
-                            const additionalClass = dateStatus.isSelected
-                                ? "selected"
-                                : dateStatus.isToday
-                                    ? "today"
-                                    : dateStatus.isPast || !isDateInBookings
-                                        ? "past"
-                                        : "";
+                            const result = checkDateStatus(date, salonSchedule);
+                            console.log(result)
 
+                            const conditionalClasses = `calendar-day ${result.join(' ')}`;
                             return (
                                 <div
                                     key={day}
-                                    className={`calendar-day ${additionalClass} ${secondClass}`}
+                                    className={`calendar-day ${conditionalClasses}`}
                                     onClick={() => showSchedule(new Date(today.getFullYear(), visibleMonth, day + 1))}
                                 >
                                     {day + 1}
