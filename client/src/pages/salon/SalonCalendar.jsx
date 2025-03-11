@@ -3,17 +3,14 @@ import "./SalonCalendar.modules.css";
 import { useEffect, useState } from "react";
 import { IoArrowForwardCircle } from "react-icons/io5";
 import { IoArrowBackCircleSharp } from "react-icons/io5";
-import { getBookings, getSchedule, getSigleServiceInfo } from "../../handlers/salonHandlers";
-import { today, getFullMonth, checkSalonAvailability, checkDateStatus } from "../../utils/calendar";
+import { getBookings, getSchedule } from "../../handlers/salonHandlers";
+import { today, getFullMonth, checkSalonAvailability, checkDateStatus, formatDate } from "../../utils/calendar";
 
 export function SalonCalendar({ serviceId, salonId }) {
     const [visibleMonth, setVisibleMonth] = useState(today.getMonth());
-    const [dayBookings, setDayBookings] = useState({});
     const [isScheduleVisible, setIsScheduleVisible] = useState(false);
     const [selectedDate, setSelectedDate] = useState(today);
-    const [selectedService, setSelectedService] = useState({})
     const [salonSchedule, setSalonSchedule] = useState([])
-
 
     useEffect(() => {
         const fetchSchedule = async () => {
@@ -22,20 +19,9 @@ export function SalonCalendar({ serviceId, salonId }) {
 
             const salonAvailability = checkSalonAvailability(scheduleResult, bookingsResult)
             setSalonSchedule(salonAvailability)
-
-            // const bookings = dayScheduleBookings(fetchSchedule, fetchBookings)
-            // setDayBookings(bookings)
-            // setSelectedService(fetchServiceInfo[0])
         };
         fetchSchedule();
     }, []);
-
-    // useEffect(() => {
-    //     if (dayBookings && selectedDate) {
-    //         const isAvailable = checkAvailableSlots(dayBookings, selectedService, selectedDate);
-    //         setAvailableDates(isAvailable)
-    //     }
-    // }, [selectedDate, dayBookings, selectedService]);
 
     const prevMonth = () => {
         setVisibleMonth((prev) => (prev === 0 ? 11 : prev - 1));
@@ -71,7 +57,6 @@ export function SalonCalendar({ serviceId, salonId }) {
                         {[...Array(getDaysInMonth(today.getFullYear(), visibleMonth))].map((_, day) => {
                             const date = new Date(today.getFullYear(), visibleMonth, day + 1);
                             const result = checkDateStatus(date, salonSchedule);
-                            console.log(result)
 
                             const conditionalClasses = `calendar-day ${result.join(' ')}`;
                             return (
@@ -93,6 +78,11 @@ export function SalonCalendar({ serviceId, salonId }) {
                         <span className="calendar-header">{selectedDate.getDate()} {getFullMonth(selectedDate.getMonth())}</span>
                         <div className="schedule-hours">
                             <div className="available-hours">
+                                {salonSchedule[formatDate(selectedDate)].slots.map(e => (
+                                    <div className={`slot-${e.status}`} key={e.slot}>
+                                        <h5>{e.slot}</h5>
+                                    </div>
+                                ))}
                             </div>
                         </div>
                     </div>
