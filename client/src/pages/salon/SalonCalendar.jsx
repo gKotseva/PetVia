@@ -3,7 +3,7 @@ import "./SalonCalendar.modules.css";
 import { useEffect, useState } from "react";
 import { IoArrowForwardCircle } from "react-icons/io5";
 import { IoArrowBackCircleSharp } from "react-icons/io5";
-import { getBookings, getSchedule } from "../../handlers/salonHandlers";
+import { bookSalonAppointment, getBookings, getSchedule } from "../../handlers/salonHandlers";
 import { today, getFullMonth, checkSalonAvailability, checkDateStatus, formatDate } from "../../utils/calendar";
 
 export function SalonCalendar({ serviceId, salonId }) {
@@ -39,6 +39,32 @@ export function SalonCalendar({ serviceId, salonId }) {
         setSelectedDate(date)
         setIsScheduleVisible(true);
     };
+
+    const bookAppointment = async (e, serviceId) => {
+        const appointmentStartTime = e.slot.slice(0, 5);
+        const userData = JSON.parse(localStorage.getItem('user'));
+        const userId = userData.id;
+    
+        const response = await bookSalonAppointment(appointmentStartTime, serviceId, userId, salonId, formatDate(selectedDate));
+    
+        if (response.success) {
+            setSalonSchedule((prevSchedule) => {
+                const updatedSchedule = { ...prevSchedule };
+                const dateKey = formatDate(selectedDate); 
+    
+                if (updatedSchedule[dateKey]) {
+                    updatedSchedule[dateKey] = {
+                        ...updatedSchedule[dateKey],
+                        slots: updatedSchedule[dateKey].slots.map(slot =>
+                            slot.slot === e.slot ? { ...slot, status: 'booked' } : slot
+                        )
+                    };
+                }
+    
+                return updatedSchedule;
+            });
+        }
+    };    
 
     return (
         <div className="calendar-container">
@@ -79,7 +105,7 @@ export function SalonCalendar({ serviceId, salonId }) {
                         <div className="schedule-hours">
                             <div className="available-hours">
                                 {salonSchedule[formatDate(selectedDate)].slots.map(e => (
-                                    <div className={`slot-${e.status}`} key={e.slot}>
+                                    <div className={`slot-${e.status}`} key={e.slot} onClick={() => bookAppointment(e, serviceId)}>
                                         <h5>{e.slot}</h5>
                                     </div>
                                 ))}
