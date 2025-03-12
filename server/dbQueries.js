@@ -199,3 +199,18 @@ exports.getSingleServiceInfo = (serviceId, salonId) => {
         where salon_id = ${salonId} and service_id = ${serviceId};
 `
 }
+
+exports.insertBooking = (appointmentStartTime, serviceId, userId, salonId, selectedDate) => {
+    return `
+    INSERT INTO bookings (user_id, salon_id, service_id, date, start_time, end_time)
+    SELECT 
+        ${userId},
+        ${salonId},
+        ${serviceId},
+        '${selectedDate}',
+        '${appointmentStartTime}',
+        ADDTIME('${appointmentStartTime}', SEC_TO_TIME(duration * 60))
+    FROM salon_services
+    WHERE service_id = ${serviceId};
+    `
+}

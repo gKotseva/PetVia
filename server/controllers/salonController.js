@@ -1,6 +1,6 @@
 const router = require('express').Router()
 const db = require('../db');
-const { getAllSalons, getAllCities, getAllStates, getAllServices, getSalonsPerData, getSalonDetails, getSalonBookings, getSalonSchedule, getSingleServiceInfo } = require('../dbQueries');
+const { getAllSalons, getAllCities, getAllStates, getAllServices, getSalonsPerData, getSalonDetails, getSalonBookings, getSalonSchedule, getSingleServiceInfo, insertBooking } = require('../dbQueries');
 
 router.get('/all', async(req, res) => {
     const query = getAllSalons()
@@ -71,6 +71,15 @@ router.get('/singleService', async(req, res) => {
     const results = await db.executeQuery(query);
 
     res.status(200).json(results);
+})
+
+router.post('/bookAppointment', async(req, res) => {
+    const {appointmentStartTime, serviceId, userId, salonId, selectedDate} = req.body
+
+    const query = insertBooking(appointmentStartTime, serviceId, userId, salonId, selectedDate)
+    const results = await db.executeQuery(query);
+
+    return res.status(200).send({success: true, message: 'Appointment Booked!', results})
 })
 
 
