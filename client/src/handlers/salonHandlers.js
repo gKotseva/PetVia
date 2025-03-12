@@ -80,3 +80,12 @@ export const getSigleServiceInfo = async (serviceId, salonId) => {
         throw error;
     }
 }
+
+export const bookSalonAppointment = async (appointmentStartTime, serviceId, userId, salonId, selectedDate) => {
+    try {
+        const response = await request.post(`/api/salon/bookAppointment`, {appointmentStartTime, serviceId, userId, salonId, selectedDate});
+        return response;
+    } catch (error) {
+        throw error;
+    }
+}
