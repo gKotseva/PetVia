@@ -11,6 +11,9 @@ export function SalonCalendar({ serviceId, salonId }) {
     const [isScheduleVisible, setIsScheduleVisible] = useState(false);
     const [selectedDate, setSelectedDate] = useState(today);
     const [salonSchedule, setSalonSchedule] = useState([])
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedSlot, setSelectedSlot] = useState(null);
+
 
     useEffect(() => {
         const fetchSchedule = async () => {
@@ -40,31 +43,42 @@ export function SalonCalendar({ serviceId, salonId }) {
         setIsScheduleVisible(true);
     };
 
-    const bookAppointment = async (e, serviceId) => {
-        const appointmentStartTime = e.slot.slice(0, 5);
+    const openBookingModal = (slot) => {
+        setSelectedSlot(slot);
+        setIsModalOpen(true);
+    };
+
+
+    const bookAppointment = async () => {
+        if (!selectedSlot) return;
+
+        const appointmentStartTime = selectedSlot.slot.slice(0, 5);
         const userData = JSON.parse(localStorage.getItem('user'));
         const userId = userData.id;
-    
+
         const response = await bookSalonAppointment(appointmentStartTime, serviceId, userId, salonId, formatDate(selectedDate));
-    
+
         if (response.success) {
             setSalonSchedule((prevSchedule) => {
                 const updatedSchedule = { ...prevSchedule };
-                const dateKey = formatDate(selectedDate); 
-    
+                const dateKey = formatDate(selectedDate);
+
                 if (updatedSchedule[dateKey]) {
                     updatedSchedule[dateKey] = {
                         ...updatedSchedule[dateKey],
                         slots: updatedSchedule[dateKey].slots.map(slot =>
-                            slot.slot === e.slot ? { ...slot, status: 'booked' } : slot
+                            slot.slot === selectedSlot.slot ? { ...slot, status: 'booked' } : slot
                         )
                     };
                 }
-    
+
                 return updatedSchedule;
             });
         }
-    };    
+
+        setIsModalOpen(false);
+    };
+
 
     return (
         <div className="calendar-container">
@@ -105,11 +119,23 @@ export function SalonCalendar({ serviceId, salonId }) {
                         <div className="schedule-hours">
                             <div className="available-hours">
                                 {salonSchedule[formatDate(selectedDate)].slots.map(e => (
-                                    <div className={`slot-${e.status}`} key={e.slot} onClick={() => bookAppointment(e, serviceId)}>
+                                    <div className={`slot-${e.status}`} key={e.slot} onClick={() => openBookingModal(e)}>
                                         <h5>{e.slot}</h5>
                                     </div>
                                 ))}
                             </div>
+                            {isModalOpen && (
+                                <div className="modal-overlay">
+                                    <div className="modal">
+                                        <h3>Потвърждение на резервацията</h3>
+                                        <p>Сигурни ли сте, че искате да запазите час за <strong>{selectedSlot?.slot}</strong>?</p>
+                                        <div className="modal-buttons">
+                                            <button onClick={bookAppointment}>Да, запази</button>
+                                            <button onClick={() => setIsModalOpen(false)}>Отказ</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     </div>
                 )}
