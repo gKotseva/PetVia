@@ -121,6 +121,16 @@
     justify-content: center;
 }
 
+.available-hours div {
+    cursor: pointer;
+}
+
+.available-hours div:hover {
+    background: var(--light-color);
+    color: black;
+    transition: all 0.3s ease-in-out;
+}
+
 .available-hours h5 {
     padding: 0.3em 0.5em;
 }
