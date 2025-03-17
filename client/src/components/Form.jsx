@@ -1,43 +1,117 @@
-import React from 'react';
+import './Form.modules.css';
+import React, { useState } from 'react';
 import { login, register } from '../handlers/userHandlers';
 import { useForm } from '../hooks/useForm';
-import './Form.modules.css';
+import { FcGoogle } from 'react-icons/fc';
+import { CiAlignCenterH, CiLogin } from "react-icons/ci";
+
 
 export function Form({ formName, closeModal, openModal }) {
-    const handler = formName === 'login' ? login : formName === 'register' ? register : null;
-    const initialValues =
-        formName === 'login' ? { email: '', password: '' } : 
-        formName === 'register' ? { firstName: '', lastName: '', email: '', mobilePhone: '', password: '', confirmPassword: '' } : {};
+    const [accountType, setAccountType] = useState('customer');
 
-    const { values, errors, success, successMessage, onChange, onSubmit } = useForm(handler, initialValues, formName, closeModal, openModal);
+    const toggleAccountType = () => {
+        setAccountType(prev => (prev === "customer" ? "salon" : "customer"));
+    };
+
+    const submitHandler = formName === 'login' ? login : register;
+
+    const initialValues = {
+        customer: {
+            login: { email: '', password: '' },
+            register: { firstName: '', lastName: '', email: '', mobilePhone: '', password: '', confirmPassword: '' }
+        },
+        salon: {
+            login: { email: '', password: '' },
+            register: { name: '', address: '', email: '', city: '', password: '', confirmPassword: '' }
+        }
+    }[accountType][formName];
+
+    const { values, errors, success, successMessage, onChange, onSubmit } = useForm(
+        submitHandler, initialValues, formName, closeModal, openModal
+    );
 
     const forms = {
-        login: [
-            { type: "email", label: "Email", name: 'email' },
-            { type: "password", label: "Password", name: 'password' }
-        ],
-        register: [
-            { type: "text", label: "First Name", name: 'firstName' },
-            { type: "text", label: "Last Name", name: 'lastName' },
-            { type: "email", label: "Email", name: 'email' },
-            { type: "text", label: "Mobile Phone", name: 'mobilePhone' },
-            { type: "password", label: "Password", name: 'password' },
-            { type: "password", label: "Repeat Password", name: 'confirmPassword' }
-        ]
+        customer: {
+            login: [
+                { type: "email", label: "Email", name: 'email' },
+                { type: "password", label: "Password", name: 'password' }
+            ],
+            register: [
+                { type: "text", label: "First Name", name: 'firstName' },
+                { type: "text", label: "Last Name", name: 'lastName' },
+                { type: "email", label: "Email", name: 'email' },
+                { type: "text", label: "Mobile Phone", name: 'mobilePhone' },
+                { type: "password", label: "Password", name: 'password' },
+                { type: "password", label: "Repeat Password", name: 'confirmPassword' }
+            ]
+        },
+        salon: {
+            login: [
+                { type: "email", label: "Email", name: 'email' },
+                { type: "password", label: "Password", name: 'password' }
+            ],
+            register: [
+                { type: "text", label: "Name", name: 'name' },
+                { type: "text", label: "Address", name: 'address' },
+                { type: "email", label: "Email", name: 'email' },
+                { type: "text", label: "City", name: 'city' },
+                { type: "password", label: "Password", name: 'password' },
+                { type: "password", label: "Repeat Password", name: 'confirmPassword' }
+            ]
+        }
     };
 
     return (
         <div className="form-container">
-            <h2 className='form-heading'>{formName}</h2>
+            <p className='switch' onClick={toggleAccountType}>Switch to {accountType === "customer" ? "Salon" : "Customer"} <CiLogin/></p>
+            <hr></hr>
             <form onSubmit={onSubmit}>
-                {forms[formName].map(el => (
-                    <div key={el.name}>
-                        <label>{el.label}</label>
-                        <input type={el.type} name={el.name} value={values[el.name]} onChange={onChange}></input>
+                {formName === 'register' ? (
+                    <div className="form-row">
+                        {forms[accountType][formName].map(({ type, label, name }, index) => (
+                            <div key={name} className="form-column">
+                                <div className="input-group">
+                                    <label htmlFor={name}>{label}</label>
+                                    <input
+                                        id={name}
+                                        type={type}
+                                        name={name}
+                                        value={values[name] || ''}
+                                        onChange={onChange}
+                                        className={errors[name] ? "error-input" : ""}
+                                    />
+                                    {errors[name] && <p className="error-text">{errors[name]}</p>}
+                                </div>
+                            </div>
+                        ))}
                     </div>
-                ))}
-                <button className='custom-button'>{formName === "login" ? "Login" : "Register"}</button>
+                ) : (
+                    forms[accountType][formName].map(({ type, label, name }) => (
+                        <div key={name} className="input-group">
+                            <label htmlFor={name}>{label}</label>
+                            <input
+                                id={name}
+                                type={type}
+                                name={name}
+                                value={values[name] || ''}
+                                onChange={onChange}
+                                className={errors[name] ? "error-input" : ""}
+                            />
+                            {errors[name] && <p className="error-text">{errors[name]}</p>}
+                        </div>
+                    ))
+                )}
             </form>
+            <button className='custom-button' type="submit">
+                {formName === "login" ? "Login" : "Register"}
+            </button>
+            {formName === 'register' ? (
+                <p className='existing'>Already have an account? <a href="#" onClick={() => openModal('login')}>Log In</a></p>
+            ) : (
+                <p className='existing'>Don't have an account? <a href="#" onClick={() => openModal('register')}>Register</a></p>
+            )}
+            <h4 className='line'><span>or</span></h4>
+            <FcGoogle className='icon' />
         </div>
     );
 }

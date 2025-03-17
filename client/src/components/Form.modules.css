@@ -1,34 +1,96 @@
-.form-container form {
-    display: flex;
-    flex-direction: column;
-    padding: 2em;
-}
-
-.form-container form div {
-    display: flex;
-    flex-direction: column;
-}
-
-.form-heading {
-    text-transform: uppercase;
+.form-container {
+    color: black;
     text-align: center;
-    letter-spacing: 2px;
-    color: black;
+    padding: 1em 2em;
 }
 
-.form-container form label {
-    text-transform: uppercase;
-    margin-bottom: 5px;
-    margin-top: 1em;
-    color: black;
-    font-weight: bold;
-}
-
-.form-container form input {
+.switch {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5em;
+    cursor: pointer;
     margin-bottom: 1em;
-    padding: 0.5em 0.5em;
-    border: none;
-    border-bottom: 1px solid var(--dark-color);
-    background: inherit;
+}
+
+.switch svg {
+    width: 1.5em;
+    height: auto;
+}
+
+form {
+    margin-top: 1em;
+}
+
+.form-container button {
+    margin-bottom: 2em;
+}
+
+.form-container input {
     outline: none;
+    border: 1px solid rgb(176, 173, 173);
+    border-radius: 0.5em;
+    padding: 0.5em 1em;
+}
+
+label {
+    text-transform: uppercase;
+    font-weight: bolder;
+    text-align: left;
+    margin-bottom: 0.5em;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.5em;
+}
+
+.form-column {
+    display: flex;
+    flex-direction: column;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1em;
+    padding: 1em;
+}
+
+.existing a {
+    color: var(--lighter-color);
+    font-weight: bolder;
+    text-decoration: underline;
+}
+
+.existing a:hover{
+    cursor: pointer;
+}
+
+.line {
+    width: 100%;
+    text-align: center;
+    border-bottom: 1px solid rgb(189, 188, 188);
+    line-height: 0.1em;
+    margin: 10px 0 20px;
+    margin-bottom: 2em;
+    margin-top: 1em;
+}
+
+.line span {
+    background: var(--background);
+    padding: 0 10px;
+    color: grey;
+}
+
+.icon {
+    width: 2.5em;
+    height: 2.5em;
+    padding: 0.5em;
+    border: 2px solid grey;
+    border-radius: 50%;
+}
+
+.icon:hover {
+    cursor: pointer;
 }
