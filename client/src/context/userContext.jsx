@@ -12,14 +12,24 @@ export function UserProvider({ children }) {
         }
     }, []);
 
-    const login = (userData) => {
-        localStorage.setItem('user', JSON.stringify(userData));
+    const login = (userData) => {    
+        if (userData && userData.salonID) {
+            localStorage.setItem('salon', JSON.stringify(userData));
+        } else if (userData) {
+            localStorage.setItem('user', JSON.stringify(userData));
+        } else {
+            console.error("Invalid userData provided!");
+            return;
+        }
+    
         setUser(userData);
     };
+    
 
     const logout = () => {
         setUser(null);
         localStorage.removeItem('user');
+        localStorage.removeItem('salon');
     };
 
     return (
