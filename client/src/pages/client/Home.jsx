@@ -1,17 +1,17 @@
 import './Home.modules.css';
 
 import { useEffect, useState } from 'react';
-import { MdLocationPin } from "react-icons/md";
-
-import { getAllCities, getAllStates, getAllServices, getAllSalons } from '../../handlers/salonHandlers';
 import { useNavigate } from 'react-router-dom';
 
+import { MdLocationPin } from "react-icons/md";
+import { getAllCities, getAllStates, getAllServices, getAllSalons } from '../../handlers/salonHandlers';
+
 export function Home() {
-    const navigate = useNavigate()
+    const navigate = useNavigate();
     const [states, setStates] = useState([]);
     const [cities, setCities] = useState([]);
     const [services, setServices] = useState([]);
-    const [salons, setSalons] = useState([])
+    const [salons, setSalons] = useState([]);
     const [selectedState, setSelectedState] = useState('');
     const [selectedCity, setSelectedCity] = useState('');
     const [selectedService, setSelectedService] = useState('');
@@ -64,21 +64,21 @@ export function Home() {
     const onServiceChange = (e) => {
         const service = e.target.value;
         setSelectedService(service);
-    }
+    };
 
     const showSalons = (e) => {
-        e.preventDefault()
-        navigate('/salons', { state: { selectedCity, selectedState, selectedService } })
-    }
+        e.preventDefault();
+        navigate('/salons', { state: { selectedCity, selectedState, selectedService } });
+    };
 
     useEffect(() => {
         const getSalons = async () => {
-            const result = await getAllSalons()
-            setSalons(result)
+            const result = await getAllSalons();
+            setSalons(result);
         }
 
-        getSalons()
-    }, [])
+        getSalons();
+    }, []);
 
     return (
         <div className="home-container">
@@ -87,28 +87,34 @@ export function Home() {
                 <form>
                     <select name="state" id="state" onChange={onStateChange} value={selectedState}>
                         <option value="" disabled>Select a state</option>
-                        {states.map(e => (
-                            <option value={e.state} key={e.state}>{e.state}</option>
-                        ))}
+                        {states.length > 0 ? (
+                            states.map(e => (
+                                <option value={e.state} key={e.state}>{e.state}</option>
+                            ))
+                        ) : (
+                            <option value="" disabled>No States to show</option>
+                        )}
                     </select>
                     <select name="city" id="city" onChange={onCityChange} value={selectedCity}>
                         <option value="" disabled>Select a city</option>
-                        {cities.map(e => (
-                            <option value={e.city} key={e.city}>{e.city}</option>
-                        ))}
+                        {cities.length > 0 ? (
+                            cities.map(e => (
+                                <option value={e.city} key={e.city}>{e.city}</option>
+                            ))
+                        ) : (
+                            <option value="" disabled>No Cities to show</option>
+                        )}
                     </select>
                     <select name="service" id="service" onChange={onServiceChange} value={selectedService}>
                         <option value="" disabled hidden>Select a service</option>
-                        {services.map(e => (
-                            <option value={e.service_name} key={e.service_name}>{e.service_name}</option>
-                        ))}
+                        {services.length > 0 ? (
+                            services.map(e => (
+                                <option value={e.service_name} key={e.service_name}>{e.service_name}</option>
+                            ))
+                        ) : (
+                            <option value="" disabled>No Services to show</option>
+                        )}
                     </select>
-                    {/* <select name="dateAndTime" id="dateAndTime">
-                            <option value="" disabled selected hidden>Select a date and time</option>
-                            <option value="today">Today</option>
-                            <option value="tomorrow">Tomorrow</option>
-                            <option value="other">Other day</option>
-                        </select> */}
                     <button className='custom-button' onClick={showSalons}>Show salons</button>
                 </form>
             </div>
@@ -131,16 +137,24 @@ export function Home() {
                     <h2>Explore our grooming salons</h2>
                     <h4>When fur needs a little love and a pair of scissors.</h4>
                 </div>
-                <div className="salon-cards">
-                    {salons.map(e => (
-                        <div className="salon-card" key={e.id}>
-                            <img src='image.png' className='salon-image'/>
-                            <h2>{e.name}</h2>
-                            <h3><MdLocationPin /> {e.state}</h3>
-                            <p>{e.city}, {e.address}</p>
-                        </div>
-                    ))}
-                </div>
+                {salons.length > 0 ? (
+                    <div className="salon-cards">
+                        {salons.map(e => (
+                            <div className="salon-card" key={e.salon_id}>
+                                <img src='image.png' className='salon-image' />
+                                <h2>{e.name}</h2>
+                                <h3><MdLocationPin /> {e.state}</h3>
+                                <p>{e.city}, {e.address}</p>
+                            </div>
+                        ))}
+                    </div>
+
+                ) : (
+                    <div className="no-salons">
+                        <p>No salons to show!</p>
+                        <img src='./image.png'></img>
+                    </div>
+                )}
             </div>
         </div>
     )

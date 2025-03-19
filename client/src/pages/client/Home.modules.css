@@ -76,3 +76,16 @@
 .salon-image {
     width: 40px;
 }
+
+.no-salons {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 1em;
+    margin-top: 2em;
+}
+
+.no-salons img {
+    width: 5em;
+}
