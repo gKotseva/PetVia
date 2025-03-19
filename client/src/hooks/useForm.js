@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import { useUser } from '../context/userContext';
+import { useAuth } from '../context/AuthContext';
 
-export function useForm(handler, initialValues, formName, closeModal, openModal) {
-    const { login, user } = useUser();
+export function useForm(handler, initialValues, formName, accountType,closeModal, openModal) {
+    const { login, user } = useAuth();
     const [errors, setErrors] = useState([]);
     const [success, setSuccess] = useState(false);
     const [successMessage, setSuccessMessage] = useState([]);
@@ -35,7 +35,7 @@ export function useForm(handler, initialValues, formName, closeModal, openModal)
                 const changedFields = getChangedFields();
                 response = await handler(changedFields);
             } else {
-                response = await handler(values);
+                response = await handler(accountType, values);
             }
 
             if (response.success) {
