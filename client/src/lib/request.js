@@ -18,23 +18,26 @@ const request = async (method, url, data) => {
             method
         });
 
-        if (response.status === 204) {
-            return {};
+        const status = response.status;
+
+        if (status === 204) {
+            return { status };
         }
 
         const contentType = response.headers.get("Content-Type");
         if (contentType && contentType.includes("application/json")) {
             const result = await response.json();
-            return result;
+            return { status, ...result };
         } else {
             const result = await response.text();
-            return { message: result };
+            return { status, message: result };
         }
     } catch (error) {
         console.error("Request failed", error);
         throw new Error('Network or server error occurred');
     }
-}
+};
+
 
 export const get = request.bind(null, 'GET')
 export const post = request.bind(null, 'POST')

@@ -1,34 +1,27 @@
-import { toast } from 'react-toastify';
 import * as request from '../lib/request'
 
-export const login = async (values) => {
+export const login = async (type, values) => {
     try {
-        const response = await request.post('/api/users/login', values);
-        
-        if (!response.success) {
+        const response = await request.post('/api/users/login', {type, values});
+        if (response.status !== 200) {
             throw new Error(response.message || 'Login failed');
         }
-
-        toast.success(response.message)
         return response;
     } catch (error) {
-        toast.error(error.message)
         throw error;
     }
 };
 
-export const register = async (values) => {
+export const register = async (type, values) => {
     try {
-        const response = await request.post('/api/users/register', values);
+        const response = await request.post('/api/users/register', {type, values});
         
         if (!response.success) {
             throw new Error(response.message || 'Registration failed');
         }
         
-        toast.success(response.message)
         return response;
     } catch (error) {
-        toast.error(error.message)
         throw error;
     }
 };

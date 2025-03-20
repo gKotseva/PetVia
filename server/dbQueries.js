@@ -1,33 +1,55 @@
-exports.registerUser = (userData) => {
-    return (
-        `INSERT INTO users(first_name, last_name, email, phone_number, password) 
-        VALUES ('${userData.firstName}', '${userData.lastName}', '${userData.email}', '${userData.mobilePhone}', '${userData.password}')`
-    )
-}
+exports.register = (userData, type) => {
+    let query;
+  
+    if (type === 'customer') {
+      const { firstName, lastName, email, mobilePhone, password } = userData;
+      query = `INSERT INTO users (first_name, last_name, email, phone_number, password) 
+               VALUES ('${firstName}', '${lastName}', '${email}', '${mobilePhone}', '${password}')`;
+    } else if (type === 'salon') {
+      const { name, address, city, email, password } = userData;
+      query = `INSERT INTO salons (email, password) 
+               VALUES ('${email}', '${password}')`;
+    }
+  
+    return query;
+  }
 
-exports.getUserData = (userEmail) => {
+exports.getUserEmail = (userEmail) => {
     return (
         `select * from users where email = '${userEmail}'`
     )
 }
 
+exports.getSalonEmail = (salonEmail) => {
+    return (
+        `select * from salons where email = '${salonEmail}'`
+    )
+}
+
 exports.getUserDataById = (id) => {
     return (
-        `select * from users where id = '${id}'`
+        `select * from users where user_id = '${id}'`
     )
 }
 
 exports.getUserBookings = (id) => {
     return (
-        `select b.booking_id, b.date, b.start_time, s.name from bookings b
-        join salons s on s.salon_id = b.salon_id
-        where b.user_id = ${id};`
+        `select a.appointment_id, a.appointment_date, a.start_time, s.name from appointments a
+        join salons s on s.salon_id = a.salon_id
+        where a.user_id = ${id}`
     )
 }
 
 exports.getAllSalons = () => {
     return (
-        `select * from salons`
+        `
+            SELECT * 
+            FROM salons 
+            WHERE name IS NOT NULL 
+            AND address IS NOT NULL 
+            AND city IS NOT NULL 
+            AND state IS NOT NULL;
+        `
     )
 }
 
@@ -39,7 +61,10 @@ exports.getAllCities = (state) => {
 
 exports.getAllStates = () => {
     return (
-        `select distinct state from salons`
+        `
+            select distinct state from salons
+            where state != null;
+        `
     )
 }
 

@@ -1,6 +1,6 @@
 const router = require('express').Router()
 const db = require('../db');
-const { getUserEmail, getSalonEmail, register } = require('../dbQueries');
+const { getUserEmail, getSalonEmail, register, getUserDataById, getUserBookings } = require('../dbQueries');
 const { hashPassword, comparePassword } = require('../utils/hash');
 
 router.post('/login', async(req, res) => {
@@ -20,8 +20,8 @@ router.post('/login', async(req, res) => {
         }
         const firstName = results[0].first_name
         const lastName = results[0].last_name
-        const id = results[0].id
-        return res.status(200).send({success: true, message: 'Login successful!', results: {firstName, lastName, id} })
+        const id = results[0].user_id
+        return res.status(200).send({message: 'Login successful!', results: {firstName, lastName, id} })
       }
     } else {
       const query = getSalonEmail(email)
@@ -34,7 +34,7 @@ router.post('/login', async(req, res) => {
           return res.status(400).send({ message: 'Wrong email or password!' });
         }
         const salonID = results[0].salon_id
-        return res.status(200).send({success: true, message: 'Login successful!', results: {salonID} })
+        return res.status(200).send({message: 'Login successful!', results: {salonID} })
       }
     }
 })
@@ -98,7 +98,7 @@ router.put('/updateUserData', async (req, res) => {
       values[passwordIndex] = hashedPassword;
     }
 
-    const query = `UPDATE users SET ${fields.map(field => `${field} = ?`).join(', ')} WHERE id = ?`;
+    const query = `UPDATE users SET ${fields.map(field => `${field} = ?`).join(', ')} WHERE user_id = ?`;
 
     const queryParams = [...values, userId];
 
