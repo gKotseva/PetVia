@@ -1,0 +1,39 @@
+.notification {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 5px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  z-index: 9999;
+  opacity: 0;
+  padding: 1em;
+  animation: fadeInOut 5s forwards;
+}
+
+.success {
+  background-color: #4caf50;
+}
+
+.error {
+  background-color: red;
+}
+
+@keyframes fadeInOut {
+  0% {
+    opacity: 0;
+  }
+
+  10% {
+    opacity: 1;
+  }
+
+  90% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
