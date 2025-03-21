@@ -3,5 +3,6 @@ export const paths = {
     salons: '/salons',
     clientProfile: '/my-profile',
     salonProfile: '/salon/:id',
-    salonSettings: 'my-salon-settings'
+    salonSettings: '/salon-settings',
+    test: '/test'
 }
