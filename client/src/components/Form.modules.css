@@ -94,3 +94,8 @@ label {
 .icon:hover {
     cursor: pointer;
 }
+
+.form-heading {
+    margin-top: 1em;
+    text-transform: capitalize;
+}

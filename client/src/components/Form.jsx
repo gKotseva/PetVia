@@ -1,6 +1,6 @@
 import './Form.modules.css';
 import React, { useState } from 'react';
-import { login, register } from '../handlers/userHandlers';
+import { login, register } from '../handlers/authHandlers';
 import { useForm } from '../hooks/useForm';
 import { FcGoogle } from 'react-icons/fc';
 import { CiAlignCenterH, CiLogin } from "react-icons/ci";
@@ -22,13 +22,11 @@ export function Form({ formName, closeModal, openModal }) {
         },
         salon: {
             login: { email: '', password: '' },
-            register: { name: '', address: '', email: '', city: '', password: '', confirmPassword: '' }
+            register: { email: '', password: '', confirmPassword: '' }
         }
     }[accountType][formName];
 
-    const { values, errors, success, successMessage, onChange, onSubmit } = useForm(
-        submitHandler, initialValues, formName, closeModal, openModal
-    );
+    const { values, errors, success, successMessage, onChange, onSubmit } = useForm(submitHandler, initialValues, formName, accountType,closeModal, openModal);
 
     const forms = {
         customer: {
@@ -51,10 +49,7 @@ export function Form({ formName, closeModal, openModal }) {
                 { type: "password", label: "Password", name: 'password' }
             ],
             register: [
-                { type: "text", label: "Name", name: 'name' },
-                { type: "text", label: "Address", name: 'address' },
                 { type: "email", label: "Email", name: 'email' },
-                { type: "text", label: "City", name: 'city' },
                 { type: "password", label: "Password", name: 'password' },
                 { type: "password", label: "Repeat Password", name: 'confirmPassword' }
             ]
@@ -63,8 +58,9 @@ export function Form({ formName, closeModal, openModal }) {
 
     return (
         <div className="form-container">
-            <p className='switch' onClick={toggleAccountType}>Switch to {accountType === "customer" ? "Salon" : "Customer"} <CiLogin/></p>
+            <p className='switch' onClick={toggleAccountType}>Switch to {accountType === "customer" ? "Salon" : "Customer"} <CiLogin /></p>
             <hr></hr>
+            <p className='form-heading'>{accountType} {formName}</p>
             <form onSubmit={onSubmit}>
                 {formName === 'register' ? (
                     <div className="form-row">
@@ -101,10 +97,10 @@ export function Form({ formName, closeModal, openModal }) {
                         </div>
                     ))
                 )}
+                <button className="custom-button" type="submit">
+                    {formName === "login" ? "Login" : "Register"}
+                </button>
             </form>
-            <button className='custom-button' type="submit">
-                {formName === "login" ? "Login" : "Register"}
-            </button>
             {formName === 'register' ? (
                 <p className='existing'>Already have an account? <a href="#" onClick={() => openModal('login')}>Log In</a></p>
             ) : (

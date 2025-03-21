@@ -1,16 +1,16 @@
 import { editUserData, getAllUserData } from '../../handlers/userHandlers';
-import { useUser } from '../../context/userContext';
 import './ClientProfile.modules.css';
 
 import { useEffect, useState } from 'react';
 import { useForm } from '../../hooks/useForm';
+import { useAuth } from '../../context/AuthContext';
 
 export function ClientProfile() {
     const handler = editUserData;
     const [initialValues, setInitialValues] = useState({});
     const formName = 'editUser'
 
-    const { user } = useUser();
+    const { auth } = useAuth();
     const [userData, setUserData] = useState(null);
     const [bookings, setBookings] = useState([]);
     const [outstanding, setOutstanding] = useState([]);
@@ -20,7 +20,7 @@ export function ClientProfile() {
 
     useEffect(() => {
         const fetchUserData = async () => {
-            const userData = await getAllUserData(user.id);
+            const userData = await getAllUserData(auth.id);
             setUserData(userData.userData);
             setBookings(userData.bookings);
 
@@ -37,8 +37,8 @@ export function ClientProfile() {
                 setInitialValues(userValues);
             }
         };
-        user?.id && fetchUserData();
-    }, [user]);
+        auth?.id && fetchUserData();
+    }, [auth]);
 
     useEffect(() => {
         const upcoming = [];
