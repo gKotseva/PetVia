@@ -1,0 +1,180 @@
+.salon-settings-container {
+    padding: 5em;
+    display: flex;
+    gap: 5em;
+    background: rgba(230, 229, 229, 0.581);
+}
+
+.settings-details-container {
+    min-width: 38em;
+}
+
+.settings-navigation-container {
+    padding: 0em 2em;
+    min-width: 15em;
+}
+
+.settings-navigation-container ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    margin-top: 1em;
+}
+
+.settings-navigation-container li {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    padding: 10px;
+}
+
+.settings-navigation-container li svg {
+    font-size: 1.5rem;
+}
+
+.account-settings-container form,
+.settings-add-team-member-container form,
+.settings-add-new-service-container form {
+    background: rgba(255, 255, 255, 0.61);
+    border-radius: 1em;
+    padding: 2em;
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+}
+
+.form-row {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-row.row {
+    flex-direction: row;
+    gap: 1em;
+}
+
+input {
+    border: none;
+    border: 1px solid rgb(202, 201, 201);
+    border-radius: 5px;
+    background: inherit;
+    outline: none;
+    padding: 0.5em 1em;
+}
+
+.settings-team-members-container {
+    display: flex;
+    gap: 3em;
+    padding: 2em;
+}
+
+.settings-team-members-container img {
+    width: 9em;
+}
+
+.settings-add-team-member-container {
+    padding: 1em;
+}
+
+.settings-service {
+    display: flex;
+    gap: 1em;
+    background: rgba(255, 255, 255, 0.61);
+    padding: 1em 2em;
+    border-radius: 1em;
+}
+
+.settings-buttons-container {
+    display: flex;
+    gap: 10px;
+}
+
+.settings-buttons-container button {
+    padding: 0.1em 0.5em;
+    border-radius: 0.5em;
+    border: 1px solid grey;
+}
+
+.settings-current-services-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+}
+
+.services-content {
+    display: flex;
+    gap: 2em;
+}
+
+.settings-review-container {
+    margin-top: 2em;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    padding: 2em;
+    border-radius: 2em;
+    background: var(--dark-color);
+    color: white;
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+    max-width: 20em;
+}
+
+.gallery-settings-container {
+    width: 40em;
+}
+
+.settings-images-container {
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 2em;
+    gap: 2em;
+}
+
+.settings-images-container img {
+    width: 5em;
+    border: 1px solid black;
+    padding: 1em;
+}
+
+.settings-appointment {
+    display: flex;
+    gap: 1em;
+    color: white;
+    padding: 0.5em 1em;
+    align-items: center;
+    border-radius: 0.5em;
+}
+
+.active {
+    background: rgb(187, 186, 186);
+    border-radius: 1em;
+}
+
+.busy {
+    background: red;
+}
+
+.free {
+    background: green;
+}
+
+.break {
+    background: grey;
+}
+
+.settings-appointments-view {
+    margin-top: 2em;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.schedule-settings-container h3,
+.appointments-settings-container h3 {
+    margin-bottom: 2em;
+}
+
+.settings-active-schedule-container {
+    min-width: 20em;
+}
