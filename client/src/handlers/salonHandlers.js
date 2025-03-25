@@ -27,6 +27,16 @@ export const getSalonDetails = async (id) => {
     }
 };
 
+export const editSalonDetails = async (data) => {
+    const {salonId, changedFields} = data
+    try {
+        const response = await request.put(`/api/salon/updateSalonDetails`, {salonId, changedFields});
+        return response;
+    } catch (error) {
+        throw error;
+    }
+};
+
 export const getAllCities = async (state) => {
     try {
         const response = await request.get(`/api/salon/cities?state=${state}`);

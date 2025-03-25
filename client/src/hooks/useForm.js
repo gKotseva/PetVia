@@ -17,7 +17,7 @@ export function useForm(handler, initialValues, formName, accountType, closeModa
         }));
     };
 
-    const getChangedFields = () => {
+    const getChangedFields = (formName) => {
         const changedFields = {};
 
         Object.keys(values).forEach(key => {
@@ -26,6 +26,10 @@ export function useForm(handler, initialValues, formName, accountType, closeModa
             }
         });
 
+        if (formName === 'editSalon') {
+            return {salonId: auth.salonID, changedFields};
+        }
+
         return {userId: auth.id, changedFields};
     };    
 
@@ -33,8 +37,8 @@ export function useForm(handler, initialValues, formName, accountType, closeModa
         e.preventDefault();  
         try {
             let response
-            if(formName === 'editUser'){
-                const changedFields = getChangedFields();
+            if(formName === 'editUser' || formName === 'editSalon'){
+                const changedFields = getChangedFields(formName);
                 response = await handler(changedFields);
             } else {
                 response = await handler(accountType, values);

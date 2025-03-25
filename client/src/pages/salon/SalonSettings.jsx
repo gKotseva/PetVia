@@ -1,5 +1,7 @@
-import { useState } from 'react';
 import './SalonSettings.modules.css';
+
+import { useEffect, useState } from 'react';
+
 import { MdOutlineManageAccounts } from "react-icons/md";
 import { RiTeamLine } from "react-icons/ri";
 import { PiDogLight } from "react-icons/pi";
@@ -7,6 +9,7 @@ import { AiOutlineSchedule } from "react-icons/ai";
 import { GrSchedule } from "react-icons/gr";
 import { RiGalleryView2 } from "react-icons/ri";
 import { MdOutlineReviews } from "react-icons/md";
+import { Loading } from '../../components/Loading';
 
 export function SalonSettings() {
   const [activeSetting, setActiveSetting] = useState('account');
@@ -70,53 +73,129 @@ export function SalonSettings() {
 }
 
 function AccountSettings() {
+  const auth = useAuth()
+  const [salonDetails, setSalonDetails] = useState({})
+  const handler = editSalonDetails;
+  const [initialValues, setInitialValues] = useState({});
+  const formName = 'editSalon'
+  const { values, setValues, errors, success, successMessage, onChange, onSubmit } = useForm(handler, initialValues, formName);
+
+  useEffect(() => {
+    const fetchSalonDetails = async () => {
+      const result = await getSalonDetails(auth.auth.salonID)
+      const salonData = result.results[0]
+      setSalonDetails(salonData)
+
+      if (salonData) {
+        const salonValues = {
+          name: salonData.name || '',
+          address: salonData.address || '',
+          city: salonData.city || '',
+          state: salonData.state || '',
+          description: salonData.description || '',
+          email: salonData.email || '',
+          phone_number: salonData.phone_number || '',
+          password: ''
+        };
+
+        setValues(salonValues);
+        setInitialValues(salonValues);
+      }
+
+    }
+    auth.auth?.salonID && fetchSalonDetails()
+  }, [auth])
+
   return (
     <div className="account-settings-container">
       <h2>Account settings</h2>
-      <form>
-        <div className="form-row row">
-          <div className='form-row'>
-            <label>Email</label>
-            <input type="text" />
+      {salonDetails && Object.keys(values).length > 0 ? (
+        <form onSubmit={onSubmit}>
+          <div className="form-row row">
+            <div className='form-row'>
+              <label>Email</label>
+              <input
+                type='text'
+                value={values.email}
+                name='email'
+                onChange={onChange}
+              />
+            </div>
+            <div className='form-row'>
+              <label>Password</label>
+              <input
+                type='password'
+                value={values.password}
+                name='password'
+                onChange={onChange}
+              />
+            </div>
           </div>
-          <div className='form-row'>
-            <label>Password</label>
-            <input type="text" />
+          <div className="form-row row">
+            <div className='form-row'>
+              <label>Salon name</label>
+              <input
+                type='text'
+                value={values.name}
+                name='name'
+                onChange={onChange}
+              />
+            </div>
+            <div className='form-row'>
+              <label>Phone number</label>
+              <input
+                type='text'
+                value={values.phone_number}
+                name='phone_number'
+                onChange={onChange}
+              />
+            </div>
           </div>
-        </div>
-        <div className="form-row row">
-          <div className='form-row'>
-            <label>Salon name</label>
-            <input type="text" />
-          </div>
-          <div className='form-row'>
-            <label>Phone number</label>
-            <input type="text" />
-          </div>
-        </div>
-        <div className="form-row row">
-          <div className='form-row'>
-            <label>State</label>
-            <input type="text" />
-          </div>
-          <div className='form-row'>
-            <label>City</label>
-            <input type="text" />
-          </div>
+          <div className="form-row row">
+            <div className='form-row'>
+              <label>State</label>
+              <input
+                type='text'
+                value={values.state}
+                name='state'
+                onChange={onChange}
+              />
+            </div>
+            <div className='form-row'>
+              <label>City</label>
+              <input
+                type='text'
+                value={values.city}
+                name='city'
+                onChange={onChange}
+              />
+            </div>
 
-          <div className='form-row'>
-            <label>Address</label>
-            <input type="text" />
+            <div className='form-row'>
+              <label>Address</label>
+              <input
+                type='text'
+                value={values.address}
+                name='address'
+                onChange={onChange}
+              />
+            </div>
           </div>
-        </div>
-        <div className='form-row'>
-          <label>Description</label>
-          <input type="text" />
-        </div>
-        <button className='custom-button'>Submit</button>
-      </form>
+          <div className='form-row'>
+            <label>Description</label>
+            <input
+              type='text'
+              value={values.description}
+              name='description'
+              onChange={onChange}
+            />
+          </div>
+          <button className='custom-button'>Submit</button>
+        </form>
+      ) : (
+        <Loading />
+      )}
     </div>
-
   );
 }
 
@@ -201,22 +280,24 @@ function ServicesSettings() {
 }
 
 import { Calendar } from '../../components/Calendar';
+import { editSalonDetails, getSalonDetails } from '../../handlers/salonHandlers';
+import { useAuth } from '../../context/AuthContext';
+import { useForm } from '../../hooks/useForm';
 
 function ScheduleSettings() {
   return (
     <div className="schedule-settings-container">
       <h3>Schedule Settings</h3>
-      <Calendar />
+      <Calendar user='salon' />
     </div>
   );
 }
-
 
 function AppointmentsSettings() {
   return (
     <div className="appointments-settings-container">
       <h3>Your appointments</h3>
-      <Calendar />
+      <Calendar user='salon' />
     </div>
   );
 }

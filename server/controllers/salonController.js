@@ -43,10 +43,11 @@ router.get('/salonsPerData', async(req, res) => {
 
 router.get('/id', async(req, res) => {
     const {id} = req.query
+    console.log(id)
     const query = getSalonDetails(id)
     const results = await db.executeQuery(query);
 
-    res.status(200).json(results);
+    res.status(200).json({results});
 })
 
 router.get('/bookings', async(req, res) => {
@@ -80,6 +81,32 @@ router.post('/bookAppointment', async(req, res) => {
     const results = await db.executeQuery(query);
 
     return res.status(200).send({success: true, message: 'Appointment Booked!', results})
+})
+
+router.put('/updateSalonDetails', async (req, res) => {
+    try {
+        const { salonId, changedFields } = req.body;
+    
+        const fields = Object.keys(changedFields);
+        const values = Object.values(changedFields);
+    
+        if (fields.includes('password')) {
+          const passwordIndex = fields.indexOf('password');
+          const hashedPassword = await hashPassword(values[passwordIndex]);
+          values[passwordIndex] = hashedPassword;
+        }
+    
+        const query = `UPDATE salons SET ${fields.map(field => `${field} = ?`).join(', ')} WHERE salon_id = ?`;
+    
+        const queryParams = [...values, salonId];
+    
+        await db.executeQuery(query, queryParams);
+    
+        res.status(200).send({ message: 'Salon data updated successfully' });
+      } catch (err) {
+        console.error('Error executing query:', err);
+        res.status(500).send({ message: 'An error occurred while updating salon data' });
+      }
 })
 
 
