@@ -18,8 +18,8 @@ export function AuthProvider({ children }) {
     
     const login = (userData) => {    
         if (userData && userData.salonID) {
-            localStorage.setItem('salon', JSON.stringify(userData));
-            setAuth({ ...userData, role: 'salon' });
+            localStorage.setItem('salon', JSON.stringify({id: userData.salonID}));
+            setAuth({id: userData.salonID, role: 'salon' });
         } else if (userData) {
             localStorage.setItem('user', JSON.stringify(userData));
             setAuth({ ...userData, role: 'user' });
