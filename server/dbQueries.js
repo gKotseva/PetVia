@@ -20,9 +20,21 @@ exports.getUserEmail = (userEmail) => {
     )
 }
 
+exports.getTeam = (id) => {
+    return (
+        `select * from team_members where salon_id = '${id}'`
+    )
+}
+
 exports.getSalonEmail = (salonEmail) => {
     return (
         `select * from salons where email = '${salonEmail}'`
+    )
+}
+
+exports.getSalonDetails = (id) => {
+    return (
+        `select * from salons where salon_id = '${id}'`
     )
 }
 
@@ -109,98 +121,98 @@ exports.getSalonsPerData = (state, city, service) => {
 }
 
 
-exports.getSalonDetails = (id) => {
-    return (
-        `
-       SELECT 
-    s.salon_id, 
-    s.name, 
-    s.state, 
-    s.city, 
-    s.address, 
-    s.salon_description, 
-    s.image, 
+// exports.getSalonDetails = (id) => {
+//     return (
+//         `
+//        SELECT 
+//     s.salon_id, 
+//     s.name, 
+//     s.state, 
+//     s.city, 
+//     s.address, 
+//     s.salon_description, 
+//     s.image, 
 
-    (SELECT JSON_ARRAYAGG(
-        JSON_OBJECT(
-            'team_member_id', st.team_id,
-            'first_name', st.first_name,
-            'last_name', st.last_name
-        )
-    )
-    FROM salon_team st
-    WHERE st.salon_id = s.salon_id
-    GROUP BY st.salon_id) AS team,
+//     (SELECT JSON_ARRAYAGG(
+//         JSON_OBJECT(
+//             'team_member_id', st.team_id,
+//             'first_name', st.first_name,
+//             'last_name', st.last_name
+//         )
+//     )
+//     FROM salon_team st
+//     WHERE st.salon_id = s.salon_id
+//     GROUP BY st.salon_id) AS team,
 
-    (SELECT JSON_ARRAYAGG(
-        JSON_OBJECT(
-            'review_id', sr.review_id,
-            'date', sr.date,
-            'review', sr.review,
-            'stars', sr.stars,
-            'user', JSON_OBJECT(
-                'id', u1.id,
-                'first_name', u1.first_name,
-                'last_name', u1.last_name,
-                'email', u1.email
-            )
-        )
-    )
-    FROM salon_reviews sr
-    LEFT JOIN users u1 ON sr.user_id = u1.id
-    WHERE sr.salon_id = s.salon_id
-    GROUP BY sr.salon_id) AS reviews,
+//     (SELECT JSON_ARRAYAGG(
+//         JSON_OBJECT(
+//             'review_id', sr.review_id,
+//             'date', sr.date,
+//             'review', sr.review,
+//             'stars', sr.stars,
+//             'user', JSON_OBJECT(
+//                 'id', u1.id,
+//                 'first_name', u1.first_name,
+//                 'last_name', u1.last_name,
+//                 'email', u1.email
+//             )
+//         )
+//     )
+//     FROM salon_reviews sr
+//     LEFT JOIN users u1 ON sr.user_id = u1.id
+//     WHERE sr.salon_id = s.salon_id
+//     GROUP BY sr.salon_id) AS reviews,
 
-    (SELECT JSON_ARRAYAGG(
-        JSON_OBJECT(
-            'service_id', ss.service_id,
-            'service_name', ss.service_name,
-            'duration', ss.duration,
-            'price', ss.price
-        )
-    )
-    FROM salon_services ss
-    WHERE ss.salon_id = s.salon_id
-    GROUP BY ss.salon_id) AS services,
+//     (SELECT JSON_ARRAYAGG(
+//         JSON_OBJECT(
+//             'service_id', ss.service_id,
+//             'service_name', ss.service_name,
+//             'duration', ss.duration,
+//             'price', ss.price
+//         )
+//     )
+//     FROM salon_services ss
+//     WHERE ss.salon_id = s.salon_id
+//     GROUP BY ss.salon_id) AS services,
 
-    (SELECT JSON_ARRAYAGG(
-        JSON_OBJECT(
-            'schedule_id', ssc.schedule_id,
-            'date', ssc.date,
-            'start_time', ssc.start_time,
-            'end_time', ssc.end_time,
-            'break_time_start', ssc.break_time_start,
-            'break_time_end', ssc.break_time_end
-        )
-    )
-    FROM salon_schedule ssc
-    WHERE ssc.salon_id = s.salon_id
-    GROUP BY ssc.salon_id) AS schedule,
+//     (SELECT JSON_ARRAYAGG(
+//         JSON_OBJECT(
+//             'schedule_id', ssc.schedule_id,
+//             'date', ssc.date,
+//             'start_time', ssc.start_time,
+//             'end_time', ssc.end_time,
+//             'break_time_start', ssc.break_time_start,
+//             'break_time_end', ssc.break_time_end
+//         )
+//     )
+//     FROM salon_schedule ssc
+//     WHERE ssc.salon_id = s.salon_id
+//     GROUP BY ssc.salon_id) AS schedule,
 
-    (SELECT JSON_ARRAYAGG(
-        JSON_OBJECT(
-            'booking_id', sb.booking_id,
-            'service_id', sb.service_id,
-            'date', sb.date,
-            'start_time', sb.start_time,
-            'end_time', sb.end_time,
-            'user', JSON_OBJECT(
-                'id', u2.id,
-                'first_name', u2.first_name,
-                'last_name', u2.last_name,
-                'email', u2.email
-            )
-        )
-    )
-    FROM bookings sb
-    LEFT JOIN users u2 ON sb.user_id = u2.id
-    WHERE sb.salon_id = s.salon_id
-    GROUP BY sb.salon_id) AS bookings
-    FROM salons s
-    WHERE s.salon_id = ${id};
-        `
-    )
-}
+//     (SELECT JSON_ARRAYAGG(
+//         JSON_OBJECT(
+//             'booking_id', sb.booking_id,
+//             'service_id', sb.service_id,
+//             'date', sb.date,
+//             'start_time', sb.start_time,
+//             'end_time', sb.end_time,
+//             'user', JSON_OBJECT(
+//                 'id', u2.id,
+//                 'first_name', u2.first_name,
+//                 'last_name', u2.last_name,
+//                 'email', u2.email
+//             )
+//         )
+//     )
+//     FROM bookings sb
+//     LEFT JOIN users u2 ON sb.user_id = u2.id
+//     WHERE sb.salon_id = s.salon_id
+//     GROUP BY sb.salon_id) AS bookings
+//     FROM salons s
+//     WHERE s.salon_id = ${id};
+//         `
+//     )
+// }
 
 exports.getSalonBookings = (id) => {
     return `
@@ -237,5 +249,26 @@ exports.insertBooking = (appointmentStartTime, serviceId, userId, salonId, selec
         ADDTIME('${appointmentStartTime}', SEC_TO_TIME(duration * 60))
     FROM salon_services
     WHERE service_id = ${serviceId};
+    `
+}
+
+exports.insertTeamMember = (id, name, image) => {
+    return `
+    INSERT INTO team_members (salon_id, name, image)
+    VALUES (${id}, '${name}', '${image}')
+    `
+}
+
+exports.getServices = (id) => {
+    return (
+        `select * from services
+        where salon_id = ${id};`
+    )
+}
+
+exports.insertService = (values, id) => {
+    return `
+    INSERT INTO services (salon_id, name, price, duration, description)
+    VALUES (${id}, '${values.name}', '${values.price}', '${values.durration}', '${values.description}')
     `
 }

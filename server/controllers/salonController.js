@@ -1,6 +1,6 @@
 const router = require('express').Router()
 const db = require('../db');
-const { getAllSalons, getAllCities, getAllStates, getAllServices, getSalonsPerData, getSalonDetails, getSalonBookings, getSalonSchedule, getSingleServiceInfo, insertBooking } = require('../dbQueries');
+const { getAllSalons, getTeam, getAllCities, getAllStates, getServices, getAllServices, getSalonsPerData, getSalonDetails, getSalonBookings, getSalonSchedule, getSingleServiceInfo, insertBooking, insertTeamMember, insertService } = require('../dbQueries');
 
 router.get('/all', async(req, res) => {
     const query = getAllSalons()
@@ -25,7 +25,7 @@ router.get('/states', async(req, res) => {
     res.status(200).json(results);
 })
 
-router.get('/services', async(req, res) => {
+router.get('/servicesByCondition', async(req, res) => {
     const {state, city} = req.query
     const query = getAllServices(state, city)
     const results = await db.executeQuery(query);
@@ -43,7 +43,6 @@ router.get('/salonsPerData', async(req, res) => {
 
 router.get('/id', async(req, res) => {
     const {id} = req.query
-    console.log(id)
     const query = getSalonDetails(id)
     const results = await db.executeQuery(query);
 
@@ -83,6 +82,9 @@ router.post('/bookAppointment', async(req, res) => {
     return res.status(200).send({success: true, message: 'Appointment Booked!', results})
 })
 
+
+// ==============================================================
+
 router.put('/updateSalonDetails', async (req, res) => {
     try {
         const { salonId, changedFields } = req.body;
@@ -109,5 +111,38 @@ router.put('/updateSalonDetails', async (req, res) => {
       }
 })
 
+router.get('/team', async(req, res) => {
+    const {id} = req.query
+
+    const query = getTeam(id)
+    const results = await db.executeQuery(query);
+
+    res.status(200).json({team: results});
+})
+
+router.post('/addTeamMember', async(req, res) => {
+    const {values, id} = req.body
+
+    const query = insertTeamMember(id, values.name, values.image)
+    const results = await db.executeQuery(query);
+
+    return res.status(200).send({success: true, message: 'Team member added!', results})
+})
+
+router.get('/services', async(req, res) => {
+    const {id} = req.query
+    const query = getServices(id)
+    const results = await db.executeQuery(query);
+
+    res.status(200).json({services: results});
+})
+
+router.post('/addService', async(req, res) => {
+    const {values, id} = req.body
+    const query = insertService(values, id)
+    const results = await db.executeQuery(query);
+
+    res.status(200).json(results);
+})
 
 module.exports = router
