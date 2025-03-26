@@ -2,14 +2,19 @@ import './SalonSettings.modules.css';
 
 import { useEffect, useState } from 'react';
 
-import { MdOutlineManageAccounts } from "react-icons/md";
-import { RiTeamLine } from "react-icons/ri";
+import { MdOutlineManageAccounts, MdOutlineReviews } from "react-icons/md";
+import { FaTrashAlt, FaEdit } from "react-icons/fa";
+import { RiTeamLine, RiGalleryView2 } from "react-icons/ri";
 import { PiDogLight } from "react-icons/pi";
 import { AiOutlineSchedule } from "react-icons/ai";
 import { GrSchedule } from "react-icons/gr";
-import { RiGalleryView2 } from "react-icons/ri";
-import { MdOutlineReviews } from "react-icons/md";
+
 import { Loading } from '../../components/Loading';
+import { Calendar } from '../../components/Calendar';
+import { addTeamMember, editSalonDetails, getSalonDetails, getServices, addService, getTeam } from '../../handlers/salonHandlers';
+import { useAuth } from '../../context/AuthContext';
+import { useForm } from '../../hooks/useForm';
+
 
 export function SalonSettings() {
   const [activeSetting, setActiveSetting] = useState('account');
@@ -78,11 +83,11 @@ function AccountSettings() {
   const handler = editSalonDetails;
   const [initialValues, setInitialValues] = useState({});
   const formName = 'editSalon'
-  const { values, setValues, errors, success, successMessage, onChange, onSubmit } = useForm(handler, initialValues, formName);
+  const { values, setValues, onChange, onSubmit } = useForm(handler, initialValues, formName);
 
   useEffect(() => {
     const fetchSalonDetails = async () => {
-      const result = await getSalonDetails(auth.auth.salonID)
+      const result = await getSalonDetails(auth.auth.id)
       const salonData = result.results[0]
       setSalonDetails(salonData)
 
@@ -103,232 +108,294 @@ function AccountSettings() {
       }
 
     }
-    auth.auth?.salonID && fetchSalonDetails()
+    auth.auth?.id && fetchSalonDetails()
   }, [auth])
 
   return (
-    <div className="account-settings-container">
+    <div className="settings-account-container">
       <h2>Account settings</h2>
-      {salonDetails && Object.keys(values).length > 0 ? (
-        <form onSubmit={onSubmit}>
-          <div className="form-row row">
-            <div className='form-row'>
-              <label>Email</label>
-              <input
-                type='text'
-                value={values.email}
-                name='email'
-                onChange={onChange}
-              />
+      <div className="settings-individual-heading">
+        <h5>Edit your information</h5>
+      </div>
+      <div className="settings-form-container">
+        {salonDetails && Object.keys(values).length > 0 ? (
+          <form onSubmit={onSubmit}>
+            <div className="form-row row">
+              <div className='form-row'>
+                <label>Email</label>
+                <input
+                  type='text'
+                  value={values.email}
+                  name='email'
+                  onChange={onChange}
+                />
+              </div>
+              <div className='form-row'>
+                <label>Password</label>
+                <input
+                  type='password'
+                  value={values.password}
+                  name='password'
+                  onChange={onChange}
+                />
+              </div>
             </div>
-            <div className='form-row'>
-              <label>Password</label>
-              <input
-                type='password'
-                value={values.password}
-                name='password'
-                onChange={onChange}
-              />
+            <div className="form-row row">
+              <div className='form-row'>
+                <label>Salon name</label>
+                <input
+                  type='text'
+                  value={values.name}
+                  name='name'
+                  onChange={onChange}
+                />
+              </div>
+              <div className='form-row'>
+                <label>Phone number</label>
+                <input
+                  type='text'
+                  value={values.phone_number}
+                  name='phone_number'
+                  onChange={onChange}
+                />
+              </div>
             </div>
-          </div>
-          <div className="form-row row">
-            <div className='form-row'>
-              <label>Salon name</label>
-              <input
-                type='text'
-                value={values.name}
-                name='name'
-                onChange={onChange}
-              />
-            </div>
-            <div className='form-row'>
-              <label>Phone number</label>
-              <input
-                type='text'
-                value={values.phone_number}
-                name='phone_number'
-                onChange={onChange}
-              />
-            </div>
-          </div>
-          <div className="form-row row">
-            <div className='form-row'>
-              <label>State</label>
-              <input
-                type='text'
-                value={values.state}
-                name='state'
-                onChange={onChange}
-              />
-            </div>
-            <div className='form-row'>
-              <label>City</label>
-              <input
-                type='text'
-                value={values.city}
-                name='city'
-                onChange={onChange}
-              />
-            </div>
+            <div className="form-row row">
+              <div className='form-row'>
+                <label>State</label>
+                <input
+                  type='text'
+                  value={values.state}
+                  name='state'
+                  onChange={onChange}
+                />
+              </div>
+              <div className='form-row'>
+                <label>City</label>
+                <input
+                  type='text'
+                  value={values.city}
+                  name='city'
+                  onChange={onChange}
+                />
+              </div>
 
+              <div className='form-row'>
+                <label>Address</label>
+                <input
+                  type='text'
+                  value={values.address}
+                  name='address'
+                  onChange={onChange}
+                />
+              </div>
+            </div>
             <div className='form-row'>
-              <label>Address</label>
-              <input
+              <label>Description</label>
+              <textarea
                 type='text'
-                value={values.address}
-                name='address'
+                value={values.description}
+                name='description'
                 onChange={onChange}
               />
             </div>
-          </div>
-          <div className='form-row'>
-            <label>Description</label>
-            <input
-              type='text'
-              value={values.description}
-              name='description'
-              onChange={onChange}
-            />
-          </div>
-          <button className='custom-button'>Submit</button>
-        </form>
-      ) : (
-        <Loading />
-      )}
+            <button className='custom-button'>Submit</button>
+          </form>
+        ) : (
+          <Loading />
+        )}
+      </div>
     </div>
   );
 }
 
 function TeamSettings() {
+  const auth = useAuth()
+  const [teamDetails, setTeamDetails] = useState([])
+  const handler = addTeamMember;
+
+  const { onChange, onSubmit } = useForm(handler);
+
+  useEffect(() => {
+    const fetchTeamDetails = async () => {
+      const result = await getTeam(auth.auth.id)
+      setTeamDetails(result.team)
+    }
+    fetchTeamDetails()
+  }, [auth])
+
   return (
     <div className="team-settings-container">
       <h3>Team Settings</h3>
-      <div className="settings-team-members-container">
-        <div className="setting-team-member">
-          <img src='image.png' />
-          <h4>Example Name</h4>
+      <div className="settings-team-contents">
+        <div className="settings-team-members-container">
+          <div className="settings-individual-heading">
+            <h5>Your team members</h5>
+          </div>
+          <div className="settings-team-members">
+            {teamDetails?.map(({ team_member_id, name, image }) => (
+              <div key={team_member_id} className="setting-team-member">
+                <img src="image.png" alt={name} />
+                <h4>{name}</h4>
+              </div>
+            )) || <Loading />}
+          </div>
         </div>
-        <div className="setting-team-member">
-          <img src='image.png' />
-          <h4>Example Name</h4>
+        <hr></hr>
+        <div className="settings-add-team-member-container">
+          <div className="settings-individual-heading">
+            <h5>Your team members</h5>
+          </div>
+          <div className="settings-add-team-member">
+            <form onSubmit={onSubmit}>
+              <label>Name</label>
+              <input type='text' name='name' onChange={onChange}></input>
+              <label>Image</label>
+              <input type='file' name='' onChange={onChange}></input>
+              <button className='custom-button'>Submit</button>
+            </form>
+          </div>
         </div>
-        <div className="setting-team-member">
-          <img src='image.png' />
-          <h4>Example Name</h4>
-        </div>
-      </div>
-      <hr></hr>
-      <div className="settings-add-team-member-container">
-        <h4>Add new team member</h4>
-        <form>
-          <label>Name</label>
-          <input type='text'></input>
-          <label>Image</label>
-          <input type='file'></input>
-          <button className='custom-button'>Submit</button>
-        </form>
       </div>
     </div>
   );
 }
 
 function ServicesSettings() {
+  const auth = useAuth()
+  const [services, setServices] = useState([])
+  const handler = addService;
+
+  const { onChange, onSubmit } = useForm(handler);
+
+  useEffect(() => {
+    const fetchServices = async () => {
+      const result = await getServices(auth.auth.id)
+      setServices(result.services)
+    }
+    fetchServices()
+  }, [auth])
+
   return (
     <div className="services-settings-container">
-      <div className="services-heading">
-        <h3>Services Settings</h3>
-      </div>
-      <div className="services-content">
+      <h3>Services Settings</h3>
+      <div className="services-contents">
         <div className="settings-current-services-container">
-          <h4>Your current services</h4>
-          <div className="settings-service">
-            <h4>service name</h4>
-            <h4>price</h4>
-            <h4>durration</h4>
-            <div className="settings-buttons-container">
-              <button>edit</button>
-              <button>delete</button>
-            </div>
+          <div className="settings-individual-heading">
+            <h5>Your current services</h5>
           </div>
-          <div className="settings-service">
-            <h4>service name</h4>
-            <h4>price</h4>
-            <h4>durration</h4>
-            <div className="settings-buttons-container">
-              <button>edit</button>
-              <button>delete</button>
-            </div>
+          <div className='settings-single-service'>
+            {services?.map(({ service_id, name, price, duration, description }) => (
+              <div className="settings-service" key={service_id}>
+                <div className="setting-service-details">
+                  <h4>{name}</h4>
+                  <h4>{price}$</h4>
+                  <h4>{duration} min</h4>
+                  <p>{description}</p>
+                </div>
+                <div className="settings-buttons-container">
+                  <FaEdit color='green'/>
+                  <FaTrashAlt color='red'/>
+                </div>
+              </div>
+              || <Loading />
+            ))}
           </div>
         </div>
+        <hr></hr>
         <div className="settings-add-new-service-container">
-          <h4>Add new service</h4>
-          <form>
-            <label>Service name</label>
-            <input type='text'></input>
-            <label>Price</label>
-            <input type='text'></input>
-            <label>Durration</label>
-            <input type='text'></input>
-            <label>Description</label>
-            <input type='text'></input>
-            <button className='custom-button'>Submit</button>
-          </form>
+          <div className="settings-individual-heading">
+            <h5>Add new service</h5>
+          </div>
+          <div className="settings-add-new-service">
+            <form onSubmit={onSubmit}>
+              <div className="form-row row">
+                <div className='form-row'>
+                  <label>Service name</label>
+                  <input
+                    type='text'
+                    name='name'
+                    onChange={onChange}
+                  />
+                </div>
+                <div className='form-row'>
+                  <label>Price</label>
+                  <input
+                    type='text'
+                    name='price'
+                    onChange={onChange}
+                  />
+                </div>
+                <div className='form-row'>
+                  <label>Duration</label>
+                  <input
+                    type='text'
+                    name='duration'
+                    onChange={onChange}
+                  />
+                </div>
+              </div>
+              <div className="form-row">
+                <label>Description</label>
+                <textarea
+                  name='description'
+                  onChange={onChange}
+                />
+              </div>
+              <button className='custom-button'>Submit</button>
+            </form>
+          </div>
         </div>
       </div>
     </div>
   );
 }
 
-import { Calendar } from '../../components/Calendar';
-import { editSalonDetails, getSalonDetails } from '../../handlers/salonHandlers';
-import { useAuth } from '../../context/AuthContext';
-import { useForm } from '../../hooks/useForm';
+// function ScheduleSettings() {
+//   return (
+//     <div className="schedule-settings-container">
+//       <h3>Schedule Settings</h3>
+//       <Calendar user='salon' />
+//     </div>
+//   );
+// }
 
-function ScheduleSettings() {
-  return (
-    <div className="schedule-settings-container">
-      <h3>Schedule Settings</h3>
-      <Calendar user='salon' />
-    </div>
-  );
-}
+// function AppointmentsSettings() {
+//   return (
+//     <div className="appointments-settings-container">
+//       <h3>Your appointments</h3>
+//       <Calendar user='salon' />
+//     </div>
+//   );
+// }
 
-function AppointmentsSettings() {
-  return (
-    <div className="appointments-settings-container">
-      <h3>Your appointments</h3>
-      <Calendar user='salon' />
-    </div>
-  );
-}
+// function GallerySettings() {
+//   return (
+//     <div className="gallery-settings-container">
+//       <h3>Gallery Settings</h3>
+//       <div className="settings-images-container">
+//         <img src='image.png' />
+//         <img src='image.png' />
+//         <img src='image.png' />
+//         <img src='image.png' />
+//         <img src='image.png' />
+//         <img src='image.png' />
+//         <img src='image.png' />
+//         <img src='image.png' />
+//       </div>
+//     </div>
+//   );
+// }
 
-function GallerySettings() {
-  return (
-    <div className="gallery-settings-container">
-      <h3>Gallery Settings</h3>
-      <div className="settings-images-container">
-        <img src='image.png' />
-        <img src='image.png' />
-        <img src='image.png' />
-        <img src='image.png' />
-        <img src='image.png' />
-        <img src='image.png' />
-        <img src='image.png' />
-        <img src='image.png' />
-      </div>
-    </div>
-  );
-}
-
-function CustomerReviewsSettings() {
-  return (
-    <div className="customer-reviews-settings-container">
-      <h3>Customer Reviews Settings</h3>
-      <div className="settings-review-container">
-        <h3>Example Example</h3>
-        <h4>*****</h4>
-        <p>Lovely description, example, example Lovely description, example, example</p>
-      </div>
-    </div>
-  );
-}
+// function CustomerReviewsSettings() {
+//   return (
+//     <div className="customer-reviews-settings-container">
+//       <h3>Customer Reviews Settings</h3>
+//       <div className="settings-review-container">
+//         <h3>Example Example</h3>
+//         <h4>*****</h4>
+//         <p>Lovely description, example, example Lovely description, example, example</p>
+//       </div>
+//     </div>
+//   );
+// }
