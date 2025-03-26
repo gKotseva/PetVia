@@ -26,10 +26,6 @@ export function useForm(handler, initialValues, formName, accountType, closeModa
             }
         });
 
-        if (formName === 'editSalon') {
-            return {salonId: auth.salonID, changedFields};
-        }
-
         return {userId: auth.id, changedFields};
     };    
 
@@ -40,8 +36,10 @@ export function useForm(handler, initialValues, formName, accountType, closeModa
             if(formName === 'editUser' || formName === 'editSalon'){
                 const changedFields = getChangedFields(formName);
                 response = await handler(changedFields);
-            } else {
+            } else if (formName === 'login' || formName === 'register') {
                 response = await handler(accountType, values);
+            } else {
+                response = await handler(values, auth.id);
             }
 
             if (response.status === 200) {
