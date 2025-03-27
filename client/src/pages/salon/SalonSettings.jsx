@@ -11,9 +11,11 @@ import { GrSchedule } from "react-icons/gr";
 
 import { Loading } from '../../components/Loading';
 import { Calendar } from '../../components/Calendar';
-import { addTeamMember, editSalonDetails, getSalonDetails, getServices, addService, getTeam } from '../../handlers/salonHandlers';
+import { addTeamMember, editSalonDetails, getSalonDetails, getServices, addService, getTeam, deleteService, updateService } from '../../handlers/salonHandlers';
 import { useAuth } from '../../context/AuthContext';
 import { useForm } from '../../hooks/useForm';
+import { Modal } from '../../components/Modal';
+import { Form } from '../../components/Form';
 
 
 export function SalonSettings() {
@@ -262,11 +264,14 @@ function TeamSettings() {
 }
 
 function ServicesSettings() {
+
   const auth = useAuth()
   const [services, setServices] = useState([])
-  const handler = addService;
+  const handler = addService
+  const [formName, setFormName] = useState('add-service');
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [initialValues, setInitialValues] = useState(null)
 
-  const { onChange, onSubmit } = useForm(handler);
 
   useEffect(() => {
     const fetchServices = async () => {
@@ -275,6 +280,33 @@ function ServicesSettings() {
     }
     fetchServices()
   }, [auth])
+
+  const openModal = (service) => {
+    setFormName('edit-service');
+    setInitialValues(service); 
+    setIsModalOpen(true);
+  };
+
+  const onDelete = async (service_id) => {
+    await deleteService(service_id)
+    setServices((prev) => prev.filter((service) => service.service_id !== service_id));
+  }
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+
+  const onSuccess = (newService) => {
+    if (initialValues) {
+      setServices((prev) =>
+        prev.map((service) => (service.service_id === newService.service_id ? newService : service))
+      );
+    } else {
+      setServices((prev) => [...prev, newService]);
+    }
+  };
+
+  const { onChange, onSubmit } = useForm(addService, {}, 'add-service', null, closeModal, openModal, onSuccess);
 
   return (
     <div className="services-settings-container">
@@ -294,8 +326,8 @@ function ServicesSettings() {
                   <p>{description}</p>
                 </div>
                 <div className="settings-buttons-container">
-                  <FaEdit color='green'/>
-                  <FaTrashAlt color='red'/>
+                  <FaEdit color='green' onClick={() => openModal({ service_id, name, price, duration, description })} />
+                  <FaTrashAlt color='red' onClick={() => onDelete(service_id)} />
                 </div>
               </div>
               || <Loading />
@@ -347,7 +379,13 @@ function ServicesSettings() {
           </div>
         </div>
       </div>
+      {isModalOpen && (
+        <Modal onClose={closeModal}>
+          <Form formName={'edit-service'} closeModal={closeModal} openModal={openModal} editData={initialValues} />
+        </Modal>
+      )}
     </div>
+
   );
 }
 

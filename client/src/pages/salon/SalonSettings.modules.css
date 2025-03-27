@@ -52,6 +52,8 @@ input {
 .settings-details-container textarea {
     resize: vertical;
     height: 7em;
+    border: 1px solid rgb(187, 186, 186);
+    border-radius: 0.5em;
 }
 
 /* Navigation CSS */
@@ -151,6 +153,7 @@ input {
     padding: 1em 2em;
     border-radius: 1em;
     justify-content: space-between;
+    margin-bottom: 5px;
 }
 
 .settings-buttons-container {
@@ -160,6 +163,10 @@ input {
 
 .settings-buttons-container svg {
     font-size: 1.3em;
+}
+
+.settings-buttons-container svg:hover {
+    cursor: pointer;
 }
 
 .settings-single-service {
