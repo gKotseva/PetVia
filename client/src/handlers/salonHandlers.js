@@ -113,9 +113,10 @@ export const getSalonDetails = async (id) => {
 };
 
 export const editSalonDetails = async (data) => {
-    const {salonId, changedFields} = data
+    const {id, changedFields} = data
+
     try {
-        const response = await request.put(`/api/salon/updateSalonDetails`, {salonId, changedFields});
+        const response = await request.put(`/api/salon/updateSalonDetails`, {id, changedFields});
         return response;
     } catch (error) {
         throw error;
@@ -139,3 +140,23 @@ export const addService = async (values, id) => {
         throw error;
     }
 }
+
+export const deleteService = async (id) => {
+    try {
+        const response = await request.remove(`/api/salon/deleteService`, {id});
+        return response;
+    } catch (error) {
+        throw error;
+    }
+}
+
+export const updateService = async (data) => {
+    const {id, changedFields} = data
+
+    try {
+        const response = await request.put(`/api/salon/updateService`, {id, changedFields});
+        return response;
+    } catch (error) {
+        throw error;
+    }
+};

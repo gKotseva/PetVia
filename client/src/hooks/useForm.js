@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNotification } from '../context/NotificationContext';
 
-export function useForm(handler, initialValues, formName, accountType, closeModal, openModal) {
+export function useForm(handler, initialValues, formName, accountType, closeModal, openModal, onSuccess) {
     const { login, auth } = useAuth();
     const { showNotification } = useNotification();
     const [errors, setErrors] = useState([]);
@@ -17,7 +17,7 @@ export function useForm(handler, initialValues, formName, accountType, closeModa
         }));
     };
 
-    const getChangedFields = (formName) => {
+    const getChangedFields = () => {
         const changedFields = {};
 
         Object.keys(values).forEach(key => {
@@ -26,23 +26,29 @@ export function useForm(handler, initialValues, formName, accountType, closeModa
             }
         });
 
-        return {userId: auth.id, changedFields};
+        if (formName === 'edit-service' && initialValues?.service_id) {
+            return {id: initialValues.service_id, changedFields}
+        }    
+
+        return {id: auth.id, changedFields};
     };    
 
     const onSubmit = async (e) => {
         e.preventDefault();  
         try {
             let response
-            if(formName === 'editUser' || formName === 'editSalon'){
-                const changedFields = getChangedFields(formName);
+            if(formName === 'editUser' || formName === 'editSalon' || formName === 'edit-service'){
+                const changedFields = getChangedFields();
                 response = await handler(changedFields);
             } else if (formName === 'login' || formName === 'register') {
                 response = await handler(accountType, values);
             } else {
                 response = await handler(values, auth.id);
+                console.log(response)
             }
-
+            console.log(response)
             if (response.status === 200) {
+            if (onSuccess) onSuccess(response.results);
                 setSuccess(true);
                 setSuccessMessage(response.message);
                 setErrors([]);
@@ -53,6 +59,8 @@ export function useForm(handler, initialValues, formName, accountType, closeModa
                 else if (formName === 'login') {
                     login(response.results);
                     closeModal(); 
+                } else if (formName === 'edit-service'){
+                    closeModal()
                 }
             }
 

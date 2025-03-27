@@ -1,6 +1,6 @@
 const router = require('express').Router()
 const db = require('../db');
-const { getAllSalons, getTeam, getAllCities, getAllStates, getServices, getAllServices, getSalonsPerData, getSalonDetails, getSalonBookings, getSalonSchedule, getSingleServiceInfo, insertBooking, insertTeamMember, insertService } = require('../dbQueries');
+const { getAllSalons, getTeam, getAllCities, getAllStates, deleteService, getServices, getAllServices, getSalonsPerData, getSalonDetails, getSalonBookings, getSalonSchedule, getSingleServiceInfo, insertBooking, insertTeamMember, insertService } = require('../dbQueries');
 
 router.get('/all', async(req, res) => {
     const query = getAllSalons()
@@ -87,7 +87,7 @@ router.post('/bookAppointment', async(req, res) => {
 
 router.put('/updateSalonDetails', async (req, res) => {
     try {
-        const { salonId, changedFields } = req.body;
+        const { id, changedFields } = req.body;
     
         const fields = Object.keys(changedFields);
         const values = Object.values(changedFields);
@@ -100,7 +100,7 @@ router.put('/updateSalonDetails', async (req, res) => {
     
         const query = `UPDATE salons SET ${fields.map(field => `${field} = ?`).join(', ')} WHERE salon_id = ?`;
     
-        const queryParams = [...values, salonId];
+        const queryParams = [...values, id];
     
         await db.executeQuery(query, queryParams);
     
@@ -137,12 +137,55 @@ router.get('/services', async(req, res) => {
     res.status(200).json({services: results});
 })
 
-router.post('/addService', async(req, res) => {
-    const {values, id} = req.body
-    const query = insertService(values, id)
+router.post('/addService', async (req, res) => {
+    const { values, id } = req.body;
+
+    try {
+        const insertQuery = `INSERT INTO services (salon_id, name, price, duration, description) VALUES (?, ?, ?, ?, ?)`;
+        const insertResult = await db.executeQuery(insertQuery, [id, values.name, values.price, values.duration, values.description]);
+
+        const newServiceId = insertResult.insertId;
+        const fetchQuery = `SELECT * FROM services WHERE service_id = ?`;
+        const [results] = await db.executeQuery(fetchQuery, [newServiceId]);
+
+        res.status(200).json({ success: true, results, message: 'Service added!' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
+
+router.delete('/deleteService', async(req, res) => {
+    const {id} = req.body
+
+    const query = deleteService(id)
     const results = await db.executeQuery(query);
 
     res.status(200).json(results);
 })
+
+router.put('/updateService', async (req, res) => {
+    try {
+        const { id, changedFields } = req.body;
+    
+        const fields = Object.keys(changedFields);
+        const values = Object.values(changedFields);
+    
+        const query = `UPDATE services SET ${fields.map(field => `${field} = ?`).join(', ')} WHERE service_id = ?`;
+        const queryParams = [...values, id];
+
+        await db.executeQuery(query, queryParams);
+
+        const fetchQuery = `SELECT * FROM services WHERE service_id = ?`;
+        const [result] = await db.executeQuery(fetchQuery, [id]);
+
+        res.status(200).json({ success: true, results: result });
+    } catch (err) {
+        console.error('Error executing query:', err);
+        res.status(500).json({ message: 'An error occurred while updating the service' });
+    }
+});
+
+
 
 module.exports = router

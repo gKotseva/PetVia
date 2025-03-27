@@ -269,6 +269,13 @@ exports.getServices = (id) => {
 exports.insertService = (values, id) => {
     return `
     INSERT INTO services (salon_id, name, price, duration, description)
-    VALUES (${id}, '${values.name}', '${values.price}', '${values.durration}', '${values.description}')
+    VALUES (${id}, '${values.name}', '${values.price}', '${values.duration}', '${values.description}')
+    `
+}
+
+exports.deleteService = (id) => {
+    return `
+    DELETE FROM services
+    WHERE service_id = ${id}
     `
 }

@@ -1,32 +1,45 @@
 import './Form.modules.css';
 import React, { useState } from 'react';
 import { login, register } from '../handlers/authHandlers';
+import { updateService } from '../handlers/salonHandlers';
 import { useForm } from '../hooks/useForm';
 import { FcGoogle } from 'react-icons/fc';
-import { CiAlignCenterH, CiLogin } from "react-icons/ci";
+import { CiLogin } from "react-icons/ci";
 
 
-export function Form({ formName, closeModal, openModal }) {
+export function Form({ formName, closeModal, openModal, editData = {} }) {
     const [accountType, setAccountType] = useState('customer');
 
     const toggleAccountType = () => {
         setAccountType(prev => (prev === "customer" ? "salon" : "customer"));
-    };
+    }; 
 
-    const submitHandler = formName === 'login' ? login : register;
+    const submitHandler = {
+        login,
+        register,
+        'edit-service': updateService
+    }[formName];
 
-    const initialValues = {
+    const initialValues = formName === 'edit-service'
+    ? { 
+        service_id: editData.service_id || '',
+        name: editData.name || '',
+        price: editData.price || '',
+        duration: editData.duration || '',
+        description: editData.description || ''
+      }
+    : {
         customer: {
-            login: { email: '', password: '' },
-            register: { firstName: '', lastName: '', email: '', mobilePhone: '', password: '', confirmPassword: '' }
+          login: { email: '', password: '' },
+          register: { firstName: '', lastName: '', email: '', mobilePhone: '', password: '', confirmPassword: '' }
         },
         salon: {
-            login: { email: '', password: '' },
-            register: { email: '', password: '', confirmPassword: '' }
+          login: { email: '', password: '' },
+          register: { email: '', password: '', confirmPassword: '' }
         }
-    }[accountType][formName];
+      }[accountType]?.[formName] || {};  
 
-    const { values, errors, success, successMessage, onChange, onSubmit } = useForm(submitHandler, initialValues, formName, accountType,closeModal, openModal);
+    const { values, errors, onChange, onSubmit } = useForm(submitHandler, initialValues, formName, accountType,closeModal, openModal, onSuccess);
 
     const forms = {
         customer: {
@@ -53,11 +66,18 @@ export function Form({ formName, closeModal, openModal }) {
                 { type: "password", label: "Password", name: 'password' },
                 { type: "password", label: "Repeat Password", name: 'confirmPassword' }
             ]
-        }
+        },
+        'edit-service': [
+            {type: 'text', name: 'name', label: 'Name'},
+            {type: 'text', name: 'price', label: 'Price'},
+            {type: 'text', name: 'duration', label: 'Duration'},
+            {type: 'text', name: 'description', label: 'Description'},
+        ]
     };
 
     return (
-        <div className="form-container">
+        formName === 'login' || formName === 'register' ? (
+            <div className="form-container">
             <p className='switch' onClick={toggleAccountType}>Switch to {accountType === "customer" ? "Salon" : "Customer"} <CiLogin /></p>
             <hr></hr>
             <p className='form-heading'>{accountType} {formName}</p>
@@ -109,5 +129,30 @@ export function Form({ formName, closeModal, openModal }) {
             <h4 className='line'><span>or</span></h4>
             <FcGoogle className='icon' />
         </div>
+        ) : (
+            <div className="form-container">
+            <p className='form-heading'>Edit Service</p>
+            <form onSubmit={onSubmit}>
+                    <div className="form-row">
+                        {forms[formName].map(({ type, label, name }, index) => (
+                            <div key={name} className="form-column">
+                                <div className="input-group">
+                                    <label htmlFor={name}>{label}</label>
+                                    <input
+                                        id={name}
+                                        type={type}
+                                        name={name}
+                                        value={values[name] || ''}
+                                        onChange={onChange}
+                                        className={errors[name] ? "error-input" : ""}
+                                    />
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                <button className="custom-button" type="submit">Submit</button>
+            </form>
+        </div>
+        )
     );
 }
