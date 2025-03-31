@@ -17,9 +17,9 @@ export function AuthProvider({ children }) {
     }, []);
     
     const login = (userData) => {    
-        if (userData && userData.salonID) {
-            localStorage.setItem('salon', JSON.stringify({id: userData.salonID}));
-            setAuth({id: userData.salonID, role: 'salon' });
+        if (userData && userData.salonId) {
+            localStorage.setItem('salon', JSON.stringify({salon_name: userData.salon_name, id: userData.salonId}));
+            setAuth({...userData, id: userData.salonId, role: 'salon' });
         } else if (userData) {
             localStorage.setItem('user', JSON.stringify(userData));
             setAuth({ ...userData, role: 'user' });
