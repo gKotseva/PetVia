@@ -2,13 +2,10 @@ import { useEffect, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNotification } from '../context/NotificationContext';
 
-export function useForm(handler, initialValues, formName, accountType, closeModal, openModal, onSuccess) {
+export function useForm(handler, form, initialValues, closeModal, openModal, refreshData) {
     const { login, auth } = useAuth();
     const { showNotification } = useNotification();
-    const [errors, setErrors] = useState([]);
-    const [success, setSuccess] = useState(false);
-    const [successMessage, setSuccessMessage] = useState([]);
-    const [values, setValues] = useState(initialValues);
+    const [values, setValues] = useState(() => initialValues || {});
 
     const onChange = (e) => {
         setValues(state => ({
@@ -26,7 +23,7 @@ export function useForm(handler, initialValues, formName, accountType, closeModa
             }
         });
 
-        if (formName === 'edit-service' && initialValues?.service_id) {
+        if (form === 'edit-service' && initialValues?.service_id) {
             return {id: initialValues.service_id, changedFields}
         }    
 
@@ -34,41 +31,38 @@ export function useForm(handler, initialValues, formName, accountType, closeModa
     };    
 
     const onSubmit = async (e) => {
-        e.preventDefault();  
+        e.preventDefault();
+
         try {
             let response
-            if(formName === 'editUser' || formName === 'editSalon' || formName === 'edit-service'){
-                const changedFields = getChangedFields();
-                response = await handler(changedFields);
-            } else if (formName === 'login' || formName === 'register') {
-                response = await handler(accountType, values);
-            } else {
-                response = await handler(values, auth.id);
-                console.log(response)
-            }
-            console.log(response)
-            if (response.status === 200) {
-            if (onSuccess) onSuccess(response.results);
-                setSuccess(true);
-                setSuccessMessage(response.message);
-                setErrors([]);
 
-                if (formName === 'register') {
-                    openModal('login')
-                } 
-                else if (formName === 'login') {
-                    login(response.results);
-                    closeModal(); 
-                } else if (formName === 'edit-service'){
+            if (form.form === 'login' || form.form === 'register'){
+                response = await handler(form.accountType, values)
+            } else if (form === 'edit-salon', form === 'edit-service') {
+                const changedFields = getChangedFields()
+                response = await handler(changedFields)
+            } else {
+                response = await handler(auth.id, values)
+                refreshData()
+            }
+
+            if (response.status === 200){
+                showNotification(response.message, 'success')
+
+                if (form.form === 'register') {
+                    openModal('login');
+                } else if (form.form === 'login') {
+                    login(response.results)
+                    closeModal()
+                } else if (form === 'edit-service') {
                     closeModal()
                 }
-            }
 
-            showNotification(response.message, 'success')
+            } else {
+                throw new Error(response.message)
+              }
 
         } catch (error) {
-            setSuccess(false);
-            setErrors([error.message]);
             showNotification(error.message, 'error');
         }
     };
@@ -76,9 +70,6 @@ export function useForm(handler, initialValues, formName, accountType, closeModa
     return {
         values,
         setValues,
-        errors,
-        success,
-        successMessage,
         onChange,
         onSubmit,
     };

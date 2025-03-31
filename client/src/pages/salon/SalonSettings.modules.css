@@ -54,6 +54,7 @@ input {
     height: 7em;
     border: 1px solid rgb(187, 186, 186);
     border-radius: 0.5em;
+    padding: 1em;
 }
 
 /* Navigation CSS */
@@ -128,7 +129,6 @@ input {
 .settings-team-contents {
     display: flex;
     gap: 2em;
-    justify-content: center;
 }
 
 .settings-team-members {
@@ -137,6 +137,14 @@ input {
     gap: 3em;
     padding: 2em;
     text-align: center;
+}
+
+.settings-team-members h4 {
+    margin-bottom: 10px;
+}
+
+.settings-team-members svg:hover {
+    cursor: pointer;
 }
 
 .settings-team-members-container img {

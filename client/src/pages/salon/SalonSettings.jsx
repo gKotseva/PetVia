@@ -10,12 +10,15 @@ import { AiOutlineSchedule } from "react-icons/ai";
 import { GrSchedule } from "react-icons/gr";
 
 import { Loading } from '../../components/Loading';
-import { Calendar } from '../../components/Calendar';
-import { addTeamMember, editSalonDetails, getSalonDetails, getServices, addService, getTeam, deleteService, updateService } from '../../handlers/salonHandlers';
+// // import { Calendar } from '../../components/Calendar';
 import { useAuth } from '../../context/AuthContext';
+import { addTeamMember, editSalonDetails, getSalonDetails, getTeam, deleteTeamMember, getServices, addService, deleteService } from '../../handlers/salonHandler';
 import { useForm } from '../../hooks/useForm';
+import { useNotification } from '../../context/NotificationContext';
 import { Modal } from '../../components/Modal';
 import { Form } from '../../components/Form';
+// import { Modal } from '../../components/Modal';
+// import { Form } from '../../components/Form';
 
 
 export function SalonSettings() {
@@ -84,13 +87,13 @@ function AccountSettings() {
   const [salonDetails, setSalonDetails] = useState({})
   const handler = editSalonDetails;
   const [initialValues, setInitialValues] = useState({});
-  const formName = 'editSalon'
-  const { values, setValues, onChange, onSubmit } = useForm(handler, initialValues, formName);
+  const formName = 'edit-salon'
+  const { values, setValues, onChange, onSubmit } = useForm(handler, formName, initialValues);
 
   useEffect(() => {
     const fetchSalonDetails = async () => {
       const result = await getSalonDetails(auth.auth.id)
-      const salonData = result.results[0]
+      const salonData = result.data
       setSalonDetails(salonData)
 
       if (salonData) {
@@ -214,17 +217,26 @@ function AccountSettings() {
 function TeamSettings() {
   const auth = useAuth()
   const [teamDetails, setTeamDetails] = useState([])
+      const { showNotification } = useNotification();
+
   const handler = addTeamMember;
 
-  const { onChange, onSubmit } = useForm(handler);
+  const fetchTeamDetails = async () => {
+    const result = await getTeam(auth.auth.id);
+    setTeamDetails(result.data);
+  };
 
   useEffect(() => {
-    const fetchTeamDetails = async () => {
-      const result = await getTeam(auth.auth.id)
-      setTeamDetails(result.team)
-    }
+    fetchTeamDetails();
+  }, [auth]);
+
+  const onDelete = async (id) => {
+    const response = await deleteTeamMember(id)
+    showNotification(response.message, 'success')
     fetchTeamDetails()
-  }, [auth])
+  }
+
+  const { onChange, onSubmit } = useForm(handler, 'add-team-member', null, null, null, fetchTeamDetails);
 
   return (
     <div className="team-settings-container">
@@ -235,12 +247,19 @@ function TeamSettings() {
             <h5>Your team members</h5>
           </div>
           <div className="settings-team-members">
-            {teamDetails?.map(({ team_member_id, name, image }) => (
-              <div key={team_member_id} className="setting-team-member">
-                <img src="image.png" alt={name} />
-                <h4>{name}</h4>
-              </div>
-            )) || <Loading />}
+            {teamDetails === null ? (
+              <Loading />
+            ) : teamDetails.length === 0 ? (
+              <p>No team members added.</p>
+            ) : (
+              teamDetails.map(({ team_member_id, name, image }) => (
+                <div key={team_member_id} className="setting-team-member">
+                  <img src={'./image.png'} alt={name} />
+                  <h4>{name}</h4>
+                  <FaTrashAlt color='red' onClick={() => onDelete(team_member_id)}/>
+                </div>
+              ))
+            )}
           </div>
         </div>
         <hr></hr>
@@ -253,7 +272,7 @@ function TeamSettings() {
               <label>Name</label>
               <input type='text' name='name' onChange={onChange}></input>
               <label>Image</label>
-              <input type='file' name='' onChange={onChange}></input>
+              <input type='file' name='image' onChange={onChange}></input>
               <button className='custom-button'>Submit</button>
             </form>
           </div>
@@ -264,49 +283,39 @@ function TeamSettings() {
 }
 
 function ServicesSettings() {
-
+  const { showNotification } = useNotification();
   const auth = useAuth()
-  const [services, setServices] = useState([])
   const handler = addService
-  const [formName, setFormName] = useState('add-service');
+  const [services, setServices] = useState([])
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [initialValues, setInitialValues] = useState(null)
 
+  const fetchServices = async () => {
+    const result = await getServices(auth.auth.id)
+    setServices(result.data)
+  }
 
   useEffect(() => {
-    const fetchServices = async () => {
-      const result = await getServices(auth.auth.id)
-      setServices(result.services)
-    }
     fetchServices()
   }, [auth])
 
+  const onDelete = async (service_id) => {
+    await deleteService(service_id)
+    fetchServices()
+    showNotification('Service removed!', 'success')
+  }
+
   const openModal = (service) => {
-    setFormName('edit-service');
-    setInitialValues(service); 
+    setInitialValues(service);
     setIsModalOpen(true);
   };
 
-  const onDelete = async (service_id) => {
-    await deleteService(service_id)
-    setServices((prev) => prev.filter((service) => service.service_id !== service_id));
-  }
-
   const closeModal = () => {
     setIsModalOpen(false);
+    fetchServices()
   };
 
-  const onSuccess = (newService) => {
-    if (initialValues) {
-      setServices((prev) =>
-        prev.map((service) => (service.service_id === newService.service_id ? newService : service))
-      );
-    } else {
-      setServices((prev) => [...prev, newService]);
-    }
-  };
-
-  const { onChange, onSubmit } = useForm(addService, {}, 'add-service', null, closeModal, openModal, onSuccess);
+  const { onChange, onSubmit } = useForm(handler, 'add-service', null, null, null, fetchServices);
 
   return (
     <div className="services-settings-container">
@@ -316,23 +325,27 @@ function ServicesSettings() {
           <div className="settings-individual-heading">
             <h5>Your current services</h5>
           </div>
-          <div className='settings-single-service'>
-            {services?.map(({ service_id, name, price, duration, description }) => (
-              <div className="settings-service" key={service_id}>
-                <div className="setting-service-details">
-                  <h4>{name}</h4>
-                  <h4>{price}$</h4>
-                  <h4>{duration} min</h4>
-                  <p>{description}</p>
-                </div>
-                <div className="settings-buttons-container">
-                  <FaEdit color='green' onClick={() => openModal({ service_id, name, price, duration, description })} />
-                  <FaTrashAlt color='red' onClick={() => onDelete(service_id)} />
-                </div>
-              </div>
-              || <Loading />
-            ))}
-          </div>
+          {services.length > 0 ? (
+                      <div className='settings-single-service'>
+                      {services?.map(({ service_id, name, price, duration, description }) => (
+                        <div className="settings-service" key={service_id}>
+                          <div className="setting-service-details">
+                            <h4>{name}</h4>
+                            <h4>{price}$</h4>
+                            <h4>{duration} min</h4>
+                            <p>{description}</p>
+                          </div>
+                          <div className="settings-buttons-container">
+                            <FaEdit color='green' onClick={() => openModal({ service_id, name, price, duration, description })} />
+                            <FaTrashAlt color='red' onClick={() => onDelete(service_id)} />
+                          </div>
+                        </div>
+                        || <Loading />
+                      ))}
+                    </div>
+          ) : (
+            <p>You have no services added!</p>
+          )}
         </div>
         <hr></hr>
         <div className="settings-add-new-service-container">
@@ -385,55 +398,54 @@ function ServicesSettings() {
         </Modal>
       )}
     </div>
-
   );
 }
 
-// function ScheduleSettings() {
-//   return (
-//     <div className="schedule-settings-container">
-//       <h3>Schedule Settings</h3>
-//       <Calendar user='salon' />
-//     </div>
-//   );
-// }
+function ScheduleSettings() {
+  return (
+    <div className="schedule-settings-container">
+      <h3>Schedule Settings</h3>
+      {/* <Calendar user='salon' /> */}
+    </div>
+  );
+}
 
-// function AppointmentsSettings() {
-//   return (
-//     <div className="appointments-settings-container">
-//       <h3>Your appointments</h3>
-//       <Calendar user='salon' />
-//     </div>
-//   );
-// }
+function AppointmentsSettings() {
+  return (
+    <div className="appointments-settings-container">
+      <h3>Your appointments</h3>
+      {/* <Calendar user='salon' /> */}
+    </div>
+  );
+}
 
-// function GallerySettings() {
-//   return (
-//     <div className="gallery-settings-container">
-//       <h3>Gallery Settings</h3>
-//       <div className="settings-images-container">
-//         <img src='image.png' />
-//         <img src='image.png' />
-//         <img src='image.png' />
-//         <img src='image.png' />
-//         <img src='image.png' />
-//         <img src='image.png' />
-//         <img src='image.png' />
-//         <img src='image.png' />
-//       </div>
-//     </div>
-//   );
-// }
+function GallerySettings() {
+  return (
+    <div className="gallery-settings-container">
+      <h3>Gallery Settings</h3>
+      <div className="settings-images-container">
+        <img src='image.png' />
+        <img src='image.png' />
+        <img src='image.png' />
+        <img src='image.png' />
+        <img src='image.png' />
+        <img src='image.png' />
+        <img src='image.png' />
+        <img src='image.png' />
+      </div>
+    </div>
+  );
+}
 
-// function CustomerReviewsSettings() {
-//   return (
-//     <div className="customer-reviews-settings-container">
-//       <h3>Customer Reviews Settings</h3>
-//       <div className="settings-review-container">
-//         <h3>Example Example</h3>
-//         <h4>*****</h4>
-//         <p>Lovely description, example, example Lovely description, example, example</p>
-//       </div>
-//     </div>
-//   );
-// }
+function CustomerReviewsSettings() {
+  return (
+    <div className="customer-reviews-settings-container">
+      <h3>Customer Reviews Settings</h3>
+      <div className="settings-review-container">
+        <h3>Example Example</h3>
+        <h4>*****</h4>
+        <p>Lovely description, example, example Lovely description, example, example</p>
+      </div>
+    </div>
+  );
+}
