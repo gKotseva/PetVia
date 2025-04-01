@@ -1,28 +1,26 @@
+import { Route, Routes } from "react-router-dom"
 import { Footer } from "./components/Footer"
 import { Navigation } from "./components/Navigation"
-import { Home } from "./pages/client/Home"
-import { Salons } from "./pages/client/Salons"
-import { paths } from "./paths"
-import {Route, Routes} from 'react-router-dom'
-import { UserProvider } from "./context/userContext"
-import { ClientProfile } from "./pages/client/ClientProfile"
-import { SalonProfile } from "./pages/salon/SalonProfile"
+import { AuthProvider } from "./context/AuthContext"
+import { NotificationProvider } from "./context/NotificationContext"
 import { SalonSettings } from "./pages/salon/SalonSettings"
+import { paths } from "./paths"
+import { ClientProfile } from "./pages/customer/ClientProfile"
 
 function App() {
   return (
     <>
-    <UserProvider>
+    <NotificationProvider>
+    <AuthProvider>
     <Navigation />
-      <Routes>
-        <Route path={paths.home} element={<Home />} />
-        <Route path={paths.salons} element={<Salons />} />
-        <Route path={paths.clientProfile} element={<ClientProfile />} />
-        <Route path={paths.salonProfile} element={<SalonProfile />} />
+    <Routes>
         <Route path={paths.salonSettings} element={<SalonSettings />} />
+        <Route path={paths.clientProfile} element={<ClientProfile />} />
+        {/* <Route path={paths.test} element={<Test />} /> */}
       </Routes>
     <Footer />
-    </UserProvider>
+    </AuthProvider>
+    </NotificationProvider>
     </>
   )
 }

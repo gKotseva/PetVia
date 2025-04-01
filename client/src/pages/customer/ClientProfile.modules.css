@@ -4,12 +4,6 @@
     justify-content: space-evenly;
 }
 
-.customer-profile-container div:nth-child(1) {
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    border-radius: 1em;
-    padding: 2em 3em;
-}
-
 .customer-update-info form {
     display: flex;
     flex-direction: column;

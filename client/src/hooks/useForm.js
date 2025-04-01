@@ -38,7 +38,7 @@ export function useForm(handler, form, initialValues, closeModal, openModal, ref
 
             if (form.form === 'login' || form.form === 'register'){
                 response = await handler(form.accountType, values)
-            } else if (form === 'edit-salon', form === 'edit-service') {
+            } else if (form === 'edit-salon', form === 'edit-service', form === 'edit-user') {
                 const changedFields = getChangedFields()
                 response = await handler(changedFields)
             } else {

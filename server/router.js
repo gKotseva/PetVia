@@ -5,7 +5,7 @@ const salonController = require('./controllers/salonController')
 const authController = require('./controllers/authController')
 
 router.use('/api/auth', authController)
-router.use('/api/users', userController)
+router.use('/api/user', userController)
 router.use('/api/salon', salonController)
 
 module.exports = router
