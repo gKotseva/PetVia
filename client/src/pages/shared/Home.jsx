@@ -1,69 +1,56 @@
+import { useEffect, useState } from 'react';
 import './Home.modules.css';
 
-import { useEffect, useState } from 'react';
+import { MdLocationPin } from "react-icons/md";
+import { fetchServicesPerDetails, getAllAppointmentsCount, getAllSalons } from '../../handlers/sharedHandlers';
 import { useNavigate } from 'react-router-dom';
 
-import { MdLocationPin } from "react-icons/md";
-import { getAllCities, getAllStates, getAllServices, getAllSalons } from '../../handlers/salonHandlers';
-
 export function Home() {
-    const navigate = useNavigate();
-    const [states, setStates] = useState([]);
-    const [cities, setCities] = useState([]);
-    const [services, setServices] = useState([]);
-    const [salons, setSalons] = useState([]);
-    const [selectedState, setSelectedState] = useState('');
-    const [selectedCity, setSelectedCity] = useState('');
-    const [selectedService, setSelectedService] = useState('');
+    const navigate = useNavigate()
+    const [salons, setSalons] = useState([])
+    const [appointmentsCount, setAppointmentsCount] = useState(Number)
+    const [states, setStates] = useState([])
+    const [cities, setCities] = useState([])
+    const [services, setServices] = useState([])
+    const [selectedState, setSelectedState] = useState('')
+    const [selectedCity, setSelectedCity] = useState('')
+    const [selectedService, setSelectedService] = useState('')
 
     useEffect(() => {
-        const fetchStates = async () => {
-            const result = await getAllStates();
-            setStates(result);
-        };
-        fetchStates();
-    }, []);
+        const fetchAllSalons = async () => {
+            const response = await getAllSalons()
+            setSalons(response.result)
+        }
+        fetchAllSalons()
+
+        const fetchAllAppointmentsCount = async () => {
+            const response = await getAllAppointmentsCount()
+            setAppointmentsCount(response.appointments)
+        }
+        fetchAllAppointmentsCount()
+    }, [])
 
     useEffect(() => {
-        const fetchCities = async () => {
-            if (selectedState) {
-                const result = await getAllCities(selectedState);
-                setCities(result);
-            } else {
-                setCities([]);
-                setServices([]);
-            }
-        };
-        fetchCities();
-    }, [selectedState]);
+        if (salons.length > 0) {
+            const states = [...new Set(salons.map(salon => salon.state))].sort()
+            setStates(states)
+        }
+    }, [salons]);
 
+    const handleSelectChange = async (event) => {
+        const { name, value } = event.target;
 
-    useEffect(() => {
-        const fetchServices = async () => {
-            if (selectedState && selectedCity) {
-                const servicesResult = await getAllServices(selectedState, selectedCity);
-                setServices(servicesResult);
-            } else {
-                setServices([]);
-            }
-        };
-        fetchServices();
-    }, [selectedState, selectedCity]);
-
-    const onStateChange = (e) => {
-        const state = e.target.value;
-        setSelectedState(state);
-        setSelectedCity('');
-    };
-
-    const onCityChange = (e) => {
-        const city = e.target.value;
-        setSelectedCity(city);
-    };
-
-    const onServiceChange = (e) => {
-        const service = e.target.value;
-        setSelectedService(service);
+        if (name === "state") {
+            setSelectedState(value);
+            const cities = [...new Set(salons.filter(salon => salon.state === value).map(salon => salon.city))].sort();
+            setCities(cities)
+        } else if (name === "city") {
+            setSelectedCity(value);
+            const response = await fetchServicesPerDetails(value, selectedState)
+            setServices([response.name])
+        } else if (name === "service") {
+            setSelectedService(value);
+        }
     };
 
     const showSalons = (e) => {
@@ -71,51 +58,40 @@ export function Home() {
         navigate('/salons', { state: { selectedCity, selectedState, selectedService } });
     };
 
-    useEffect(() => {
-        const getSalons = async () => {
-            const result = await getAllSalons();
-            setSalons(result);
-        }
-
-        getSalons();
-    }, []);
-
     return (
         <div className="home-container">
             <div className="home-section-1">
                 <h3>Book an appointment for a fluffy refresh</h3>
-                <form>
-                    <select name="state" id="state" onChange={onStateChange} value={selectedState}>
+                <form onSubmit={showSalons}>
+                    <select name="state" id="state" onChange={handleSelectChange} value={selectedState}>
                         <option value="" disabled>Select a state</option>
                         {states.length > 0 ? (
-                            states.map(e => (
-                                <option value={e.state} key={e.state}>{e.state}</option>
-                            ))
+                            states.map(e => <option value={e} key={e}>{e}</option>)
                         ) : (
                             <option value="" disabled>No States to show</option>
                         )}
                     </select>
-                    <select name="city" id="city" onChange={onCityChange} value={selectedCity}>
+                    <select name="city" id="city" onChange={handleSelectChange} value={selectedCity}>
                         <option value="" disabled>Select a city</option>
                         {cities.length > 0 ? (
                             cities.map(e => (
-                                <option value={e.city} key={e.city}>{e.city}</option>
+                                <option value={e} key={e}>{e}</option>
                             ))
                         ) : (
                             <option value="" disabled>No Cities to show</option>
                         )}
                     </select>
-                    <select name="service" id="service" onChange={onServiceChange} value={selectedService}>
-                        <option value="" disabled hidden>Select a service</option>
+                    <select name="service" id="service" onChange={handleSelectChange} value={selectedService}>
+                        <option value="" disabled>Select a service</option>
                         {services.length > 0 ? (
                             services.map(e => (
-                                <option value={e.service_name} key={e.service_name}>{e.service_name}</option>
+                                <option value={e} key={e}>{e}</option>
                             ))
                         ) : (
                             <option value="" disabled>No Services to show</option>
                         )}
                     </select>
-                    <button className='custom-button' onClick={showSalons}>Show salons</button>
+                    <button className='custom-button'>Show salons</button>
                 </form>
             </div>
             <div className="home-section-2">
@@ -125,11 +101,11 @@ export function Home() {
                 </div>
                 <div className="div">
                     <img src="./image.png" alt="Appointments" />
-                    <h3>1 appointment booked through PetVia!</h3>
+                    <h3>{appointmentsCount} appointment booked through PetVia!</h3>
                 </div>
                 <div className="div">
                     <img src="./image.png" alt="Grooming salons" />
-                    <h3>12 grooming salons!</h3>
+                    <h3>{salons.length} grooming salons!</h3>
                 </div>
             </div>
             <div className="home-section-3">
