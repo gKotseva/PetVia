@@ -26,3 +26,12 @@ export const fetchServicesPerDetails = async (city, state) => {
         // console.log(error)
     }
 }
+
+export const getSalonsPerData = async (state, city, service) => {
+    try {
+        const response = await request.get(`/api/shared/salons-per-data?state=${state}&city=${city}&service=${service}`);
+        return response;
+    } catch (error) {
+       // console.log(error)
+    }
+};
