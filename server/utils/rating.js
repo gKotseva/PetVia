@@ -1,9 +1,11 @@
-exports.averageRating = (salon) => {
-    if(salon.reviews.length > 0){
-        const totalReviews = salon.reviews.length
-        const averageRating = salon.reviews.reduce((sum, review) => sum + review.rating, 0) / totalReviews
-        return salon['stars'] = averageRating
-    } else {
-        return salon['stars'] = 0
+exports.averageRating = (salonOrReviews) => {
+    const reviews = Array.isArray(salonOrReviews) ? salonOrReviews : salonOrReviews?.reviews || [];
+    
+    if (reviews.length > 0) {
+        const totalReviews = reviews.length;
+        const averageRating = reviews.reduce((sum, review) => sum + review.rating, 0) / totalReviews;
+        return averageRating;
     }
+    
+    return 0;
 };
