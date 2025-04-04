@@ -1,6 +1,7 @@
 const router = require('express').Router()
 const db = require('../db/db');
 const { getAllSalons, getAllAppointmentsCount, getAllServicesPerDetails, getSalonsPerData, getSalonReviews, getDetails, getTeam, getServices } = require('../db/sharedQueries');
+const { formatDate } = require('../utils/date');
 const { averageRating } = require('../utils/rating');
 
 router.get('/salons', async (req, res) => {
@@ -52,6 +53,11 @@ router.get('/details', async(req, res) => {
     const salonReviews = await db.executeQuery(salonReviewsQuery);
 
     const average = averageRating(salonReviews)
+
+    for (const review of salonReviews) {
+        const formattedDate = formatDate(review.created_at)
+        review.created_at = formattedDate
+    }
 
     const salonTeamQuery = getTeam(id);
     const salonTeam = await db.executeQuery(salonTeamQuery);
