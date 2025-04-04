@@ -35,3 +35,12 @@ export const getSalonsPerData = async (state, city, service) => {
        // console.log(error)
     }
 };
+
+export const getSalonDetails = async (id) => {
+    try {
+        const response = await request.get(`/api/shared/details?id=${id}`);
+        return response;
+    } catch (error) {
+        // console.log(error)
+    }
+}

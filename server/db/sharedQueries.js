@@ -34,3 +34,18 @@ exports.getSalonReviews = (salon_id) => {
         `
     )
 }
+
+exports.getDetails = (id) => {
+    const query = `SELECT email, phone_number, name, address, city, state, description FROM salons WHERE salon_id = ${id}`
+    return query
+}
+
+exports.getTeam = (id) => {
+    const query = `select * from team_members WHERE salon_id = ${id}`
+    return query
+}
+
+exports.getServices = (id) => {
+    const query = `select * from services WHERE salon_id = ${id}`
+    return query
+}
