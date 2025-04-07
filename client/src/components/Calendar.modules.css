@@ -1,5 +1,4 @@
 .calendar {
-    width: 80%;
     background: rgba(255, 255, 255, 0.61);
     padding: 2em;
     border-radius: 1em;
@@ -10,12 +9,12 @@
     justify-content: space-between;
     margin: 0em 1em 2em 1em;
     align-items: center;
-    font-size: 1.1em;
+    font-size: 1em;
 }
 
 .calendar-buttons {
     display: flex;
-    gap: 2em;
+    gap: 1em;
 }
 
 .calendar-buttons:hover {
@@ -42,14 +41,28 @@
 
 .calendar-days span {
     width: calc(100% / 7);
-    aspect-ratio: 1;
+    aspect-ratio: 1.3;
     display: flex;
     justify-content: center;
     align-items: center;
+    cursor: pointer;
 }
 
-.current-day {
-    background-color: var(--light-color);
-    border-radius: 50%;
-    padding: 0.4em 0.8em;
+.user-today {
+    border: 1px solid grey;
+    border-radius: 40%;
+}
+
+.user-past {
+    color: grey;
+    cursor: default !important;
+}
+
+.user-working {
+    color:green;
+}
+
+.user-not-working {
+    color: red;
+    cursor: default !important;
 }

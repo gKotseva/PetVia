@@ -1,16 +1,18 @@
 import './Calendar.modules.css'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { IoIosArrowForward, IoIosArrowBack } from "react-icons/io";
+import { getSchedule } from '../handlers/calendarHandlers';
 
-export function Calendar () {
+export function Calendar ({user}) {
     const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
     const weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
 
     const currentDate = new Date()
     const [currentMonth, setCurrentMonth] = useState(currentDate.getMonth())
     const [currentYear, setCurrentYear] = useState(currentDate.getFullYear())
+    const [schedule, setSchedule] = useState([])
 
     const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate()
     const firstDayOfMonth = new Date(currentYear, currentMonth, 1).getDay()
@@ -25,6 +27,19 @@ export function Calendar () {
         setCurrentYear(prevYear => currentMonth === 11 ? prevYear + 1 : prevYear)
     }
 
+    useEffect(() => {
+        if (user.userType === 'customer'){
+            const fetchSchedule = async () => {
+                const response = await getSchedule(user.salonId, currentMonth + 1, currentYear);
+                setSchedule(response.schedule)
+            };
+    
+            fetchSchedule();
+
+        } else {
+            //tbd
+        }
+    }, [currentMonth, currentYear])
     
     return (
         <div className="calendar">
@@ -37,20 +52,16 @@ export function Calendar () {
             </div>
             <div className="calendar-heading">
                 {weekdays.map(e => (
-                    <span>{e}</span>
+                    <span key={e}>{e}</span>
                 ))}
             </div>
             <div className="calendar-days">
                 {[...Array(firstDayOfMonth).keys()].map((_, index) => (
-                    <span />
+                    <span key={index}/>
                 ))}
-                {[...Array(daysInMonth).keys()].map((day) => {
-                    let className = day + 1 === currentDate.getDate() && currentMonth === currentDate.getMonth() && currentYear === currentDate.getFullYear() ? 'current-day' : '';
-
-                    return (
-                    <span className={className}>{day + 1}</span>
-                    )
-                })}
+                {schedule?.map(e => (
+                    <span key={e.date} className={`user-${e.isPast ? 'past' : ''}${e.isToday ? 'today' : ''}${e.isFuture ? e.isWorking ? 'working' : 'not-working' : ''}`}>{new Date(e.date).getDate()}</span>
+                ))}
             </div>
         </div>
     )
