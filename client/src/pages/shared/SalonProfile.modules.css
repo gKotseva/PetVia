@@ -8,7 +8,7 @@
 .salon-services {
     margin: 2em;
     display: flex;
-    justify-content: space-evenly;
+    gap: 5em;
 }
 
 .service-container {
@@ -29,7 +29,8 @@
 }
 
 .service-container:hover {
-    background: #94cff0;
+    background: var(--dark-color);
+    color: white;
 }
 
 .salon-team {
@@ -62,4 +63,9 @@
     display: flex;
     flex-direction: column;
     gap: 1em;
+}
+
+.selected {
+    background: var(--dark-color);
+    color: white;
 }

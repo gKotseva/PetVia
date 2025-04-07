@@ -5,10 +5,15 @@ import { getSalonDetails } from '../../handlers/sharedHandlers';
 import { Loading } from '../../components/Loading';
 import { displayReviewStars } from '../../components/displayReviewStars';
 import { IoIosArrowForward } from "react-icons/io";
+import { Calendar } from '../../components/Calendar';
+import {useAuth} from '../../context/AuthContext';
 
 export function SalonProfile() {
     const { id } = useParams();
+    const { auth } = useAuth()
     const [salonInfo, setSalonInfo] = useState({})
+    const [openCalendar, setOpenCalendar] = useState(false)
+    const [selectedService, setSelectedService] = useState(null)
 
     useEffect(() => {
         const fetchSalonInfo = async () => {
@@ -21,6 +26,12 @@ export function SalonProfile() {
 
         fetchSalonInfo();
     }, [id]);
+
+    const showCalendar = (e) => {
+        const serviceId = e.currentTarget.dataset.serviceId;
+        setSelectedService(serviceId)
+        setOpenCalendar(true)
+    }
 
     return (
         <div className="salon-profile-container">
@@ -40,7 +51,7 @@ export function SalonProfile() {
                     <div className="salon-services">
                         <div className="services-container">
                             {salonInfo.services.map(service => (
-                                <div className="service-container" key={service.service_id}>
+                                <div className={`service-container ${Number(selectedService) === service.service_id ? 'selected' : ''}`} data-service-id={service.service_id} key={service.service_id} onClick={showCalendar}>
                                     <h2>{service.name}</h2>
                                     <h2>{service.duration} minutes</h2>
                                     <h2>{service.price}$</h2>
@@ -48,6 +59,7 @@ export function SalonProfile() {
                                 </div>
                             ))}
                         </div>
+                        {openCalendar && <Calendar user={{userType: 'customer', customerId: auth.id, serviceId:Number(selectedService), salonId:Number(id)}}/>}
                     </div>
                     <div className="salon-team">
                         <h1>Meet Our Team</h1>
