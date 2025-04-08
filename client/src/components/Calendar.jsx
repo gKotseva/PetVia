@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react'
 import { IoIosArrowForward, IoIosArrowBack } from "react-icons/io";
 import { getSchedule } from '../handlers/calendarHandlers';
 
-export function Calendar ({user}) {
+export function Calendar({ user, onSelectDates }) {
     const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
     const weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
 
@@ -13,6 +13,7 @@ export function Calendar ({user}) {
     const [currentMonth, setCurrentMonth] = useState(currentDate.getMonth())
     const [currentYear, setCurrentYear] = useState(currentDate.getFullYear())
     const [schedule, setSchedule] = useState([])
+    const [selectedDates, setSelectedDates] = useState([])
 
     const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate()
     const firstDayOfMonth = new Date(currentYear, currentMonth, 1).getDay()
@@ -28,40 +29,57 @@ export function Calendar ({user}) {
     }
 
     useEffect(() => {
-        if (user.userType === 'customer'){
-            const fetchSchedule = async () => {
-                const response = await getSchedule(user.salonId, currentMonth + 1, currentYear);
-                setSchedule(response.schedule)
-            };
-    
-            fetchSchedule();
+        const fetchSchedule = async () => {
+            const response = await getSchedule(user.salonId, currentMonth + 1, currentYear);
+            setSchedule(response.schedule)
+        };
 
-        } else {
-            //tbd
-        }
+        fetchSchedule();
     }, [currentMonth, currentYear])
-    
+
+    const handleScheduleClick = (day) => {
+        if (!day.isPast) {
+            setSelectedDates(prev => {
+              const exists = prev.includes(day.date);
+              if (exists) {
+                return prev.filter(d => d !== day.date);
+              } else {
+                return [...prev, day.date];
+              }
+            });
+          }
+    }
+
+    useEffect(() => {
+        if (onSelectDates) {
+            onSelectDates(selectedDates);
+        }
+    }, [selectedDates]);
+
+
     return (
-        <div className="calendar">
-            <div className="calendar-header">
-                <h2>{months[currentMonth]}, {currentYear}</h2>
-                <div className="calendar-buttons">
-                    <IoIosArrowBack onClick={prevMonth} />
-                    <IoIosArrowForward onClick={nextMonth}/>
+        <div className='calendar-container'>
+            <div className="calendar">
+                <div className="calendar-header">
+                    <h2>{months[currentMonth]}, {currentYear}</h2>
+                    <div className="calendar-buttons">
+                        <IoIosArrowBack onClick={prevMonth} />
+                        <IoIosArrowForward onClick={nextMonth} />
+                    </div>
                 </div>
-            </div>
-            <div className="calendar-heading">
-                {weekdays.map(e => (
-                    <span key={e}>{e}</span>
-                ))}
-            </div>
-            <div className="calendar-days">
-                {[...Array(firstDayOfMonth).keys()].map((_, index) => (
-                    <span key={index}/>
-                ))}
-                {schedule?.map(e => (
-                    <span key={e.date} className={`user-${e.isPast ? 'past' : ''}${e.isToday ? 'today' : ''}${e.isFuture ? e.isWorking ? 'working' : 'not-working' : ''}`}>{new Date(e.date).getDate()}</span>
-                ))}
+                <div className="calendar-heading">
+                    {weekdays.map(e => (
+                        <span key={e}>{e}</span>
+                    ))}
+                </div>
+                <div className="calendar-days">
+                    {[...Array(firstDayOfMonth).keys()].map((_, index) => (
+                        <span key={index} />
+                    ))}
+                    {schedule?.map(e => (
+                        <span key={e.date} className={`user-${e.isPast ? 'past' : ''}${e.isToday ? 'today' : ''}${e.isFuture ? e.isWorking ? 'working' : 'not-working' : ''} ${selectedDates.includes(e.date) ? 'selected' : ''}`} onClick={user.calendarType === 'schedule' ? () => handleScheduleClick(e) : null}>{new Date(e.date).getDate()}</span>
+                    ))}
+                </div>
             </div>
         </div>
     )

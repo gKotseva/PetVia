@@ -1,3 +1,11 @@
+.calendar-container {
+    display: flex;
+    gap: 5em;
+    width: 100%;
+    height: auto;
+    align-items: flex-start;
+}
+
 .calendar {
     background: rgba(255, 255, 255, 0.61);
     padding: 2em;
@@ -65,4 +73,10 @@
 .user-not-working {
     color: red;
     cursor: default !important;
+}
+
+.selected {
+    background: var(--light-color) !important;
+    color: black !important;
+    border-radius: 50%;
 }
