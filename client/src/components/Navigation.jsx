@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { Form } from './Form';
 import { Modal } from './Modal';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export function Navigation() {
     const { auth, logout } = useAuth();
@@ -22,7 +22,7 @@ export function Navigation() {
     return (
         <div className="navigation-container">
             <div className="navigation-logo-container">
-                <img src="/petVIA-logo.png" alt="Logo" />
+                <img src="/image.png" alt="Logo" />
             </div>
             <div className="navigation-links-container">
                 <ul>
@@ -48,7 +48,7 @@ export function Navigation() {
                 </ul>
                 {isModalOpen && (
                     <Modal onClose={closeModal}>
-                        <Form formName={formName} closeModal={closeModal} openModal={openModal} />
+                        <Form formName={formName} closeModal={closeModal} openModal={openModal}/>
                     </Modal>
                 )}
             </div>
