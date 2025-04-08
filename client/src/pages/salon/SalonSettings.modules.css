@@ -9,7 +9,8 @@
 }
 
 .settings-individual-heading,
-.settings-appointments-view  {
+.settings-appointments-view,
+.schedule-settings-contents {
     margin-top: 2em;
 }
 
@@ -129,6 +130,7 @@ input {
 .settings-team-contents {
     display: flex;
     gap: 2em;
+    justify-content: space-evenly;
 }
 
 .settings-team-members {
@@ -186,7 +188,49 @@ input {
     gap: 2em;
 }
 
+/* Settings CSS */
 
+.settings-calendar h5,
+.settings-insert-schedule h5 {
+    margin-bottom: 2em;
+}
+
+.schedule-settings-contents {
+    display: flex;
+    gap: 5em;
+}
+
+.settings-insert-schedule form {
+    display: flex;
+    flex-direction: column;
+    background: rgba(255, 255, 255, 0.61);
+    padding: 2em 3em;
+    border-radius: 1em;
+}
+
+.settings-insert-schedule form label {
+    margin-bottom: 0.2em;
+}
+
+.settings-insert-schedule form button {
+    padding: 0.7em 2em;
+    border-radius: 1em;
+}
+
+input[type="time"] {
+    background-color: white;
+    color: #333;
+    padding: 0.5em 1em;
+    border: 1px solid #ccc;
+    border-radius: 0.5em;
+    margin-bottom: 1.5em;
+    text-align: center;
+}
+
+input[type="time"]::-webkit-inner-spin-button,
+input[type="time"]::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+}
 
 /* 
 

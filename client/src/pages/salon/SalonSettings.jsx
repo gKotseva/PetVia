@@ -12,11 +12,12 @@ import { GrSchedule } from "react-icons/gr";
 import { Loading } from '../../components/Loading';
 // // import { Calendar } from '../../components/Calendar';
 import { useAuth } from '../../context/AuthContext';
-import { addTeamMember, editSalonDetails, getSalonDetails, getTeam, deleteTeamMember, getServices, addService, deleteService } from '../../handlers/salonHandler';
+import { addTeamMember, editSalonDetails, getSalonDetails, getTeam, deleteTeamMember, getServices, addService, deleteService, addSchedule } from '../../handlers/salonHandler';
 import { useForm } from '../../hooks/useForm';
 import { useNotification } from '../../context/NotificationContext';
 import { Modal } from '../../components/Modal';
 import { Form } from '../../components/Form';
+import { Calendar } from '../../components/Calendar';
 // import { Modal } from '../../components/Modal';
 // import { Form } from '../../components/Form';
 
@@ -217,7 +218,7 @@ function AccountSettings() {
 function TeamSettings() {
   const auth = useAuth()
   const [teamDetails, setTeamDetails] = useState([])
-      const { showNotification } = useNotification();
+  const { showNotification } = useNotification();
 
   const handler = addTeamMember;
 
@@ -256,7 +257,7 @@ function TeamSettings() {
                 <div key={team_member_id} className="setting-team-member">
                   <img src={'./image.png'} alt={name} />
                   <h4>{name}</h4>
-                  <FaTrashAlt color='red' onClick={() => onDelete(team_member_id)}/>
+                  <FaTrashAlt color='red' onClick={() => onDelete(team_member_id)} />
                 </div>
               ))
             )}
@@ -326,23 +327,23 @@ function ServicesSettings() {
             <h5>Your current services</h5>
           </div>
           {services.length > 0 ? (
-                      <div className='settings-single-service'>
-                      {services?.map(({ service_id, name, price, duration, description }) => (
-                        <div className="settings-service" key={service_id}>
-                          <div className="setting-service-details">
-                            <h4>{name}</h4>
-                            <h4>{price}$</h4>
-                            <h4>{duration} min</h4>
-                            <p>{description}</p>
-                          </div>
-                          <div className="settings-buttons-container">
-                            <FaEdit color='green' onClick={() => openModal({ service_id, name, price, duration, description })} />
-                            <FaTrashAlt color='red' onClick={() => onDelete(service_id)} />
-                          </div>
-                        </div>
-                        || <Loading />
-                      ))}
-                    </div>
+            <div className='settings-single-service'>
+              {services?.map(({ service_id, name, price, duration, description }) => (
+                <div className="settings-service" key={service_id}>
+                  <div className="setting-service-details">
+                    <h4>{name}</h4>
+                    <h4>{price}$</h4>
+                    <h4>{duration} min</h4>
+                    <p>{description}</p>
+                  </div>
+                  <div className="settings-buttons-container">
+                    <FaEdit color='green' onClick={() => openModal({ service_id, name, price, duration, description })} />
+                    <FaTrashAlt color='red' onClick={() => onDelete(service_id)} />
+                  </div>
+                </div>
+                || <Loading />
+              ))}
+            </div>
           ) : (
             <p>You have no services added!</p>
           )}
@@ -402,10 +403,35 @@ function ServicesSettings() {
 }
 
 function ScheduleSettings() {
+  const auth = useAuth()
+  const [selectedDates, setSelectedDates] = useState([])
+  const handler = addSchedule
+  const { onChange, onSubmit } = useForm(handler, 'add-schedule', null, null, null, null, selectedDates);
+
   return (
     <div className="schedule-settings-container">
       <h3>Schedule Settings</h3>
-      {/* <Calendar user='salon' /> */}
+      <div className="schedule-settings-contents">
+        <div className="settings-calendar">
+          <h5>Your schedule</h5>
+          <Calendar user={{ userType: 'salon', salonId: auth.auth.id, calendarType: 'schedule' }}
+            onSelectDates={(dates) => { setSelectedDates(dates) }} />
+        </div>
+        <div className="settings-insert-schedule">
+          <h5>Insert hours for selected dates</h5>
+          <form onSubmit={onSubmit}>
+            <label>Start time</label>
+            <input type='time' name='open_time' onChange={onChange}></input>
+            <label>End time</label>
+            <input type='time' name='close_time' onChange={onChange}></input>
+            <label>Break start</label>
+            <input type='time' name='break_start' onChange={onChange}></input>
+            <label>Break end</label>
+            <input type='time' name='break_end' onChange={onChange}></input>
+            <button>Submit</button>
+          </form>
+        </div>
+      </div>
     </div>
   );
 }
