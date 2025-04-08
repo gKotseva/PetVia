@@ -48,3 +48,18 @@ exports.editService = (id, fields, values) => {
 
     return { query, queryParams };
 }
+
+exports.editService = (id, fields, values) => {
+    const query = `UPDATE services SET ${fields.map(field => `${field} = ?`).join(', ')} WHERE service_id = ?`;
+    const queryParams = [...values, id];
+
+    return { query, queryParams };
+}
+
+exports.addSchedule = (id, values, date) => {
+    const query = `
+            INSERT INTO salon_schedule (salon_id, work_date, open_time, close_time, break_start, break_end)
+            VALUES (${id}, '${date}', '${values.open_time}', '${values.close_time}', '${values.break_start}', '${values.break_end}')`
+
+    return query;
+}

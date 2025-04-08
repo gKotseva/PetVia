@@ -82,3 +82,12 @@ export const editService = async (data) => {
         // console.log(error)
     }
 }
+
+export const addSchedule = async (id, values, selectedDates) => {
+    try {
+        const response = await request.post(`/api/salon/add-schedule`, {id, values, selectedDates});
+        return response;
+    } catch (error) {
+        // console.log(error)
+    }
+}

@@ -1,4 +1,4 @@
-const { getDetails, editDetails, getTeam, addTeamMember, deleteTeamMember, getServices, addService, deleteService, editService } = require('../db/salonQueries')
+const { getDetails, editDetails, getTeam, addTeamMember, deleteTeamMember, getServices, addService, deleteService, editService, addSchedule } = require('../db/salonQueries')
 const db = require('../db/db');
 const router = require('express').Router()
 
@@ -92,6 +92,16 @@ router.delete('/delete-service', async(req, res) => {
     res.status(200).json({data: result});
 })
 
+router.post('/add-schedule', async(req, res) => {
+    const {id, values, selectedDates} = req.body
+
+    selectedDates.map(async (date) => {
+        const query = addSchedule(id, values, date)
+        await db.executeQuery(query)
+    })
+
+    res.status(200).json({message: 'Schedule added successfully, please re-load the page!'});
+})
 
 
 module.exports = router

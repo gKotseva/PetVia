@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNotification } from '../context/NotificationContext';
 
-export function useForm(handler, form, initialValues, closeModal, openModal, refreshData) {
+export function useForm(handler, form, initialValues, closeModal, openModal, refreshData, selectedDates) {
     const { login, auth } = useAuth();
     const { showNotification } = useNotification();
     const [values, setValues] = useState(() => initialValues || {});
@@ -12,7 +12,11 @@ export function useForm(handler, form, initialValues, closeModal, openModal, ref
             ...state,
             [e.target.name]: e.target.value
         }));
+
+        // console.log(values)
     };
+
+    // console.log(form)
 
     const getChangedFields = () => {
         const changedFields = {};
@@ -28,8 +32,8 @@ export function useForm(handler, form, initialValues, closeModal, openModal, ref
         }    
 
         return {id: auth.id, changedFields};
-    };    
-
+    };  
+    
     const onSubmit = async (e) => {
         e.preventDefault();
 
@@ -41,6 +45,8 @@ export function useForm(handler, form, initialValues, closeModal, openModal, ref
             } else if (form === 'edit-salon', form === 'edit-service', form === 'edit-user') {
                 const changedFields = getChangedFields()
                 response = await handler(changedFields)
+            } else if (form === 'add-schedule') {
+                response = await handler(auth.id, values, selectedDates)
             } else {
                 response = await handler(auth.id, values)
                 refreshData()
