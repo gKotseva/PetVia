@@ -232,7 +232,16 @@ input[type="time"]::-webkit-calendar-picker-indicator {
     filter: invert(1);
 }
 
-/* 
+/* Reviews CSS */
+
+.customer-reviews-settings-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2em;
+    align-items: flex-start; /* ensures vertical alignment to the top */
+    justify-content: flex-start; /* aligns items to the left horizontally */
+}
+
 
 .settings-review-container {
     margin-top: 2em;
@@ -245,7 +254,8 @@ input[type="time"]::-webkit-calendar-picker-indicator {
     flex-direction: column;
     gap: 1em;
     max-width: 20em;
-} */
+    text-align: center;
+}
 
 
 /* 

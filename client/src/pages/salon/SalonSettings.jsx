@@ -12,12 +12,13 @@ import { GrSchedule } from "react-icons/gr";
 import { Loading } from '../../components/Loading';
 // // import { Calendar } from '../../components/Calendar';
 import { useAuth } from '../../context/AuthContext';
-import { addTeamMember, editSalonDetails, getSalonDetails, getTeam, deleteTeamMember, getServices, addService, deleteService, addSchedule } from '../../handlers/salonHandler';
+import { addTeamMember, editSalonDetails, getSalonDetails, getTeam, deleteTeamMember, getServices, addService, deleteService, addSchedule, getReviews } from '../../handlers/salonHandler';
 import { useForm } from '../../hooks/useForm';
 import { useNotification } from '../../context/NotificationContext';
 import { Modal } from '../../components/Modal';
 import { Form } from '../../components/Form';
 import { Calendar } from '../../components/Calendar';
+import { displayReviewStars } from '../../components/DisplayReviewStars';
 // import { Modal } from '../../components/Modal';
 // import { Form } from '../../components/Form';
 
@@ -464,14 +465,31 @@ function GallerySettings() {
 }
 
 function CustomerReviewsSettings() {
+  const auth = useAuth()
+  const [reviews, setReviews] = useState([])
+
+  useEffect(() => {
+    const fetchReviews = async () => {
+      const result = await getReviews(auth.auth.id)
+      setReviews(result.data)
+    }
+    fetchReviews()
+  }, [])
+  
   return (
     <div className="customer-reviews-settings-container">
       <h3>Customer Reviews Settings</h3>
-      <div className="settings-review-container">
-        <h3>Example Example</h3>
-        <h4>*****</h4>
-        <p>Lovely description, example, example Lovely description, example, example</p>
-      </div>
+      {reviews.length > 0 ? (
+        reviews.map(review => (
+          <div className="settings-review-container" key={review.review_id}>
+            <h3>{review.first_name}, {review.last_name}</h3>
+            <h4>{displayReviewStars(review.rating)}</h4>
+            <p>{review.comment}</p>
+        </div>
+        ))
+      ) : (
+        <Loading />
+      )}
     </div>
   );
 }
