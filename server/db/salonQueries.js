@@ -63,3 +63,11 @@ exports.addSchedule = (id, values, date) => {
 
     return query;
 }
+
+exports.getReviews = (id) => {
+    const query = `SELECT review_id, rating, comment, r.created_at, first_name, last_name FROM reviews r
+                    JOIN users u on r.user_id=u.user_id
+                    WHERE salon_id = ${id};`
+
+    return query;
+}

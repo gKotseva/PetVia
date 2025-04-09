@@ -91,3 +91,12 @@ export const addSchedule = async (id, values, selectedDates) => {
         // console.log(error)
     }
 }
+
+export const getReviews = async (id) => {
+    try {
+        const response = await request.get(`/api/salon/reviews?id=${id}`);
+        return response;
+    } catch (error) {
+        // console.log(error)
+    }
+}
