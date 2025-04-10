@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react'
 import { IoIosArrowForward, IoIosArrowBack } from "react-icons/io";
 import { getSchedule } from '../handlers/calendarHandlers';
 
-export function Calendar({ user, onSelectDates }) {
+export function Calendar({ user, onSelectDates, onShowAppointments }) {
     const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
     const weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
 
@@ -15,7 +15,6 @@ export function Calendar({ user, onSelectDates }) {
     const [schedule, setSchedule] = useState([])
     const [selectedDates, setSelectedDates] = useState([])
 
-    const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate()
     const firstDayOfMonth = new Date(currentYear, currentMonth, 1).getDay()
 
     const prevMonth = () => {
@@ -40,14 +39,14 @@ export function Calendar({ user, onSelectDates }) {
     const handleScheduleClick = (day) => {
         if (!day.isPast) {
             setSelectedDates(prev => {
-              const exists = prev.includes(day.date);
-              if (exists) {
-                return prev.filter(d => d !== day.date);
-              } else {
-                return [...prev, day.date];
-              }
+                const exists = prev.includes(day.date);
+                if (exists) {
+                    return prev.filter(d => d !== day.date);
+                } else {
+                    return [...prev, day.date];
+                }
             });
-          }
+        }
     }
 
     useEffect(() => {
@@ -56,6 +55,15 @@ export function Calendar({ user, onSelectDates }) {
         }
     }, [selectedDates]);
 
+    const handleUserClick = (day) => {
+        if (!day.isWorking || day.isPast) {
+            return
+        } else {
+            if (onShowAppointments) {
+                onShowAppointments(day.date)
+            }
+        }
+    }
 
     return (
         <div className='calendar-container'>
@@ -77,7 +85,15 @@ export function Calendar({ user, onSelectDates }) {
                         <span key={index} />
                     ))}
                     {schedule?.map(e => (
-                        <span key={e.date} className={`user-${e.isPast ? 'past' : ''}${e.isToday ? 'today' : ''}${e.isFuture ? e.isWorking ? 'working' : 'not-working' : ''} ${selectedDates.includes(e.date) ? 'selected' : ''}`} onClick={user.calendarType === 'schedule' ? () => handleScheduleClick(e) : null}>{new Date(e.date).getDate()}</span>
+                        <span key={e.date} 
+                            className={`user-${e.isPast ? 'past' : ''}${e.isToday ? 'today' : ''}${e.isFuture ? e.isWorking ? 'working' : 'not-working' : ''} ${selectedDates.includes(e.date) ? 'selected' : ''}`} 
+                            onClick={
+                                user.calendarType === 'schedule'
+                                  ? () => handleScheduleClick(e)
+                                  : user.userType === 'customer'
+                                  ? () => handleUserClick(e)
+                                  : null
+                              }>{new Date(e.date).getDate()}</span>
                     ))}
                 </div>
             </div>
