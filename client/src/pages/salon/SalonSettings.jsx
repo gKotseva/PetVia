@@ -475,21 +475,23 @@ function CustomerReviewsSettings() {
     }
     fetchReviews()
   }, [])
-  
+
   return (
     <div className="customer-reviews-settings-container">
       <h3>Customer Reviews Settings</h3>
-      {reviews.length > 0 ? (
-        reviews.map(review => (
-          <div className="settings-review-container" key={review.review_id}>
-            <h3>{review.first_name}, {review.last_name}</h3>
-            <h4>{displayReviewStars(review.rating)}</h4>
-            <p>{review.comment}</p>
-        </div>
-        ))
-      ) : (
-        <Loading />
-      )}
+      <div className="review-settings-container">
+        {reviews.length > 0 ? (
+          reviews.map(review => (
+            <div className="settings-review-container" key={review.review_id}>
+              <h3>{review.first_name}, {review.last_name}</h3>
+              <h4>{displayReviewStars(review.rating)}</h4>
+              <p>{review.comment}</p>
+            </div>
+          ))
+        ) : (
+          <Loading />
+        )}
+      </div>
     </div>
   );
 }
