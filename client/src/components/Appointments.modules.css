@@ -1,0 +1,29 @@
+
+.appointments {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 3px;
+    margin-top: 1em;
+    max-width: 30em;
+}
+
+.appointments > .appointment {
+    flex: 1 1 38%;
+    box-sizing: border-box;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.appointment-booked,
+.appointment-break, 
+.appointment-not-available {
+    background: grey;
+    color: white;
+    pointer-events: none;
+}
+
+.appointment-free {
+    background: green;
+    color: white;
+    cursor: pointer;
+}
