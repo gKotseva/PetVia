@@ -1,6 +1,7 @@
 const router = require('express').Router()
 const db = require('../db/db');
-const { getAllSalons, getAllAppointmentsCount, getAllServicesPerDetails, getSalonsPerData, getSalonReviews, getDetails, getTeam, getServices } = require('../db/sharedQueries');
+const { getAllSalons, getAllAppointmentsCount, getAllServicesPerDetails, getSalonsPerData, getSalonReviews, getDetails, getTeam, getServices, getAppointments, getSchedule } = require('../db/sharedQueries');
+const { generateSlots } = require('../utils/calendar');
 const { formatDate } = require('../utils/date');
 const { averageRating } = require('../utils/rating');
 
@@ -68,5 +69,18 @@ router.get('/details', async(req, res) => {
     res.status(200).json({data: {salonDetails: salonInfo[0], reviews: salonReviews, team: salonTeam, services: salonServices, averageRating: average}});
 })
 
+router.get('/slots', async(req, res) => {
+    const {user_type, id, service_duration, selected_date} = req.query
+
+    const salonScheduleQuery = getSchedule(id, selected_date)
+    const salonSchedule = await db.executeQuery(salonScheduleQuery)
+
+    const salonAppointmentsQuery = getAppointments(id, selected_date)
+    const salonAppointments = await db.executeQuery(salonAppointmentsQuery)
+
+    const slots = generateSlots(salonSchedule[0], salonAppointments, service_duration, user_type)
+
+    res.status(200).json({data: slots});
+})
 
 module.exports = router

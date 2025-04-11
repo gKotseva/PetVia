@@ -41,11 +41,25 @@ exports.getDetails = (id) => {
 }
 
 exports.getTeam = (id) => {
-    const query = `select * from team_members WHERE salon_id = ${id}`
+    const query = `SELECT * FROM team_members WHERE salon_id = ${id}`
     return query
 }
 
 exports.getServices = (id) => {
-    const query = `select * from services WHERE salon_id = ${id}`
+    const query = `SELECT * FROM services WHERE salon_id = ${id}`
+    return query
+}
+
+exports.getAppointments = (id, date) => {
+    const query = `
+            SELECT * FROM appointments a
+            JOIN services s ON a.service_id = s.service_id
+            WHERE a.salon_id = 3 and a.appointment_date = '${date}';
+        `
+    return query
+}
+
+exports.getSchedule = (id, date) => {
+    const query = `SELECT * FROM salon_schedule WHERE salon_id = ${id} and work_date = '${date}'`
     return query
 }
