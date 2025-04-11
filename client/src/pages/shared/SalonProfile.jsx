@@ -3,10 +3,11 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { getSalonDetails } from '../../handlers/sharedHandlers';
 import { Loading } from '../../components/Loading';
-import { displayReviewStars } from '../../components/displayReviewStars';
+import { displayReviewStars } from '../../components/DisplayReviewStars';
 import { IoIosArrowForward } from "react-icons/io";
 import { Calendar } from '../../components/Calendar';
-import {useAuth} from '../../context/AuthContext';
+import { useAuth } from '../../context/AuthContext';
+import { Appointments } from '../../components/Appointments';
 
 export function SalonProfile() {
     const { id } = useParams();
@@ -14,6 +15,8 @@ export function SalonProfile() {
     const [salonInfo, setSalonInfo] = useState({})
     const [openCalendar, setOpenCalendar] = useState(false)
     const [selectedService, setSelectedService] = useState(null)
+    const [selectedDay, setSelectedDay] = useState(null)
+    const [showAppointments, setShowAppointments] = useState(false)
 
     useEffect(() => {
         const fetchSalonInfo = async () => {
@@ -23,14 +26,20 @@ export function SalonProfile() {
             } catch (error) {
             }
         };
-
         fetchSalonInfo();
+
     }, [id]);
 
     const showCalendar = (e) => {
-        const serviceId = e.currentTarget.dataset.serviceId;
-        setSelectedService(serviceId)
-        setOpenCalendar(true)
+        const serviceId = Number(e.currentTarget.dataset.serviceId);
+        const service = salonInfo.services.find(s => s.service_id === serviceId);
+        setSelectedService(service);
+        setOpenCalendar(true);
+    };
+
+    const handleShowAppointments = (date) => {
+        setShowAppointments(true)
+        setSelectedDay(date)
     }
 
     return (
@@ -51,7 +60,7 @@ export function SalonProfile() {
                     <div className="salon-services">
                         <div className="services-container">
                             {salonInfo.services.map(service => (
-                                <div className={`service-container ${Number(selectedService) === service.service_id ? 'selected' : ''}`} data-service-id={service.service_id} key={service.service_id} onClick={showCalendar}>
+                                <div className={`service-container ${Number(selectedService.service_id) === service.service_id ? 'selected' : ''}`} data-service-id={service.service_id} key={service.service_id} onClick={showCalendar}>
                                     <h2>{service.name}</h2>
                                     <h2>{service.duration} minutes</h2>
                                     <h2>{service.price}$</h2>
@@ -59,7 +68,15 @@ export function SalonProfile() {
                                 </div>
                             ))}
                         </div>
-                        {openCalendar && <Calendar user={{userType: 'customer', customerId: auth.id, serviceId:Number(selectedService), salonId:Number(id)}}/>}
+                        {openCalendar && <Calendar
+                            user={{ userType: 'customer', customerId: auth.id, serviceId: Number(selectedService), salonId: Number(id) }}
+                            onShowAppointments={handleShowAppointments}
+                        />}
+                        {showAppointments && (<Appointments user_type="customer"
+                            key={`${selectedDay}-${selectedService?.service_id}`}
+                            id={id}
+                            service_duration={selectedService.duration}
+                            selected_date={selectedDay} />)}
                     </div>
                     <div className="salon-team">
                         <h1>Meet Our Team</h1>
@@ -91,6 +108,5 @@ export function SalonProfile() {
                 <Loading />
             )}
         </div>
-
     )
 }
