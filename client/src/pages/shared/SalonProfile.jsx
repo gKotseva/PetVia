@@ -60,7 +60,7 @@ export function SalonProfile() {
                     <div className="salon-services">
                         <div className="services-container">
                             {salonInfo.services.map(service => (
-                                <div className={`service-container ${Number(selectedService.service_id) === service.service_id ? 'selected' : ''}`} data-service-id={service.service_id} key={service.service_id} onClick={showCalendar}>
+                                <div className={`service-container ${Number(selectedService?.service_id) === service.service_id ? 'selected' : ''}`} data-service-id={service.service_id} key={service.service_id} onClick={showCalendar}>
                                     <h2>{service.name}</h2>
                                     <h2>{service.duration} minutes</h2>
                                     <h2>{service.price}$</h2>
