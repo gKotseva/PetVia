@@ -75,12 +75,17 @@ router.get('/slots', async(req, res) => {
     const salonScheduleQuery = getSchedule(id, selected_date)
     const salonSchedule = await db.executeQuery(salonScheduleQuery)
 
-    const salonAppointmentsQuery = getAppointments(id, selected_date)
-    const salonAppointments = await db.executeQuery(salonAppointmentsQuery)
+    if (salonSchedule.length > 0){
+        const salonAppointmentsQuery = getAppointments(id, selected_date)
+        const salonAppointments = await db.executeQuery(salonAppointmentsQuery)
+    
+        const slots = generateSlots(salonSchedule[0], salonAppointments, service_duration, user_type)
+    
+        res.status(200).json({data: slots});
+    } else {
+        res.status(500).json({message: 'No schedule for today!'});
+    }
 
-    const slots = generateSlots(salonSchedule[0], salonAppointments, service_duration, user_type)
-
-    res.status(200).json({data: slots});
 })
 
 module.exports = router
