@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useLocation, Link } from "react-router-dom";
 import { getSalonsPerData } from '../../handlers/sharedHandlers';
 import { MdLocationPin } from "react-icons/md";
-import { displayReviewStars } from '../../components/displayReviewStars';
+import { displayReviewStars } from '../../components/DisplayReviewStars';
 
 
 export function Salons() {
