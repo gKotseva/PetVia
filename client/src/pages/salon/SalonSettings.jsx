@@ -19,18 +19,24 @@ import { Modal } from '../../components/Modal';
 import { Form } from '../../components/Form';
 import { Calendar } from '../../components/Calendar';
 import { displayReviewStars } from '../../components/DisplayReviewStars';
+import { Appointments } from '../../components/Appointments';
 // import { Modal } from '../../components/Modal';
 // import { Form } from '../../components/Form';
 
 
 export function SalonSettings() {
   const [activeSetting, setActiveSetting] = useState('account');
+  const auth = useAuth()
+  const today = new Date()
+  const formattedToday = `${today.getFullYear()}-${(today.getMonth() + 1).toString().padStart(2, '0')}-${today.getDate().toString().padStart(2, '0')}`
 
   const toggleSettings = (component) => {
     if (activeSetting !== component || activeSetting === 'account') {
       setActiveSetting(component);
     }
   };
+
+  console.log(auth)
 
   return (
     <div className="salon-settings-container">
@@ -55,31 +61,19 @@ export function SalonSettings() {
         {activeSetting === 'gallery' && <GallerySettings />}
         {activeSetting === 'customer_reviews' && <CustomerReviewsSettings />}
       </div>
-      <div className="settings-active-schedule-container">
-        <h2>Today</h2>
-        <div className="settings-appointments-view">
-          <div className="settings-appointment busy">
-            <h5>8:30 - 9:30</h5>
-            <h5>Full Grooming</h5>
-          </div>
-          <div className="settings-appointment free">
-            <h5>9:30 - 10:30</h5>
-            <h5>Free</h5>
-          </div>
-          <div className="settings-appointment busy">
-            <h5>10:30 - 11:00</h5>
-            <h5>Nail clipping</h5>
-          </div>
-          <div className="settings-appointment free">
-            <h5>11:00 - 14:30</h5>
-            <h5>Free</h5>
-          </div>
-          <div className="settings-appointment break">
-            <h5>14:30 - 15:00</h5>
-            <h5>Break</h5>
+      {auth.auth ? (
+        <div className="settings-active-schedule-container">
+          <h2>Today</h2>
+          <div className="settings-appointments-view">
+            <Appointments
+              user_type="salon"
+              id={auth.auth.id}
+              service_duration={null}
+              selected_date={formattedToday}
+            />
           </div>
         </div>
-      </div>
+      ) : (<Loading />)}
     </div>
   );
 }
