@@ -9,7 +9,11 @@ export function Appointments({ user_type, id, service_duration, selected_date })
     useEffect(() => {
         const fetchSchedule = async () => {
             const response = await getSlots(user_type, id, service_duration, selected_date)
-            setSlots(response.data)
+            if (response.data) {
+                setSlots(response.data)
+            } else {
+                console.log(response)
+            }
         }
         fetchSchedule()
     }, [])
@@ -17,13 +21,17 @@ export function Appointments({ user_type, id, service_duration, selected_date })
     return (
         <>
             <div className="appointments-container">
-                <h3>Please select your slot:</h3>
+                {user_type === 'customer' ? (<h3>Please select your slot:</h3>) : null}
                 <div className="appointments">
-                    {slots.map(e => (
-                        <div className={`appointment appointment-${e.status}`} key={e.slot}>
-                            <h4>{e.slot}</h4>
-                        </div>
-                    ))}
+                    {slots.length > 0 ? (
+                        slots.map(e => (
+                            <div className={`appointment appointment-${e.status}`} key={e.slot}>
+                                <h4>{e.slot}</h4>
+                            </div>
+                        ))
+                    ) : (
+                        <h1>Nothing to show!</h1>
+                    )}
                 </div>
             </div>
         </>
