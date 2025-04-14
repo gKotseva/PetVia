@@ -1,7 +1,6 @@
 .calendar-container {
     display: flex;
     gap: 5em;
-    width: 100%;
     height: auto;
     align-items: flex-start;
 }
