@@ -100,3 +100,12 @@ export const getReviews = async (id) => {
         // console.log(error)
     }
 }
+
+export const getAppointments = async () => {
+    try {
+        const response = await request.get(`/api/salon/appointments`);
+        return response;
+    } catch (error) {
+        // console.log(error)
+    }
+}
