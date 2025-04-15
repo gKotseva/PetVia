@@ -71,3 +71,48 @@ exports.getReviews = (id) => {
 
     return query;
 }
+
+exports.getOpenCloseTime = (id, month) => {
+    const paddedMonth = String(month).padStart(2, '0');
+    const query = `
+        SELECT
+            MIN(open_time) AS earliest_open_time,
+            MAX(close_time) AS latest_close_time
+        FROM
+            salon_schedule
+        WHERE
+            salon_id = ${id}
+        AND
+            work_date LIKE '%-${paddedMonth}-%';`;
+
+    return query;
+}
+
+exports.getSchedule = (id, month) => {
+    const paddedMonth = String(month).padStart(2, '0');
+    const query = `
+        SELECT *
+        FROM
+            salon_schedule
+        WHERE
+            salon_id = ${id}
+        AND
+            work_date LIKE '%-${paddedMonth}-%';`;
+
+    return query;
+}
+
+exports.getAppointments = (id, month) => {
+    const paddedMonth = String(month).padStart(2, '0');
+    const query = `
+            SELECT a.appointment_id, a.appointment_date, a.start_time, s.duration, s.name
+            FROM
+                appointments a
+			JOIN services s ON s.service_id = a.service_id
+            WHERE
+                a.salon_id = ${id}
+            AND
+                appointment_date LIKE '%-${paddedMonth}-%';`;
+
+    return query;
+}
