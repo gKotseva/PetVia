@@ -10,7 +10,6 @@ import { AiOutlineSchedule } from "react-icons/ai";
 import { GrSchedule } from "react-icons/gr";
 
 import { Loading } from '../../components/Loading';
-// // import { Calendar } from '../../components/Calendar';
 import { useAuth } from '../../context/AuthContext';
 import { addTeamMember, editSalonDetails, getSalonDetails, getTeam, deleteTeamMember, getServices, addService, deleteService, addSchedule, getReviews } from '../../handlers/salonHandler';
 import { useForm } from '../../hooks/useForm';
@@ -20,8 +19,9 @@ import { Form } from '../../components/Form';
 import { Calendar } from '../../components/Calendar';
 import { displayReviewStars } from '../../components/DisplayReviewStars';
 import { Appointments } from '../../components/Appointments';
-// import { Modal } from '../../components/Modal';
-// import { Form } from '../../components/Form';
+import { IoIosArrowForward, IoIosArrowBack } from "react-icons/io";
+import { getAppointments } from "../../handlers/salonHandler";
+import { formatDate } from '../../utils/date';
 
 
 export function SalonSettings() {
@@ -35,8 +35,6 @@ export function SalonSettings() {
       setActiveSetting(component);
     }
   };
-
-  console.log(auth)
 
   return (
     <div className="salon-settings-container">
@@ -432,10 +430,85 @@ function ScheduleSettings() {
 }
 
 function AppointmentsSettings() {
+  const [currentWeekIndex, setCurrentWeekIndex] = useState(0);
+  const [appointments, setAppointments] = useState({});
+
+  useEffect(() => {
+    const fetchSchedule = async () => {
+      const result = await getAppointments();
+      setAppointments(result.data || {});
+    };
+
+    fetchSchedule();
+  }, []);
+
+  function getStartOfWeek(date) {
+    const day = date.getDay();
+    const diff = day === 0 ? -6 : 1 - day;
+    const monday = new Date(date);
+    monday.setDate(date.getDate() + diff);
+    monday.setHours(0, 0, 0, 0);
+    return monday;
+  }
+
+  function getDayName(date) {
+    return date.toLocaleDateString('en-US', { weekday: 'short' });
+  }
+
+  const goToPreviousWeek = () => {
+    setCurrentWeekIndex((prev) => prev - 1);
+  };
+
+  const goToNextWeek = () => {
+    setCurrentWeekIndex((prev) => prev + 1);
+  };
+
+  const today = new Date();
+  const baseMonday = getStartOfWeek(today);
+  const monday = new Date(baseMonday);
+  monday.setDate(baseMonday.getDate() + currentWeekIndex * 7);
+
+  const weekDays = Array.from({ length: 7 }, (_, i) => {
+    const day = new Date(monday);
+    day.setDate(monday.getDate() + i);
+    return day;
+  });
+
   return (
     <div className="appointments-settings-container">
-      <h3>Your appointments</h3>
-      {/* <Calendar user='salon' /> */}
+      <h3 className='appointments-settings-title'>Your appointments</h3>
+      <div className="navigation">
+        <h4 className="week-title">Week of {formatDate(weekDays[0])}</h4>
+        <div className="navigation-buttons">
+          <IoIosArrowBack onClick={goToPreviousWeek} />
+          <IoIosArrowForward onClick={goToNextWeek} />
+        </div>
+      </div>
+      <div className="calendar-grid">
+        {weekDays.map((date) => {
+          const dateStr = formatDate(date);
+          const dayName = getDayName(date);
+          const dayAppointments = appointments[dateStr];
+
+          return (
+            <div key={dateStr} className="day-card">
+              <div className="day-name">{dayName}</div>
+              <div className="day-date">{dateStr}</div>
+              <div className="slots">
+                {dayAppointments ? (
+                  dayAppointments.map((slot, index) => (
+                    <div key={index} className={`slot ${slot.status}`}>
+                      {slot.slot} - {slot.status}
+                    </div>
+                  ))
+                ) : (
+                  <div className="slot none">No schedule available</div>
+                )}
+              </div>
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 }
