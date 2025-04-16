@@ -1,8 +1,3 @@
-// exports.compareDates = (first_date, second_date) => {
-//     console.log(first_date)
-//     console.log(second_date)
-// }
-
 exports.formatDate = (date) => {
     return `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`
 }

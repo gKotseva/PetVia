@@ -54,6 +54,7 @@ exports.generateSlots = (schedule, appointments, service_duration, user_type) =>
 
         appointments.forEach(app => {
             const appointmentStart = convertTimeToMinutes(app.start_time);
+            
             const appointmentEnd = appointmentStart + app.duration;
 
             if (currentTime >= appointmentStart && currentTime < appointmentEnd) {

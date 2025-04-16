@@ -11,8 +11,6 @@ export function Appointments({ user_type, id, service_duration, selected_date })
             const response = await getSlots(user_type, id, service_duration, selected_date)
             if (response.data) {
                 setSlots(response.data)
-            } else {
-                console.log(response)
             }
         }
         fetchSchedule()
@@ -30,7 +28,7 @@ export function Appointments({ user_type, id, service_duration, selected_date })
                             </div>
                         ))
                     ) : (
-                        <h1>Nothing to show!</h1>
+                        <h5>No appointments!</h5>
                     )}
                 </div>
             </div>

@@ -122,11 +122,6 @@ router.get('/appointments', async (req, res) => {
     const salonScheduleQuery = getSchedule(id, month)
     const salonSchedule = await db.executeQuery(salonScheduleQuery)
 
-    // for (const salon of salonSchedule) {
-    //     salon.earliest_open_time = salon.earliest_open_time.slice(0, 5);            
-    //     salon.latest_close_time = salon.latest_close_time.slice(0, 5);            
-    // }
-
     const slots = {}
 
     if (salonSchedule.length > 0) {

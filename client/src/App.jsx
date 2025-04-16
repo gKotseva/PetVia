@@ -22,7 +22,6 @@ function App() {
         <Route path={paths.salons} element={<Salons />} />
         <Route path={paths.home} element={<Home />} />
         <Route path={paths.salonProfile} element={<SalonProfile />} />
-        {/* <Route path={paths.test} element={<Test />} /> */}
       </Routes>
     <Footer />
     </AuthProvider>
