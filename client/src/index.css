@@ -8,9 +8,7 @@
 
 :root {
     --dark-color: #1b4d3e;
-    /* --lighter-color: #133e87; */
     --light-color: #c1d8c3;
-    /* --neutral: #d8c4b6; */
     --background: #eee5e2ea;
 }
 
@@ -26,4 +24,22 @@ h1, h2, h3, h4, h5, h6 {
     font-family: "Gabriela", serif;
     font-weight: 400;
     font-style: normal;
+}
+
+.custom-button {
+    background: var(--dark-color);
+    color: white;
+    padding: 12px 15px;
+    width: 15em;
+    align-self: center;
+    border: none;
+    border-radius: 2em;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: 0.3s ease-in-out;
+}
+
+.custom-button:hover {
+    background-color: var(--light-color);
+    color: black;
 }

@@ -421,7 +421,7 @@ function ScheduleSettings() {
             <input type='time' name='break_start' onChange={onChange}></input>
             <label>Break end</label>
             <input type='time' name='break_end' onChange={onChange}></input>
-            <button>Submit</button>
+            <button className='custom-button'>Submit</button>
           </form>
         </div>
       </div>
