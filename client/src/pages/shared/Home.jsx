@@ -101,7 +101,7 @@ export function Home() {
                 </div>
                 <div className="div">
                     <img src="./image.png" alt="Appointments" />
-                    <h3>{appointmentsCount} appointment booked through PetVia!</h3>
+                    <h3>{appointmentsCount} appointments booked through PetVia!</h3>
                 </div>
                 <div className="div">
                     <img src="./image.png" alt="Grooming salons" />
