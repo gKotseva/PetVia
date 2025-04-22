@@ -2,12 +2,13 @@
     display: flex;
     padding: 1em;
     justify-content: space-evenly;
+    margin-top: 2em;
+    margin-bottom: 2em;
 }
 
 .customer-update-info form {
     display: flex;
     flex-direction: column;
-    margin-top: 2em;
 }
 
 .customer-update-info form label {
@@ -32,8 +33,15 @@
 }
 
 .customer-outstanding-appointments,
-.customer-past-appointments {
+.customer-past-appointments,
+.customer-update-info form {
     max-width: 30em;
+    background: rgba(255, 255, 255, 0.61);
+    border-radius: 1em;
+    padding: 2em;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .places-container {
@@ -51,10 +59,20 @@
     justify-content: center;
 }
 
+.place-details:hover {
+    cursor: pointer;
+}
+
 .delete-button {
     margin-top: 1em;
     display: block; 
     margin-left: auto; 
     margin-right: auto;
-    min-width: 10em;
+    background: red;
+    border-radius: 1em;
+    border: none;
+    padding: 0.5em 2em;
+    text-transform: uppercase;
+    color: white;
+    letter-spacing: 1px;
 }

@@ -4,12 +4,14 @@ import { useEffect, useState } from 'react';
 import { useForm } from '../../hooks/useForm';
 import { useAuth } from '../../context/AuthContext';
 import { Loading } from '../../components/Loading';
-import { getUserDetails, getUserBookings, updateUserDetails } from '../../handlers/userHandler';
+import { useNavigate } from 'react-router-dom';
+import { getUserDetails, getUserBookings, updateUserDetails } from '../../handlers/userHandlers';
 
 export function ClientProfile() {
     const handler = updateUserDetails;
     const [initialValues, setInitialValues] = useState({});
     const form = 'edit-user'
+    const navigate = useNavigate()
 
     const { auth } = useAuth();
     const [userData, setUserData] = useState(null);
@@ -37,7 +39,7 @@ export function ClientProfile() {
     return (
         <div className="customer-profile-container">
             <div className="customer-update-info">
-                <h2>My Information</h2>
+                <h4>My Information</h4>
                 {userData ? (
                     <form onSubmit={onSubmit}>
                         <label>First Name</label>
@@ -87,9 +89,9 @@ export function ClientProfile() {
                     <div className="customer-outstanding-appointments">
                         {bookings.future?.length > 0 ? (
                             <div className='places-container'>
-                                <h2>Upcoming Appointments</h2>
+                                <h4>Upcoming Appointments</h4>
                                 {bookings.future.map(e => (
-                                    <div className='place-details' key={e.appointment_id}>
+                                    <div className='place-details' key={e.appointment_id} onClick={() => navigate(`/salon/${e.salon_id}`)}>
                                         <img src='/image.png' alt={e.name} />
                                         <h3>{e.name}</h3>
                                         <h4>{e.appointment_date}</h4>
@@ -102,16 +104,16 @@ export function ClientProfile() {
                             </div>
                         ) : (
                             <div className='place-details'>
-                                <h2>You have no upcoming appointments!</h2>
+                                <h4>You have no upcoming appointments!</h4>
                             </div>
                         )}
                     </div>
                     <div className="customer-past-appointments">
                         {bookings.past?.length > 0 ? (
                             <div className='places-container'>
-                                <h2>Past Appointments</h2>
+                                <h4>Past Appointments</h4>
                                 {bookings.past.map(e => (
-                                    <div className='place-details' key={e.appointment_id}>
+                                    <div className='place-details' key={e.appointment_id} onClick={() => navigate(`/salon/${e.salon_id}`)}>
                                         <img src='/image.png' alt={e.name} />
                                         <h3>{e.name}</h3>
                                         <h4>{e.appointment_date}</h4>
@@ -124,7 +126,7 @@ export function ClientProfile() {
                             </div>
                         ) : (
                             <div className='place-details'>
-                                <h2>You have no past appointments!</h2>
+                                <h4>You have no past appointments!</h4>
                             </div>
                         )}
                     </div>
