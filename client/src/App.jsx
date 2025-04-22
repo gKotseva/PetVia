@@ -16,7 +16,6 @@ function App() {
 
   return (
     <>
-      <NotificationProvider>
         <Navigation />
         <Routes>
           <Route
@@ -41,7 +40,6 @@ function App() {
           <Route path='*' element={<NotFound />} />
         </Routes>
         <Footer />
-      </NotificationProvider>
     </>
   )
 }

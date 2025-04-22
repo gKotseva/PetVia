@@ -1,9 +1,11 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
+import { useNotification } from './NotificationContext';
 
 const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
     const [auth, setAuth] = useState(null);
+    const {showNotification} = useNotification()
 
     useEffect(() => {
         const storedUser = localStorage.getItem('user');
@@ -33,6 +35,7 @@ export function AuthProvider({ children }) {
         setAuth(null);
         localStorage.removeItem('user');
         localStorage.removeItem('salon');
+        showNotification('Logout successfull!', 'success')
     };
 
     return (
