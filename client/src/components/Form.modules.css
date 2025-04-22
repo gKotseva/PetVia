@@ -39,15 +39,10 @@ label {
     margin-bottom: 0.5em;
 }
 
-.form-row {
+.form-form-row {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 0.5em;
-}
-
-.form-column {
-    display: flex;
-    flex-direction: column;
 }
 
 .input-group {
