@@ -4,10 +4,10 @@ import { useForm } from '../hooks/useForm';
 import { FcGoogle } from 'react-icons/fc';
 import { CiLogin } from "react-icons/ci";
 import { login, register } from '../handlers/authHandlers';
-import { editService } from '../handlers/salonHandler';
+import { editService } from '../handlers/salonHandlers';
 
 
-export function Form({ formName, closeModal, openModal, editData }) {
+export function Form({ formName, closeModal, openModal, editData, refreshData }) {
     const [accountType, setAccountType] = useState('customer');
 
     const toggleAccountType = () => {
@@ -32,7 +32,7 @@ export function Form({ formName, closeModal, openModal, editData }) {
         'edit-service': [{ label: 'Name', name: 'name', type: 'text' }, { label: 'Price', name: 'price', type: 'text' }, { label: 'Duration', name: 'duration', type: 'text' }, { label: 'Description', name: 'description', type: 'text' }]
     };
 
-    const { values, onChange, onSubmit } = useForm(handler, formName === 'login' || formName === 'register' ? {accountType, form: formName} : formName, editData, closeModal, openModal);
+    const { values, onChange, onSubmit } = useForm(handler, formName === 'login' || formName === 'register' ? {accountType, form: formName} : formName, editData, closeModal, openModal, refreshData);
 
     return (
         formName === 'login' || formName === 'register' ? (
@@ -42,7 +42,7 @@ export function Form({ formName, closeModal, openModal, editData }) {
                 <p className='form-heading'>{accountType} {formName}</p>
                 <form onSubmit={onSubmit}>
                     {formName === 'register' ? (
-                        <div className="form-row">
+                        <div className="form-form-row">
                             {forms[accountType][formName].map(({ type, label, name }, index) => (
                                 <div key={name} className="form-column">
                                     <div className="input-group">

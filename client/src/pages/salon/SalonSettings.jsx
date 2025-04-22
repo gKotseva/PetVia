@@ -11,7 +11,7 @@ import { GrSchedule } from "react-icons/gr";
 
 import { Loading } from '../../components/Loading';
 import { useAuth } from '../../context/AuthContext';
-import { addTeamMember, editSalonDetails, getSalonDetails, getTeam, deleteTeamMember, getServices, addService, deleteService, addSchedule, getReviews } from '../../handlers/salonHandler';
+import { addTeamMember, editSalonDetails, getSalonDetails, getTeam, deleteTeamMember, getServices, addService, deleteService, addSchedule, getReviews } from '../../handlers/salonHandlers';
 import { useForm } from '../../hooks/useForm';
 import { useNotification } from '../../context/NotificationContext';
 import { Modal } from '../../components/Modal';
@@ -20,7 +20,7 @@ import { Calendar } from '../../components/Calendar';
 import { displayReviewStars } from '../../components/DisplayReviewStars';
 import { Appointments } from '../../components/Appointments';
 import { IoIosArrowForward, IoIosArrowBack } from "react-icons/io";
-import { getAppointments } from "../../handlers/salonHandler";
+import { getAppointments } from "../../handlers/salonHandlers";
 import { formatDate } from '../../utils/date';
 
 
@@ -388,7 +388,7 @@ function ServicesSettings() {
       </div>
       {isModalOpen && (
         <Modal onClose={closeModal}>
-          <Form formName={'edit-service'} closeModal={closeModal} openModal={openModal} editData={initialValues} />
+          <Form formName={'edit-service'} closeModal={closeModal} openModal={openModal} editData={initialValues} refreshData={fetchServices} />
         </Modal>
       )}
     </div>

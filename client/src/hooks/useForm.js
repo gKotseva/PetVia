@@ -13,10 +13,7 @@ export function useForm(handler, form, initialValues, closeModal, openModal, ref
             [e.target.name]: e.target.value
         }));
 
-        // console.log(values)
     };
-
-    // console.log(form)
 
     const getChangedFields = () => {
         const changedFields = {};
@@ -32,8 +29,7 @@ export function useForm(handler, form, initialValues, closeModal, openModal, ref
         }    
 
         return {id: auth.id, changedFields};
-    };  
-    
+    };    
     const onSubmit = async (e) => {
         e.preventDefault();
 
@@ -42,7 +38,7 @@ export function useForm(handler, form, initialValues, closeModal, openModal, ref
 
             if (form.form === 'login' || form.form === 'register'){
                 response = await handler(form.accountType, values)
-            } else if (form === 'edit-salon', form === 'edit-service', form === 'edit-user') {
+            } else if (form === 'edit-salon' || form === 'edit-service' || form === 'edit-user') {
                 const changedFields = getChangedFields()
                 response = await handler(changedFields)
             } else if (form === 'add-schedule') {
