@@ -97,11 +97,19 @@ router.delete('/delete-service', async (req, res) => {
 router.post('/add-schedule', async (req, res) => {
     const { id, values, selectedDates } = req.body
 
-    selectedDates.map(async (date) => {
-        const query = addSchedule(id, values, date)
-        await db.executeQuery(query)
-    })
-
+    if (Array.isArray(selectedDates) && selectedDates.length > 1) {
+        await Promise.all(
+          selectedDates.map(async (date) => {
+            const { query, insertValues } = addSchedule(id, values, date);
+            await db.executeQuery(query, insertValues);
+          })
+        );
+      } else {
+        const singleDate = Array.isArray(selectedDates) ? selectedDates[0] : selectedDates;
+        const { query, insertValues } = addSchedule(id, values, singleDate);
+        await db.executeQuery(query, insertValues);
+      }
+      
     res.status(200).json({ message: 'Schedule added successfully, please re-load the page!' });
 })
 

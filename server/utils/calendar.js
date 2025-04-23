@@ -29,14 +29,15 @@ exports.checkDayStatus = (dates, month, year) => {
 
 exports.generateSlots = (schedule, appointments, service_duration, user_type) => {
     const convertTimeToMinutes = (time) => {
+        if (!time) return null;
         const [hours, minutes] = time.split(':').map(Number);
         return hours * 60 + minutes;
     };
 
     const startOfDay = convertTimeToMinutes(schedule.open_time);
     const endOfDay = convertTimeToMinutes(schedule.close_time);
-    const breakStart = convertTimeToMinutes(schedule.break_start);
-    const breakEnd = convertTimeToMinutes(schedule.break_end);
+    const breakStart = convertTimeToMinutes(schedule.break_start) || null;
+    const breakEnd = convertTimeToMinutes(schedule.break_end) || null;
 
     let currentTime = startOfDay;
     let slots = [];

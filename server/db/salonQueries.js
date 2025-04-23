@@ -57,17 +57,23 @@ exports.editService = (id, fields, values) => {
 }
 
 exports.addSchedule = (id, values, date) => {
-    const query = `
-            INSERT INTO salon_schedule (salon_id, work_date, open_time, close_time, break_start, break_end)
-            VALUES (${id}, '${date}', '${values.open_time}', '${values.close_time}', '${values.break_start}', '${values.break_end}')`
-
-    return query;
-}
+    const query = `INSERT INTO salon_schedule (salon_id, work_date, open_time, close_time, break_start, break_end)
+                   VALUES (?, ?, ?, ?, ?, ?)`;
+    const insertValues = [
+        id,
+        date,
+        values.open_time,
+        values.close_time,
+        values.break_start || null,
+        values.break_end || null
+    ];
+    return { query, insertValues };
+};
 
 exports.getReviews = (id) => {
     const query = `SELECT review_id, rating, comment, r.created_at, first_name, last_name FROM reviews r
-                    JOIN users u on r.user_id=u.user_id
-                    WHERE salon_id = ${id};`
+                    JOIN users u on r.user_id = u.user_id
+                    WHERE salon_id = ${id}; `
 
     return query;
 }
@@ -75,15 +81,15 @@ exports.getReviews = (id) => {
 exports.getOpenCloseTime = (id, month) => {
     const paddedMonth = String(month).padStart(2, '0');
     const query = `
-        SELECT
-            MIN(open_time) AS earliest_open_time,
-            MAX(close_time) AS latest_close_time
-        FROM
-            salon_schedule
-        WHERE
-            salon_id = ${id}
-        AND
-            work_date LIKE '%-${paddedMonth}-%';`;
+    SELECT
+    MIN(open_time) AS earliest_open_time,
+        MAX(close_time) AS latest_close_time
+    FROM
+    salon_schedule
+    WHERE
+    salon_id = ${id}
+    AND
+            work_date LIKE '%-${paddedMonth}-%'; `;
 
     return query;
 }
@@ -91,13 +97,13 @@ exports.getOpenCloseTime = (id, month) => {
 exports.getSchedule = (id, month) => {
     const paddedMonth = String(month).padStart(2, '0');
     const query = `
-        SELECT *
+    SELECT *
         FROM
-            salon_schedule
-        WHERE
-            salon_id = ${id}
-        AND
-            work_date LIKE '%-${paddedMonth}-%';`;
+    salon_schedule
+    WHERE
+    salon_id = ${id}
+    AND
+            work_date LIKE '%-${paddedMonth}-%'; `;
 
     return query;
 }
@@ -106,13 +112,13 @@ exports.getAppointments = (id, month) => {
     const paddedMonth = String(month).padStart(2, '0');
     const query = `
             SELECT a.appointment_id, a.appointment_date, a.start_time, s.duration, s.name
-            FROM
+    FROM
                 appointments a
 			JOIN services s ON s.service_id = a.service_id
-            WHERE
-                a.salon_id = ${id}
-            AND
-                appointment_date LIKE '%-${paddedMonth}-%';`;
+    WHERE
+    a.salon_id = ${id}
+    AND
+                appointment_date LIKE '%-${paddedMonth}-%'; `;
 
     return query;
 }
