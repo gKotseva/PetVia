@@ -26,7 +26,6 @@ export function AuthProvider({ children }) {
             localStorage.setItem('user', JSON.stringify(userData));
             setAuth({ ...userData, role: 'user' });
         } else {
-            console.error("Invalid userData provided!");
             return;
         }
     };
