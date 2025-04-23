@@ -6,7 +6,6 @@ import { MdOutlineManageAccounts, MdOutlineReviews } from "react-icons/md";
 import { FaTrashAlt, FaEdit } from "react-icons/fa";
 import { RiTeamLine, RiGalleryView2 } from "react-icons/ri";
 import { PiDogLight } from "react-icons/pi";
-import { AiOutlineSchedule } from "react-icons/ai";
 import { GrSchedule } from "react-icons/gr";
 
 import { Loading } from '../../components/Loading';
@@ -16,7 +15,6 @@ import { useForm } from '../../hooks/useForm';
 import { useNotification } from '../../context/NotificationContext';
 import { Modal } from '../../components/Modal';
 import { Form } from '../../components/Form';
-import { Calendar } from '../../components/Calendar';
 import { displayReviewStars } from '../../components/DisplayReviewStars';
 import { Appointments } from '../../components/Appointments';
 import { IoIosArrowForward, IoIosArrowBack } from "react-icons/io";
@@ -44,7 +42,6 @@ export function SalonSettings() {
           <li onClick={() => toggleSettings('account')} className={activeSetting === 'account' ? 'active' : ''}><MdOutlineManageAccounts /> Account</li>
           <li onClick={() => toggleSettings('team')} className={activeSetting === 'team' ? 'active' : ''}><RiTeamLine /> Team</li>
           <li onClick={() => toggleSettings('services')} className={activeSetting === 'services' ? 'active' : ''}><PiDogLight /> Services</li>
-          <li onClick={() => toggleSettings('schedule')} className={activeSetting === 'schedule' ? 'active' : ''}><AiOutlineSchedule /> Schedule</li>
           <li onClick={() => toggleSettings('appointments')} className={activeSetting === 'appointments' ? 'active' : ''}><GrSchedule /> Appointments</li>
           <li onClick={() => toggleSettings('gallery')} className={activeSetting === 'gallery' ? 'active' : ''}><RiGalleryView2 /> Gallery</li>
           <li onClick={() => toggleSettings('customer_reviews')} className={activeSetting === 'customer_reviews' ? 'active' : ''}><MdOutlineReviews /> Customer Reviews</li>
@@ -54,7 +51,6 @@ export function SalonSettings() {
         {activeSetting === 'account' && <AccountSettings />}
         {activeSetting === 'team' && <TeamSettings />}
         {activeSetting === 'services' && <ServicesSettings />}
-        {activeSetting === 'schedule' && <ScheduleSettings />}
         {activeSetting === 'appointments' && <AppointmentsSettings />}
         {activeSetting === 'gallery' && <GallerySettings />}
         {activeSetting === 'customer_reviews' && <CustomerReviewsSettings />}
@@ -395,43 +391,14 @@ function ServicesSettings() {
   );
 }
 
-function ScheduleSettings() {
-  const auth = useAuth()
-  const [selectedDates, setSelectedDates] = useState([])
-  const handler = addSchedule
-  const { onChange, onSubmit } = useForm(handler, 'add-schedule', null, null, null, null, selectedDates);
-
-  return (
-    <div className="schedule-settings-container">
-      <h3>Schedule Settings</h3>
-      <div className="schedule-settings-contents">
-        <div className="settings-calendar">
-          <h5>Your schedule</h5>
-          <Calendar user={{ userType: 'salon', salonId: auth.auth.id, calendarType: 'schedule' }}
-            onSelectDates={(dates) => { setSelectedDates(dates) }} />
-        </div>
-        <div className="settings-insert-schedule">
-          <h5>Insert hours for selected dates</h5>
-          <form onSubmit={onSubmit}>
-            <label>Start time</label>
-            <input type='time' name='open_time' onChange={onChange}></input>
-            <label>End time</label>
-            <input type='time' name='close_time' onChange={onChange}></input>
-            <label>Break start</label>
-            <input type='time' name='break_start' onChange={onChange}></input>
-            <label>Break end</label>
-            <input type='time' name='break_end' onChange={onChange}></input>
-            <button className='custom-button'>Submit</button>
-          </form>
-        </div>
-      </div>
-    </div>
-  );
-}
-
 function AppointmentsSettings() {
   const [currentWeekIndex, setCurrentWeekIndex] = useState(0);
   const [appointments, setAppointments] = useState({});
+  const [selectedDates, setSelectedDates] = useState([])
+  const auth = useAuth()
+  const handler = addSchedule
+
+  const { onChange, onSubmit } = useForm(handler, 'add-schedule', null, null, null, null, selectedDates);
 
   useEffect(() => {
     const fetchSchedule = async () => {
@@ -489,6 +456,7 @@ function AppointmentsSettings() {
           const dateStr = formatDate(date);
           const dayName = getDayName(date);
           const dayAppointments = appointments[dateStr];
+          const isPast = new Date(dateStr) < new Date(formatDate(today));
 
           return (
             <div key={dateStr} className="day-card">
@@ -496,13 +464,37 @@ function AppointmentsSettings() {
               <div className="day-date">{dateStr}</div>
               <div className="slots">
                 {dayAppointments ? (
-                  dayAppointments.map((slot, index) => (
-                    <div key={index} className={`slot ${slot.status}`}>
-                      {slot.slot} - {slot.status}
-                    </div>
-                  ))
+                  <>
+                    {!isPast && <p className='edit-schedule'>Edit Schedule</p>}
+                    {dayAppointments.map((slot, index) => (
+                      <div key={index} className={`slot ${slot.status}`}>
+                        {slot.slot} - {slot.status}
+                      </div>
+                    ))}
+                  </>
                 ) : (
-                  <div className="slot none">No schedule available</div>
+                  !isPast ? (
+                    <div className="slot none">
+                      <p>No schedule available</p>
+                      <form onSubmit={(e) => {
+                        e.preventDefault();
+                        setSelectedDates(dateStr);
+                        onSubmit(e);
+                      }} className='appointments-form'>
+                        <label>Start time</label>
+                        <input type='time' name='open_time' onChange={onChange} />
+                        <label>End time</label>
+                        <input type='time' name='close_time' onChange={onChange} />
+                        <label>Break start</label>
+                        <input type='time' name='break_start' onChange={onChange} />
+                        <label>Break end</label>
+                        <input type='time' name='break_end' onChange={onChange} />
+                        <button className='custom-button'>Enter time</button>
+                      </form>
+                    </div>
+                  ) : (
+                    <p className="past-message">No schedule available</p>
+                  )
                 )}
               </div>
             </div>
