@@ -3,3 +3,14 @@ exports.getSchedule = (salonId) => {
   
     return query;
 }
+
+exports.getAppointments = (id) => {
+    const query = 
+                `SELECT a.appointment_id, a.appointment_date, a.start_time, s.duration, s.name as 'service_name', u.first_name, u.last_name, u.email
+                FROM appointments a
+                JOIN services s ON s.service_id = a.service_id
+                JOIN users u ON u.user_id = a.user_id
+                WHERE a.salon_id = ${id};`
+
+    return query;
+}

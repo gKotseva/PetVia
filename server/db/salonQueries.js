@@ -107,18 +107,3 @@ exports.getSchedule = (id, month) => {
 
     return query;
 }
-
-exports.getAppointments = (id, month) => {
-    const paddedMonth = String(month).padStart(2, '0');
-    const query = `
-            SELECT a.appointment_id, a.appointment_date, a.start_time, s.duration, s.name
-    FROM
-                appointments a
-			JOIN services s ON s.service_id = a.service_id
-    WHERE
-    a.salon_id = ${id}
-    AND
-                appointment_date LIKE '%-${paddedMonth}-%'; `;
-
-    return query;
-}
