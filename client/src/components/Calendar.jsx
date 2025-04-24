@@ -1,101 +1,75 @@
 import './Calendar.modules.css'
 
-import { useEffect, useState } from 'react'
-
+import { useEffect, useState } from "react"
+import { getSchedule } from "../handlers/calendarHandlers"
 import { IoIosArrowForward, IoIosArrowBack } from "react-icons/io";
-import { getSchedule } from '../handlers/calendarHandlers';
+import { formatDate, getDayName, getWeekDays } from "../utils/date";
 
-export function Calendar({ user, onSelectDates, onShowAppointments }) {
-    const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
-    const weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
 
-    const currentDate = new Date()
-    const [currentMonth, setCurrentMonth] = useState(currentDate.getMonth())
-    const [currentYear, setCurrentYear] = useState(currentDate.getFullYear())
+export function Calendar({ userType, salon_id, customer_id, service_duration }) {
     const [schedule, setSchedule] = useState([])
-    const [selectedDates, setSelectedDates] = useState([])
+    const [currentWeekIndex, setCurrentWeekIndex] = useState(0);
 
-    const firstDayOfMonth = new Date(currentYear, currentMonth, 1).getDay()
-
-    const prevMonth = () => {
-        setCurrentMonth((prevMonth) => (prevMonth === 0 ? 11 : prevMonth - 1))
-        setCurrentYear(prevYear => currentMonth === 0 ? prevYear - 1 : prevYear)
-    }
-
-    const nextMonth = () => {
-        setCurrentMonth((prevMonth) => (prevMonth === 11 ? 0 : prevMonth + 1))
-        setCurrentYear(prevYear => currentMonth === 11 ? prevYear + 1 : prevYear)
+    const fetchSchedule = async () => {
+        const response = await getSchedule(userType, salon_id, service_duration)
+        setSchedule(response.data)
     }
 
     useEffect(() => {
-        const fetchSchedule = async () => {
-            const response = await getSchedule(user.salonId, currentMonth + 1, currentYear);
-            setSchedule(response.schedule)
-        };
+        salon_id && fetchSchedule();
+    }, [userType, salon_id, service_duration]);
 
-        fetchSchedule();
-    }, [currentMonth, currentYear])
+    const goToPreviousWeek = () => {
+        setCurrentWeekIndex((prev) => prev - 1);
+    };
 
-    const handleScheduleClick = (day) => {
-        if (!day.isPast) {
-            setSelectedDates(prev => {
-                const exists = prev.includes(day.date);
-                if (exists) {
-                    return prev.filter(d => d !== day.date);
-                } else {
-                    return [...prev, day.date];
-                }
-            });
-        }
-    }
+    const goToNextWeek = () => {
+        setCurrentWeekIndex((prev) => prev + 1);
+    };
 
-    useEffect(() => {
-        if (onSelectDates) {
-            onSelectDates(selectedDates);
-        }
-    }, [selectedDates]);
-
-    const handleUserClick = (day) => {
-        if (!day.isWorking || day.isPast) {
-            return
-        } else {
-            if (onShowAppointments) {
-                onShowAppointments(day.date)
-            }
-        }
-    }
+    const weekDays = getWeekDays(currentWeekIndex);
 
     return (
-        <div className='calendar-container'>
-            <div className="calendar">
-                <div className="calendar-header">
-                    <h2>{months[currentMonth]}, {currentYear}</h2>
-                    <div className="calendar-buttons">
-                        <IoIosArrowBack onClick={prevMonth} />
-                        <IoIosArrowForward onClick={nextMonth} />
-                    </div>
+        <div className="calendar-container">
+            <div className="calendar-navigation">
+                <h4 className="week-title">Week of {formatDate(weekDays[0])}</h4>
+                <div className="navigation-buttons">
+                    <IoIosArrowBack onClick={goToPreviousWeek} />
+                    <IoIosArrowForward onClick={goToNextWeek} />
                 </div>
-                <div className="calendar-heading">
-                    {weekdays.map(e => (
-                        <span key={e}>{e}</span>
-                    ))}
-                </div>
-                <div className="calendar-days">
-                    {[...Array(firstDayOfMonth).keys()].map((_, index) => (
-                        <span key={index} />
-                    ))}
-                    {schedule?.map(e => (
-                        <span key={e.date} 
-                            className={`user-${e.isPast ? 'past' : ''}${e.isToday ? 'today' : ''}${e.isFuture ? e.isWorking ? 'working' : 'not-working' : ''} ${selectedDates.includes(e.date) ? 'selected' : ''}`} 
-                            onClick={
-                                user.calendarType === 'schedule'
-                                  ? () => handleScheduleClick(e)
-                                  : user.userType === 'customer'
-                                  ? () => handleUserClick(e)
-                                  : null
-                              }>{new Date(e.date).getDate()}</span>
-                    ))}
-                </div>
+            </div>
+            <div className="calendar-grid">
+                {weekDays.map((date) => {
+                    const today = formatDate(new Date());
+                    const formattedDate = formatDate(date);
+                    const isPast = new Date(date) < new Date(today);
+                    const hasSchedule = !!schedule[formattedDate];
+                    const isUnavailable = !hasSchedule;
+
+                    return (
+                        <div key={formattedDate} className={`day-card ${(isPast || isUnavailable) ? 'past' : ''}`}>
+                            <div className="day-card-heading">
+                                <p>{getDayName(date)}</p>
+                                <p>{formattedDate}</p>
+                                {userType === 'salon' ? (
+                                    <p>{schedule[formattedDate]?.working_hours || 'No schedule'}</p>
+                                ) : null}
+                            </div>
+
+                            <div className="day-card-slots">
+                                {hasSchedule &&
+                                    schedule[formattedDate].slots.map((slot, index) => (
+                                        <div key={index} className={`slot ${userType} ${userType}-${slot.status}`}>
+                                            {userType === 'salon'
+                                                ? `${slot.slot} - ${slot.status}`
+                                                : `${slot.slot}`}
+                                        </div>
+                                    ))
+                                }
+                            </div>
+                        </div>
+                    );
+                })}
             </div>
         </div>
     )
