@@ -101,9 +101,9 @@ export const getReviews = async (id) => {
     }
 }
 
-export const getAppointments = async () => {
+export const getSchedule = async () => {
     try {
-        const response = await request.get(`/api/salon/appointments`);
+        const response = await request.get(`/api/salon/schedule`);
         return response;
     } catch (error) {
         // console.log(error)

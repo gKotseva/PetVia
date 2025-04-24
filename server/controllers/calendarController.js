@@ -1,16 +1,38 @@
-const { getSchedule } = require('../db/calendarQueries');
+const { getSchedule, getAppointments } = require('../db/calendarQueries');
 const db = require('../db/db');
-const { checkDayStatus } = require('../utils/calendar');
+const { checkDayStatus, generateSlots } = require('../utils/calendar');
+const { formatDate } = require('../utils/date');
 const router = require('express').Router()
 
-router.get('/schedule', async(req, res) => {
-    const {salonId, month, year} = req.query
-    const query = getSchedule(salonId)
-    const result = await db.executeQuery(query)
+router.get('/schedule', async (req, res) => {
+    const { user_type, id, service_duration } = req.query;
+    const schedule = {};
 
-    const schedule = checkDayStatus(result, month, year)
+    const scheduleQuery = getSchedule(id);
+    const salonSchedule = await db.executeQuery(scheduleQuery);
 
-    res.status(200).json({schedule});
+    if (salonSchedule.length > 0) {
+        const appointmentsQuery = getAppointments(id);
+        const salonAppointments = await db.executeQuery(appointmentsQuery);
+
+        for (const date of salonSchedule) {
+            const formattedDate = formatDate(date.work_date);
+
+            const appointmentsForDate = salonAppointments.filter(app => {
+                return formatDate(app.appointment_date) === formattedDate
+            });
+
+            const daySlots = user_type === 'salon'
+                ? generateSlots(date, appointmentsForDate, null, user_type)
+                : generateSlots(date, appointmentsForDate, service_duration, user_type);
+
+                schedule[formattedDate] = {working_hours: `${date.open_time.substring(0,5)} - ${date.close_time.substring(0,5)}`, slots: daySlots};
+        }
+
+        res.status(200).json({ data: schedule });
+    } else {
+        res.status(500).json({ message: 'No schedules found!' });
+    }
 })
 
 module.exports = router

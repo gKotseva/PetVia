@@ -121,36 +121,4 @@ router.get('/reviews', async (req, res) => {
     res.status(200).json({ data: result });
 })
 
-router.get('/appointments', async (req, res) => {
-    const id = 3
-    const month = 4
-    const user_type = 'salon'
-
-    const open_close_time = getOpenCloseTime(id, month)
-    const salonScheduleQuery = getSchedule(id, month)
-    const salonSchedule = await db.executeQuery(salonScheduleQuery)
-
-    const slots = {}
-
-    if (salonSchedule.length > 0) {
-        const salonAppointmentsQuery = getAppointments(id, month)
-        const salonAppointments = await db.executeQuery(salonAppointmentsQuery)
-
-        for (const date of salonSchedule) {
-            const formattedDate = formatDate(date.work_date)
-
-            const appointmentsForDate = salonAppointments.filter(app => {
-              return formatDate(app.appointment_date) === formattedDate
-            })
-
-            const daySlot = generateSlots(date, appointmentsForDate, null, user_type)
-            slots[formattedDate] = daySlot
-        }
-
-        res.status(200).json({ data: slots });
-    } else {
-        res.status(500).json({ message: 'No schedule for today!' });
-    }
-})
-
 module.exports = router
