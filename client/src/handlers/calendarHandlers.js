@@ -8,3 +8,12 @@ export const getSchedule = async (userType, id, service_duration) => {
         // console.log(error)
     }
 }
+
+export const bookAppointment = async (userID, salonID, serviceID, date, start_time) => {
+    try {
+        const response = await request.post(`/api/calendar/book-appointment`, {userID, salonID, serviceID, date, start_time});
+        return response;
+    } catch (error) {
+        // console.log(error)
+    }
+}

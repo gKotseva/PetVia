@@ -1,4 +1,4 @@
-const { getSchedule, getAppointments } = require('../db/calendarQueries');
+const { getSchedule, getAppointments, addAppointment } = require('../db/calendarQueries');
 const db = require('../db/db');
 const { checkDayStatus, generateSlots } = require('../utils/calendar');
 const { formatDate } = require('../utils/date');
@@ -33,6 +33,16 @@ router.get('/schedule', async (req, res) => {
     } else {
         res.status(500).json({ message: 'No schedules found!' });
     }
+})
+
+router.post('/book-appointment', async (req, res) => {
+    const {userID, salonID, serviceID, date, start_time} = req.body;
+
+    const insertAppointmentQuery = addAppointment(userID, salonID, serviceID, date, start_time)
+    const result = await db.executeQuery(insertAppointmentQuery);
+
+    res.status(200).json({ message: 'Booking successfull!' });
+
 })
 
 module.exports = router

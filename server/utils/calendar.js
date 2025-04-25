@@ -27,22 +27,22 @@ exports.checkDayStatus = (dates, month, year) => {
     return schedule
 };
 
-exports.generateSlots = (schedule, appointments, service_duration, user_type) => {
+exports.generateSlots = (date, appointments, service_duration, user_type) => {
     const convertTimeToMinutes = (time) => {
         if (!time) return null;
         const [hours, minutes] = time.split(':').map(Number);
         return hours * 60 + minutes;
     };
 
-    const startOfDay = convertTimeToMinutes(schedule.open_time);
-    const endOfDay = convertTimeToMinutes(schedule.close_time);
-    const breakStart = convertTimeToMinutes(schedule.break_start) || null;
-    const breakEnd = convertTimeToMinutes(schedule.break_end) || null;
+    const startOfDay = convertTimeToMinutes(date.open_time);
+    const endOfDay = convertTimeToMinutes(date.close_time);
+    const breakStart = convertTimeToMinutes(date.break_start) || null;
+    const breakEnd = convertTimeToMinutes(date.break_end) || null;
 
     let currentTime = startOfDay;
     let slots = [];
 
-    while (currentTime < endOfDay){
+    while (currentTime < endOfDay) {
         let status = 'free';
         let appointment = null;
 
@@ -55,7 +55,6 @@ exports.generateSlots = (schedule, appointments, service_duration, user_type) =>
 
         appointments.forEach(app => {
             const appointmentStart = convertTimeToMinutes(app.start_time);
-            
             const appointmentEnd = appointmentStart + app.duration;
 
             if (currentTime >= appointmentStart && currentTime < appointmentEnd) {
@@ -64,43 +63,33 @@ exports.generateSlots = (schedule, appointments, service_duration, user_type) =>
             }
         });
 
-        let slot = {slot: `${hours}:${minutes}`, status};
+        let slot = { slot: `${hours}:${minutes}`, status };
 
-        if (appointment && user_type === 'salon') {
-            slot.appointment = appointment;
-        }
+        appointment ? slot.appointment = appointment : null
 
         slots.push(slot);
         currentTime += 30;
-    }
-    
-    if (user_type === 'customer'){
-        const requiredSlots = Math.ceil(service_duration / 30);
-    let validIndexes = new Set();
-    
-    for (let i = 0; i <= slots.length - requiredSlots; i++) {
-        let isFree = true;
-    
-        for (let j = 0; j < requiredSlots; j++) {
-            if (slots[i + j].status !== 'free') {
-                isFree = false;
-                break;
-            }
-        }
+    };
 
-        if (isFree) {
-            for (let j = 0; j < requiredSlots; j++) {
-                validIndexes.add(i + j);
+    if (user_type === 'customer') {
+        const requiredSlots = Math.ceil(service_duration / 30);
+
+        for (let i = 0; i < slots.length; i++) {
+            if (slots[i].status === 'free') {
+                let canBook = true;
+                
+                for (let j = 0; j < requiredSlots; j++) {
+                    if (!slots[i + j] || slots[i + j].status !== 'free') {
+                        canBook = false;
+                        break;
+                    }
+                }
+
+                if (!canBook) {
+                    slots[i].status = 'not-available';
+                }
             }
         }
-    }
-    
-    slots = slots.map((slot, index) => {
-        if (slot.status === 'free' && !validIndexes.has(index)) {
-            return { ...slot, status: 'not-available' };
-        }
-        return slot;
-    });
     }
 
     return slots;

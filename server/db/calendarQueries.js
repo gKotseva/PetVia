@@ -14,3 +14,12 @@ exports.getAppointments = (id) => {
 
     return query;
 }
+
+exports.addAppointment = (userID, salonID, serviceID, date, start_time) => {
+    const query = `
+                INSERT INTO appointments(user_id, salon_id, service_id, appointment_date, start_time)
+                VALUES(${userID}, ${salonID}, ${serviceID}, '${date}', '${start_time}');
+                `
+
+    return query;
+}
