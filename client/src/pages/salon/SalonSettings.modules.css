@@ -91,7 +91,7 @@ input {
 }
 
 .free {
-    background: green;
+    background: #257b45;
 }
 
 .break {
@@ -316,4 +316,8 @@ input {
     text-transform: uppercase;
     font-size: 14px;
     padding: 6px 10px;
+}
+
+.past {
+    background: rgba(194, 194, 194, 0.664);
 }

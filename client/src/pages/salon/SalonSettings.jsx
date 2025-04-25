@@ -16,11 +16,7 @@ import { useNotification } from '../../context/NotificationContext';
 import { Modal } from '../../components/Modal';
 import { Form } from '../../components/Form';
 import { displayReviewStars } from '../../components/DisplayReviewStars';
-import { Appointments } from '../../components/Appointments';
-import { IoIosArrowForward, IoIosArrowBack } from "react-icons/io";
-import { getAppointments } from "../../handlers/salonHandlers";
-import { formatDate } from '../../utils/date';
-
+import { Calendar } from '../../components/Calendar';
 
 export function SalonSettings() {
   const [activeSetting, setActiveSetting] = useState('account');
@@ -59,12 +55,12 @@ export function SalonSettings() {
         <div className="settings-active-schedule-container">
           <h2>Today</h2>
           <div className="settings-appointments-view">
-            <Appointments
+            {/* <Appointments
               user_type="salon"
               id={auth.auth.id}
               service_duration={null}
               selected_date={formattedToday}
-            />
+            /> */}
           </div>
         </div>
       ) : (<Loading />)}
@@ -392,117 +388,10 @@ function ServicesSettings() {
 }
 
 function AppointmentsSettings() {
-  const [currentWeekIndex, setCurrentWeekIndex] = useState(0);
-  const [appointments, setAppointments] = useState({});
-  const [selectedDates, setSelectedDates] = useState([])
-  const auth = useAuth()
-  const handler = addSchedule
-
-  const { onChange, onSubmit } = useForm(handler, 'add-schedule', null, null, null, null, selectedDates);
-
-  useEffect(() => {
-    const fetchSchedule = async () => {
-      const result = await getAppointments();
-      setAppointments(result.data || {});
-    };
-
-    fetchSchedule();
-  }, []);
-
-  function getStartOfWeek(date) {
-    const day = date.getDay();
-    const diff = day === 0 ? -6 : 1 - day;
-    const monday = new Date(date);
-    monday.setDate(date.getDate() + diff);
-    monday.setHours(0, 0, 0, 0);
-    return monday;
-  }
-
-  function getDayName(date) {
-    return date.toLocaleDateString('en-US', { weekday: 'short' });
-  }
-
-  const goToPreviousWeek = () => {
-    setCurrentWeekIndex((prev) => prev - 1);
-  };
-
-  const goToNextWeek = () => {
-    setCurrentWeekIndex((prev) => prev + 1);
-  };
-
-  const today = new Date();
-  const baseMonday = getStartOfWeek(today);
-  const monday = new Date(baseMonday);
-  monday.setDate(baseMonday.getDate() + currentWeekIndex * 7);
-
-  const weekDays = Array.from({ length: 7 }, (_, i) => {
-    const day = new Date(monday);
-    day.setDate(monday.getDate() + i);
-    return day;
-  });
-
+  const {auth} = useAuth()
   return (
-    <div className="appointments-settings-container">
-      <h3 className='appointments-settings-title'>Your appointments</h3>
-      <div className="navigation">
-        <h4 className="week-title">Week of {formatDate(weekDays[0])}</h4>
-        <div className="navigation-buttons">
-          <IoIosArrowBack onClick={goToPreviousWeek} />
-          <IoIosArrowForward onClick={goToNextWeek} />
-        </div>
-      </div>
-      <div className="calendar-grid">
-        {weekDays.map((date) => {
-          const dateStr = formatDate(date);
-          const dayName = getDayName(date);
-          const dayAppointments = appointments[dateStr];
-          const isPast = new Date(dateStr) < new Date(formatDate(today));
-
-          return (
-            <div key={dateStr} className="day-card">
-              <div className="day-name">{dayName}</div>
-              <div className="day-date">{dateStr}</div>
-              <div className="slots">
-                {dayAppointments ? (
-                  <>
-                    {!isPast && <p className='edit-schedule'>Edit Schedule</p>}
-                    {dayAppointments.map((slot, index) => (
-                      <div key={index} className={`slot ${slot.status}`}>
-                        {slot.slot} - {slot.status}
-                      </div>
-                    ))}
-                  </>
-                ) : (
-                  !isPast ? (
-                    <div className="slot none">
-                      <p>No schedule available</p>
-                      <form onSubmit={(e) => {
-                        e.preventDefault();
-                        setSelectedDates(dateStr);
-                        onSubmit(e);
-                      }} className='appointments-form'>
-                        <label>Start time</label>
-                        <input type='time' name='open_time' onChange={onChange} />
-                        <label>End time</label>
-                        <input type='time' name='close_time' onChange={onChange} />
-                        <label>Break start</label>
-                        <input type='time' name='break_start' onChange={onChange} />
-                        <label>Break end</label>
-                        <input type='time' name='break_end' onChange={onChange} />
-                        <button className='custom-button'>Enter time</button>
-                      </form>
-                    </div>
-                  ) : (
-                    <p className="past-message">No schedule available</p>
-                  )
-                )}
-              </div>
-            </div>
-          );
-        })}
-      </div>
-    </div>
-  );
+    <Calendar userType='salon' salon_id={auth?.id}/>
+  )
 }
 
 function GallerySettings() {
