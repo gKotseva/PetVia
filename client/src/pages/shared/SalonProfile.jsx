@@ -7,7 +7,6 @@ import { displayReviewStars } from '../../components/DisplayReviewStars';
 import { IoIosArrowForward } from "react-icons/io";
 import { Calendar } from '../../components/Calendar';
 import { useAuth } from '../../context/AuthContext';
-import { Appointments } from '../../components/Appointments';
 
 export function SalonProfile() {
     const { id } = useParams();
@@ -68,15 +67,17 @@ export function SalonProfile() {
                                 </div>
                             ))}
                         </div>
-                        {openCalendar && <Calendar
-                            user={{ userType: 'customer', customerId: auth.id, serviceId: Number(selectedService), salonId: Number(id) }}
-                            onShowAppointments={handleShowAppointments}
-                        />}
-                        {showAppointments && (<Appointments user_type="customer"
-                            key={`${selectedDay}-${selectedService?.service_id}`}
-                            id={id}
-                            service_duration={selectedService.duration}
-                            selected_date={selectedDay} />)}
+                        {openCalendar &&
+                            <Calendar
+                                key={selectedService?.service_id}
+                                userType='customer'
+                                salon_id={id}
+                                customer_id={auth?.id}
+                                service_duration={selectedService?.duration}
+                                service = {selectedService}
+                                registeredUser = {auth?.role}
+                            />
+                        }
                     </div>
                     <div className="salon-team">
                         <h1>Meet Our Team</h1>
