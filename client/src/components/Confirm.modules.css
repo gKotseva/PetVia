@@ -1,0 +1,54 @@
+.confirm-container {
+    background: white;
+    border-radius: 0.6em;
+    width: 30em;
+}
+
+.confirm-heading {
+    background: var(--dark-color);
+    height: 0.5em;
+}
+
+.confirm-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 2em;
+    padding: 1em;
+}
+
+.confirm-body strong {
+    font-weight: bold;
+    font-size: 1.1em;
+}
+
+.confirm-body p {
+    width: 20em;
+    font-size: 17px;
+}
+
+.confirm-buttons {
+    display: flex;
+    gap: 1em;
+    justify-content: flex-end;
+    padding: 1em;
+}
+
+.confirm-buttons button {
+    border: none;
+    border-radius: 2em;
+    padding: 0.5em 1em;
+    text-transform: uppercase;
+    width: 7em !important;
+}
+
+.confirm-deny {
+    background: var(--light-color);
+}
+
+.confirm-deny:hover,
+.confirm-button:hover {
+    background: var(--background) !important;
+    color: black;
+    transition: 0.3s ease-in-out;
+}
