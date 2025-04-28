@@ -14,3 +14,9 @@ exports.editUserDetails = (id, fields, values) => {
 
     return { query, queryParams };
 }
+
+exports.deleteUser = (id) => {
+    const query = `DELETE FROM users WHERE user_id=${id}`
+
+    return query;
+}

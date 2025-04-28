@@ -26,3 +26,12 @@ export const updateUserDetails = async (values) => {
         // console.log(error)
     }
 }
+
+export const deleteUser = async (id) => {
+    try {
+        const response = await request.remove(`/api/user/delete-user`, {id});
+        return response;
+    } catch (error) {
+        // console.log(error)
+    }
+}

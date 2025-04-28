@@ -5,15 +5,18 @@ import { useForm } from '../../hooks/useForm';
 import { useAuth } from '../../context/AuthContext';
 import { Loading } from '../../components/Loading';
 import { useNavigate } from 'react-router-dom';
-import { getUserDetails, getUserBookings, updateUserDetails } from '../../handlers/userHandlers';
+import { getUserDetails, getUserBookings, updateUserDetails, deleteUser } from '../../handlers/userHandlers';
+import { Confirm } from '../../components/Confirm';
+import { Modal } from '../../components/Modal';
 
 export function ClientProfile() {
     const handler = updateUserDetails;
     const [initialValues, setInitialValues] = useState({});
+    const [showModal, setShowModal] = useState(false);
     const form = 'edit-user'
     const navigate = useNavigate()
 
-    const { auth } = useAuth();
+    const { auth, logout } = useAuth();
     const [userData, setUserData] = useState(null);
     const [bookings, setBookings] = useState(null);
 
@@ -82,7 +85,12 @@ export function ClientProfile() {
                 ) : (
                     <Loading />
                 )}
-                <button className='delete-button'>Delete Profile</button>
+                <button
+                    className="delete-button"
+                    onClick={() => setShowModal(true)}
+                >
+                    Delete Profile
+                </button>
             </div>
             {bookings ? (
                 <>
@@ -133,6 +141,20 @@ export function ClientProfile() {
                 </>
             ) : (
                 <Loading />
+            )}
+            {showModal && (
+                <Modal onClose={() => setShowModal(false)}>
+                    <Confirm
+                        title="Delete profile"
+                        text="Are you sure you would like to delete your profile with PetVia?"
+                        onConfirm={async () => {
+                            setShowModal(false);
+                            await deleteUser(auth.id)
+                            logout()
+                        }}
+                        onDeny={() => setShowModal(false)}
+                    />
+                </Modal>
             )}
         </div>
     );

@@ -1,6 +1,6 @@
 const router = require('express').Router()
 const db = require('../db/db');
-const { getUserData, getUserBookings, editUserDetails } = require('../db/userQueries');
+const { getUserData, getUserBookings, editUserDetails, deleteUser } = require('../db/userQueries');
 const { compareDates, checkDateStatus } = require('../utils/date');
 const { hashPassword, comparePassword } = require('../utils/hash');
 
@@ -45,6 +45,14 @@ router.put('/edit-user', async (req, res) => {
         console.error('Error executing query:', err);
         res.status(500).send({ message: 'An error occurred while updating user data' });
     }
+});
+
+router.delete('/delete-user', async (req, res) => {
+    const {id} = req.body
+    const query = deleteUser(id)
+    const results = await db.executeQuery(query);
+
+    res.status(200).send({ message: 'User removed successfully!' });
 });
 
 
