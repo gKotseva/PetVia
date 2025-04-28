@@ -1,11 +1,13 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import { useNotification } from './NotificationContext';
+import { useNavigate } from 'react-router-dom';
 
 const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
     const [auth, setAuth] = useState(null);
     const {showNotification} = useNotification()
+    const navigate = useNavigate()
 
     useEffect(() => {
         const storedUser = localStorage.getItem('user');
@@ -35,6 +37,7 @@ export function AuthProvider({ children }) {
         localStorage.removeItem('user');
         localStorage.removeItem('salon');
         showNotification('Logout successfull!', 'success')
+        navigate('/')
     };
 
     return (
