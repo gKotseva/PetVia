@@ -1,6 +1,6 @@
 import './Notification.modules.css'
 
-export function Notification ({type, message}) {
+export function Notification ({message, type}) {
     return (
         <div className={`notification ${type}`}>
             <p>{message}</p>
