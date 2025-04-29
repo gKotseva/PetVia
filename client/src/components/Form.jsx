@@ -1,7 +1,6 @@
 import './Form.modules.css';
 import React, { useState } from 'react';
 import { useForm } from '../hooks/useForm';
-import { FcGoogle } from 'react-icons/fc';
 import { CiLogin } from "react-icons/ci";
 import { login, register } from '../handlers/authHandlers';
 import { editService } from '../handlers/salonHandlers';
@@ -32,7 +31,7 @@ export function Form({ formName, closeModal, openModal, editData, refreshData })
         'edit-service': [{ label: 'Name', name: 'name', type: 'text' }, { label: 'Price', name: 'price', type: 'text' }, { label: 'Duration', name: 'duration', type: 'text' }, { label: 'Description', name: 'description', type: 'text' }]
     };
 
-    const { values, onChange, onSubmit } = useForm(handler, formName === 'login' || formName === 'register' ? {accountType, form: formName} : formName, editData, closeModal, openModal, refreshData);
+    const { values, onChange, onSubmit } = useForm(handler, formName === 'login' || formName === 'register' ? { accountType, form: formName } : formName, editData, closeModal, openModal, refreshData);
 
     return (
         formName === 'login' || formName === 'register' ? (
@@ -81,12 +80,10 @@ export function Form({ formName, closeModal, openModal, editData, refreshData })
                 ) : (
                     <p className='existing'>Don't have an account? <a href="#" onClick={() => openModal('register')}>Register</a></p>
                 )}
-                <h4 className='line'><span>or</span></h4>
-                <FcGoogle className='icon' />
             </div>
         ) : (
             <form onSubmit={onSubmit}>
-                {forms[formName].map(({name, label, type}) => (
+                {forms[formName].map(({ name, label, type }) => (
                     <div key={name} className="input-group">
                         <label htmlFor={name}>{label}</label>
                         <input
