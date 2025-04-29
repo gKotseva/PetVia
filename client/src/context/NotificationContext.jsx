@@ -15,10 +15,14 @@ export function NotificationProvider({ children }) {
     setTimeout(() => setNotification(null), 5000);
   };
 
+  const onClose = () => {
+    setNotification(null)
+  }
+
   return (
     <NotificationContext.Provider value={{ showNotification }}>
       {children}
-      {notification && <Notification type={notification.type} message={notification.message} />}
+      {notification && <Notification type={notification.type} message={notification.message} onClose={onClose} />}
     </NotificationContext.Provider>
   );
 }
