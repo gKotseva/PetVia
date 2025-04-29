@@ -5,7 +5,7 @@ export const getSalonDetails = async (id) => {
         const response = await request.get(`/api/salon/details?id=${id}`);
         return response;
     } catch (error) {
-        // console.log(error)
+        throw error;
     }
 }
 
@@ -16,7 +16,7 @@ export const editSalonDetails = async (data) => {
         const response = await request.put(`/api/salon/edit-details`, {id, changedFields});
         return response;
     } catch (error) {
-        // console.log(error)
+        throw error;
     }
 }
 
@@ -25,7 +25,7 @@ export const getTeam = async (id) => {
         const response = await request.get(`/api/salon/team?id=${id}`);
         return response;
     } catch (error) {
-        // console.log(error)
+        throw error;
     }
 }
 
@@ -34,7 +34,7 @@ export const addTeamMember = async (id, values) => {
         const response = await request.post(`/api/salon/add-team-member`, {id, values});
         return response;
     } catch (error) {
-        // console.log(error)
+        throw error;
     }
 }
 
@@ -43,7 +43,7 @@ export const deleteTeamMember = async (id) => {
         const response = await request.remove(`/api/salon/delete-team-member`, {id});
         return response;
     } catch (error) {
-        // console.log(error)
+        throw error;
     }
 }
 
@@ -52,7 +52,7 @@ export const getServices = async (id) => {
         const response = await request.get(`/api/salon/services?id=${id}`);
         return response;
     } catch (error) {
-        // console.log(error)
+        throw error;
     }
 }
 
@@ -61,7 +61,7 @@ export const addService = async (id, values) => {
         const response = await request.post(`/api/salon/add-service`, {id, values});
         return response;
     } catch (error) {
-        // console.log(error)
+        throw error;
     }
 }
 
@@ -70,7 +70,7 @@ export const deleteService = async (id) => {
         const response = await request.remove(`/api/salon/delete-service`, {id});
         return response;
     } catch (error) {
-        // console.log(error)
+        throw error;
     }
 }
 
@@ -79,7 +79,7 @@ export const editService = async (data) => {
         const response = await request.put(`/api/salon/edit-service`, data);
         return response;
     } catch (error) {
-        // console.log(error)
+        throw error;
     }
 }
 
@@ -88,7 +88,7 @@ export const addSchedule = async (id, values, selectedDates) => {
         const response = await request.post(`/api/salon/add-schedule`, {id, values, selectedDates});
         return response;
     } catch (error) {
-        // console.log(error)
+        throw error;
     }
 }
 
@@ -97,7 +97,7 @@ export const getReviews = async (id) => {
         const response = await request.get(`/api/salon/reviews?id=${id}`);
         return response;
     } catch (error) {
-        // console.log(error)
+        throw error;
     }
 }
 
@@ -106,6 +106,6 @@ export const getSchedule = async () => {
         const response = await request.get(`/api/salon/schedule`);
         return response;
     } catch (error) {
-        // console.log(error)
+        throw error;
     }
 }

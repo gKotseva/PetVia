@@ -5,7 +5,7 @@ export const getUserDetails = async (id) => {
         const response = await request.get(`/api/user/details?id=${id}`);
         return response;
     } catch (error) {
-        // console.log(error)
+        throw error;
     }
 }
 
@@ -14,7 +14,7 @@ export const getUserBookings = async (id) => {
         const response = await request.get(`/api/user/bookings?id=${id}`);
         return response;
     } catch (error) {
-        // console.log(error)
+        throw error;
     }
 }
 
@@ -23,7 +23,7 @@ export const updateUserDetails = async (values) => {
         const response = await request.put(`/api/user/edit-user`, values);
         return response;
     } catch (error) {
-        // console.log(error)
+        throw error;
     }
 }
 
@@ -32,6 +32,6 @@ export const deleteUser = async (id) => {
         const response = await request.remove(`/api/user/delete-user`, {id});
         return response;
     } catch (error) {
-        // console.log(error)
+        throw error;
     }
 }
