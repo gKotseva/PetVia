@@ -15,6 +15,7 @@ export function Home() {
     const [selectedState, setSelectedState] = useState('')
     const [selectedCity, setSelectedCity] = useState('')
     const [selectedService, setSelectedService] = useState('')
+    const [galleryIndex, setGalleryIndex] = useState(0)
 
     useEffect(() => {
         const fetchAllSalons = async () => {
@@ -35,6 +36,16 @@ export function Home() {
             const states = [...new Set(salons.map(salon => salon.state))].sort()
             setStates(states)
         }
+        
+        const gallery = setInterval(() => {
+            setGalleryIndex(prev => {
+              const nextIndex = prev + 1;
+              return nextIndex >= salons.length ? 0 : nextIndex;
+            });
+          }, 2000);
+      
+          return () => clearInterval(gallery);
+
     }, [salons]);
 
     const handleSelectChange = async (event) => {
@@ -57,6 +68,12 @@ export function Home() {
         e.preventDefault();
         navigate('/salons', { state: { selectedCity, selectedState, selectedService } });
     };
+
+    const visibleSalons = [
+        ...salons.slice(galleryIndex, galleryIndex + 5),
+        ...salons.slice(0, Math.max(0, (galleryIndex + 5) - salons.length))
+      ];
+
 
     return (
         <div className="home-container">
@@ -115,7 +132,7 @@ export function Home() {
                 </div>
                 {salons.length > 0 ? (
                     <div className="salon-cards">
-                        {salons.map(e => (
+                        {visibleSalons.map(e => (
                             <div className="salon-card" key={e.salon_id}>
                                 <img src='image.png' className='salon-image' />
                                 <h2>{e.name}</h2>
