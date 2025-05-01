@@ -48,7 +48,7 @@ export function Calendar({ userType, salon_id, customer_id, service_duration, se
                 {weekDays.map((date) => {
                     const today = formatDate(new Date());
                     const formattedDate = formatDate(date);
-                    const isPast = new Date(date) < new Date(today);
+                    const isPast = formattedDate < today;
                     const hasSchedule = !!schedule[formattedDate];
                     const isUnavailable = !hasSchedule;
 
@@ -58,7 +58,7 @@ export function Calendar({ userType, salon_id, customer_id, service_duration, se
                                 <p>{getDayName(date)}</p>
                                 <p>{formattedDate}</p>
                                 {userType === 'salon' ? (
-                                    <p>{schedule[formattedDate]?.working_hours || 'No schedule'}</p>
+                                    <p>{schedule[formattedDate]?.working_hours || '- No schedule -'}</p>
                                 ) : null}
                             </div>
 
@@ -74,10 +74,8 @@ export function Calendar({ userType, salon_id, customer_id, service_duration, se
                                                     setShowModal(true);
                                                 }
                                             }}
-                                        >
-                                            {userType === 'salon'
-                                                ? `${slot.slot} - ${slot.status}`
-                                                : `${slot.slot}`}
+                                        > 
+                                        {slot.slot}
                                         </div>
                                     ))
                                 }
