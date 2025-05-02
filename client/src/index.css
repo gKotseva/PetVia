@@ -7,9 +7,11 @@
 }
 
 :root {
-    --dark-color: #1b4d3e;
-    --light-color: #c1d8c3;
-    --background: #eee5e2ea;
+    --dark-color: #3b414d;
+    --accent-color: #f8a07c;
+    --lighter-color: #75808c;
+    --light-color: #e4e6e9;
+    --background: #eeeff4;    
 }
 
 body {
@@ -27,7 +29,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .custom-button {
-    background: var(--dark-color);
+    background: var(--accent-color);
     color: white;
     padding: 12px 15px;
     width: 15em;
