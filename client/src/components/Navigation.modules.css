@@ -3,8 +3,8 @@
     justify-content: space-between;
     align-items: center;
     padding: 0em 4em;
-    background: var(--dark-color);
-    color: white;
+    background: var(--background);
+    color: black;
 }
 
 .navigation-logo-container img {
@@ -15,7 +15,7 @@
 .navigation-links-container ul {
     list-style-type: none;
     display: flex;
-    gap: 2em;
+    gap: 1em;
     justify-content: center;
     text-transform: uppercase;
     letter-spacing: 1px;
@@ -24,6 +24,7 @@
 
 .navigation-links-container ul li {
     position: relative;
+    align-self: center;
 }
 
 .navigation-links-container ul li::after {
@@ -33,7 +34,7 @@
     left: 0;
     width: 0;
     height: 1px;
-    background-color: white;
+    background-color: var(--accent-color);
     transition: width 0.3s ease-in;
 }
 
@@ -48,4 +49,10 @@
 .navigation-container a {
     text-decoration: none;
     color: inherit;
+}
+
+.navigation-container .custom-button {
+    width: 8em !important;
+    text-align: center;
+    padding: 0.4em !important;
 }

@@ -30,8 +30,8 @@ export function Navigation() {
                     {
                         !auth ? (
                             <>
-                                <li onClick={() => openModal("login")}>Login</li>
-                                <li onClick={() => openModal("register")}>Register</li>
+                                <li onClick={() => openModal("login")} className='custom-button'>Login</li>
+                                <li onClick={() => openModal("register")} className='custom-button'>Register</li>
                             </>
                         ) : auth.role === 'user' ? (
                             <>
@@ -41,7 +41,7 @@ export function Navigation() {
                         ) : auth.role === 'salon' && (
                             <>
                                 <li><Link to='/salon-settings'>Settings</Link></li>
-                                <li onClick={logout}>Logout</li>
+                                <li onClick={logout} className='custom-button'>Logout</li>
                             </>
                         )
                     }
