@@ -1,9 +1,9 @@
-import { useEffect, useState } from 'react';
 import './Home.modules.css';
 
-import { MdLocationPin } from "react-icons/md";
-import { fetchServicesPerDetails, getAllAppointmentsCount, getAllSalons } from '../../handlers/sharedHandlers';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { fetchServicesPerDetails, getAllAppointmentsCount, getAllSalons } from '../../handlers/sharedHandlers';
+import { MdLocationPin } from "react-icons/md";
 
 export function Home() {
     const navigate = useNavigate()
@@ -36,15 +36,15 @@ export function Home() {
             const states = [...new Set(salons.map(salon => salon.state))].sort()
             setStates(states)
         }
-        
+
         const gallery = setInterval(() => {
             setGalleryIndex(prev => {
-              const nextIndex = prev + 1;
-              return nextIndex >= salons.length ? 0 : nextIndex;
+                const nextIndex = prev + 1;
+                return nextIndex >= salons.length ? 0 : nextIndex;
             });
-          }, 2000);
-      
-          return () => clearInterval(gallery);
+        }, 2000);
+
+        return () => clearInterval(gallery);
 
     }, [salons]);
 
@@ -72,60 +72,66 @@ export function Home() {
     const visibleSalons = [
         ...salons.slice(galleryIndex, galleryIndex + 5),
         ...salons.slice(0, Math.max(0, (galleryIndex + 5) - salons.length))
-      ];
-
+    ];
 
     return (
         <div className="home-container">
-            <div className="home-section-1">
-                <h3>Book an appointment for a fluffy refresh</h3>
-                <form onSubmit={showSalons}>
-                    <select name="state" id="state" onChange={handleSelectChange} value={selectedState}>
-                        <option value="" disabled>Select a state</option>
-                        {states.length > 0 ? (
-                            states.map(e => <option value={e} key={e}>{e}</option>)
-                        ) : (
-                            <option value="" disabled>No States to show</option>
-                        )}
-                    </select>
-                    <select name="city" id="city" onChange={handleSelectChange} value={selectedCity}>
-                        <option value="" disabled>Select a city</option>
-                        {cities.length > 0 ? (
-                            cities.map(e => (
-                                <option value={e} key={e}>{e}</option>
-                            ))
-                        ) : (
-                            <option value="" disabled>No Cities to show</option>
-                        )}
-                    </select>
-                    <select name="service" id="service" onChange={handleSelectChange} value={selectedService}>
-                        <option value="" disabled>Select a service</option>
-                        {services.length > 0 ? (
-                            services.map(e => (
-                                <option value={e} key={e}>{e}</option>
-                            ))
-                        ) : (
-                            <option value="" disabled>No Services to show</option>
-                        )}
-                    </select>
-                    <button className='custom-button'>Show salons</button>
-                </form>
-            </div>
-            <div className="home-section-2">
-                <div className="div">
-                    <img src="./image.png" alt="Booking" />
-                    <h3>Book an appointment online, anytime, free of charge!</h3>
+            <div className="home-heading-container">
+                <div className="home-heading-form-container">
+                    <form onSubmit={showSalons}>
+                        <select name="state" id="state" onChange={handleSelectChange} value={selectedState}>
+                            <option value="" disabled>Select a state</option>
+                            {states.length > 0 ? (
+                                states.map(e => <option value={e} key={e}>{e}</option>)
+                            ) : (
+                                <option value="" disabled>No States to show</option>
+                            )}
+                        </select>
+                        <select name="city" id="city" onChange={handleSelectChange} value={selectedCity}>
+                            <option value="" disabled>Select a city</option>
+                            {cities.length > 0 ? (
+                                cities.map(e => (
+                                    <option value={e} key={e}>{e}</option>
+                                ))
+                            ) : (
+                                <option value="" disabled>No Cities to show</option>
+                            )}
+                        </select>
+                        <select name="service" id="service" onChange={handleSelectChange} value={selectedService}>
+                            <option value="" disabled>Select a service</option>
+                            {services.length > 0 ? (
+                                services.map(e => (
+                                    <option value={e} key={e}>{e}</option>
+                                ))
+                            ) : (
+                                <option value="" disabled>No Services to show</option>
+                            )}
+                        </select>
+                        <button className='custom-button'>Show salons</button>
+                    </form>
                 </div>
-                <div className="div">
-                    <img src="./image.png" alt="Appointments" />
-                    <h3>{appointmentsCount} appointments booked through PetVia!</h3>
-                </div>
-                <div className="div">
-                    <img src="./image.png" alt="Grooming salons" />
-                    <h3>{salons.length} grooming salons!</h3>
+                <div className="home-heading-image-container">
+                    <img src='./image.png' />
                 </div>
             </div>
-            <div className="home-section-3">
+            <div className="home-information-container">
+                <div className="home-information-card1-container">
+                    <img src="./image.png" />
+                    <span></span>
+                    <p></p>
+                </div>
+                <div className="home-information-card2-container">
+                    <img src="./image.png" />
+                    <span>{appointmentsCount}</span>
+                    <p>Appointments Booked</p>
+                </div>
+                <div className="home-information-card3-container">
+                    <img src="./image.png" />
+                    <span>{salons.length}</span>
+                    <p>Salons available</p>
+                </div>
+            </div>
+            <div className="home-gallery-container">
                 <div>
                     <h2>Explore our grooming salons</h2>
                     <h4>When fur needs a little love and a pair of scissors.</h4>

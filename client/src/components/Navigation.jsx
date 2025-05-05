@@ -36,7 +36,7 @@ export function Navigation() {
                         ) : auth.role === 'user' ? (
                             <>
                                 <li><Link to='/my-profile'>Profile</Link></li>
-                                <li onClick={logout}>Logout</li>
+                                <li onClick={logout} className='custom-button'>Logout</li>
                             </>
                         ) : auth.role === 'salon' && (
                             <>

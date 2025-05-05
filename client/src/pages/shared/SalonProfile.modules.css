@@ -1,44 +1,106 @@
 .salon-information {
+    background: var(--dark-color);
     display: flex;
     justify-content: space-between;
-    padding: 2em;
-    text-align: center;
+    padding: 1em 5em;
+    color: white;
+    align-items: center;
+}
+
+.salon-contact-details {
+    display: flex;
+    flex-direction: column;
+    gap: 2em;
+}
+
+.salon-contact-details h1 {
+    color: var(--accent-color);
+    letter-spacing: 2px;
 }
 
 .salon-services {
-    margin: 2em;
     display: flex;
-    gap: 5em;
+    margin: 1em 2em;
+    gap: 2em;
 }
 
 .service-container {
     display: flex;
+    flex: 1;
+    min-width: 600px;
     justify-content: space-evenly; 
     margin: 0.2em;
-    min-width: 40em;
     padding: 1em 2em;
     background: var(--light-color);
     border-radius: 1em;
     align-items: center;
 }
 
+.calendar-container {
+    flex: 1;
+    max-width: 65%;
+    min-width: 400px;
+}
+
 .service-container h2 {
     flex: 1;
     margin: 0;
     text-align: center;
+    text-transform: capitalize;
 }
 
 .service-container:hover {
-    background: var(--dark-color);
+    background: var(--accent-color);
     color: white;
 }
 
+.selected {
+    background: var(--accent-color) !important;
+    color: white !important;
+}
+
+.salon-team-about {
+    display: flex;
+    justify-content: space-between;
+    padding: 2em;
+    background: var(--accent-color);
+    color: white;
+    width: 100%;
+}
+
 .salon-team {
+    text-align: center;
+    align-self: center;
+    flex-grow: 2;
+    min-width: 50%;
+}
+
+.salon-about-us {
     display: flex;
     flex-direction: column;
-    text-align: center;
     justify-content: center;
+    align-items: center;
+    flex-grow: 1;
+    width: 100%;
+    background: var(--background);
+    color: black;
     padding: 2em;
+    border-radius: 2em;
+}
+
+.salon-about-us p {
+    max-width: 80%;
+    line-height: 1.7em;
+    margin-top: 2em;
+    text-align: center;
+}
+
+.team-member {
+    text-transform: capitalize;
+    border-radius: 2em;
+    gap: 2em;
+    display: flex;
+    flex-direction: column;
 }
 
 .team-members,
@@ -58,14 +120,9 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     padding: 2em;
     border-radius: 2em;
-    background: var(--dark-color);
+    background: var(--lighter-color);
     color: white;
     display: flex;
     flex-direction: column;
     gap: 1em;
-}
-
-.selected {
-    background: var(--dark-color) !important;
-    color: white !important;
 }

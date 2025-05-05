@@ -25,6 +25,9 @@
 .navigation-links-container ul li {
     position: relative;
     align-self: center;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .navigation-links-container ul li::after {
@@ -51,8 +54,21 @@
     color: inherit;
 }
 
-.navigation-container .custom-button {
-    width: 8em !important;
+.navigation-links-container .custom-button {
+    background: var(--accent-color);
+    color: white;
+    padding: 12px 15px;
+    width: auto;
     text-align: center;
-    padding: 0.4em !important;
+    border: none;
+    border-radius: 2em;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: 0.3s ease-in-out;
+    cursor: pointer;
+}
+
+.navigation-links-container .custom-button:hover {
+    background-color: var(--light-color);
+    color: black;
 }

@@ -7,6 +7,7 @@ import { displayReviewStars } from '../../components/DisplayReviewStars';
 import { IoIosArrowForward } from "react-icons/io";
 import { Calendar } from '../../components/Calendar';
 import { useAuth } from '../../context/AuthContext';
+import { MdLocationPin } from "react-icons/md";
 
 export function SalonProfile() {
     const { id } = useParams();
@@ -14,8 +15,6 @@ export function SalonProfile() {
     const [salonInfo, setSalonInfo] = useState({})
     const [openCalendar, setOpenCalendar] = useState(false)
     const [selectedService, setSelectedService] = useState(null)
-    const [selectedDay, setSelectedDay] = useState(null)
-    const [showAppointments, setShowAppointments] = useState(false)
 
     useEffect(() => {
         const fetchSalonInfo = async () => {
@@ -36,10 +35,7 @@ export function SalonProfile() {
         setOpenCalendar(true);
     };
 
-    const handleShowAppointments = (date) => {
-        setShowAppointments(true)
-        setSelectedDay(date)
-    }
+    console.log(salonInfo)
 
     return (
         <div className="salon-profile-container">
@@ -48,8 +44,7 @@ export function SalonProfile() {
                     <div className="salon-information">
                         <div className="salon-contact-details">
                             <h1>{salonInfo.salonDetails.name}</h1>
-                            <h2>{salonInfo.salonDetails.state}, {salonInfo.salonDetails.city}</h2>
-                            <h3>{salonInfo.salonDetails.address}</h3>
+                            <h4><MdLocationPin /> {salonInfo.salonDetails.state}, {salonInfo.salonDetails.city} {salonInfo.salonDetails.address}</h4>
                         </div>
                         <div className="salon-review-stars">
                             <h2>{displayReviewStars(salonInfo.averageRating)}</h2>
@@ -71,15 +66,16 @@ export function SalonProfile() {
                             <Calendar
                                 key={selectedService?.service_id}
                                 userType='customer'
-                                salon_id={id}
-                                customer_id={auth?.id}
-                                service_duration={selectedService?.duration}
+                                salonId={id}
+                                customerId={auth?.id}
+                                serviceDuration={selectedService?.duration}
                                 service = {selectedService}
                                 registeredUser = {auth?.role}
                             />
                         }
                     </div>
-                    <div className="salon-team">
+                    <div className="salon-team-about">
+                        <div className="salon-team">
                         <h1>Meet Our Team</h1>
                         <div className="team-members">
                             {salonInfo.team.map(member => (
@@ -88,6 +84,11 @@ export function SalonProfile() {
                                     <h2>{member.name}</h2>
                                 </div>
                             ))}
+                        </div>
+                        </div>
+                        <div className="salon-about-us">
+                            <h1>About us</h1>
+                            <p>{salonInfo.salonDetails.description}</p>
                         </div>
                     </div>
                     <div className="salon-reviews">

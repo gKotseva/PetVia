@@ -2,8 +2,7 @@
     display: flex;
     padding: 1em;
     justify-content: space-evenly;
-    margin-top: 2em;
-    margin-bottom: 2em;
+    border-top: 1px solid var(--accent-color);
 }
 
 .customer-update-info form {

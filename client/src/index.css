@@ -32,13 +32,14 @@ h1, h2, h3, h4, h5, h6 {
     background: var(--accent-color);
     color: white;
     padding: 12px 15px;
-    width: 15em;
-    align-self: center;
+    width: auto;
+    text-align: center;
     border: none;
     border-radius: 2em;
     text-transform: uppercase;
     letter-spacing: 1px;
     transition: 0.3s ease-in-out;
+    cursor: pointer;
 }
 
 .custom-button:hover {

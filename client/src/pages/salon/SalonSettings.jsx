@@ -43,7 +43,7 @@ export function SalonSettings() {
           <li onClick={() => toggleSettings('customer_reviews')} className={activeSetting === 'customer_reviews' ? 'active' : ''}><MdOutlineReviews /> Customer Reviews</li>
         </ul>
       </div>
-      <div className="settings-details-container">
+      <div className={`settings-details-container ${activeSetting === 'appointments' ? 'full-width' : ''}`}>
         {activeSetting === 'account' && <AccountSettings />}
         {activeSetting === 'team' && <TeamSettings />}
         {activeSetting === 'services' && <ServicesSettings />}
@@ -51,11 +51,11 @@ export function SalonSettings() {
         {activeSetting === 'gallery' && <GallerySettings />}
         {activeSetting === 'customer_reviews' && <CustomerReviewsSettings />}
       </div>
-      {auth.auth ? (
+      {auth && activeSetting !== 'appointments' ? (
         <div className="settings-active-schedule-container">
           <h2>Today</h2>
           <div className="settings-appointments-view">
-            {/* <Appointments
+                        {/* <Appointments
               user_type="salon"
               id={auth.auth.id}
               service_duration={null}
@@ -63,7 +63,7 @@ export function SalonSettings() {
             /> */}
           </div>
         </div>
-      ) : (<Loading />)}
+      ) : null}
     </div>
   );
 }
@@ -388,9 +388,11 @@ function ServicesSettings() {
 }
 
 function AppointmentsSettings() {
-  const {auth} = useAuth()
+  const { auth } = useAuth()
   return (
-    <Calendar userType='salon' salon_id={auth?.id}/>
+    <div className="settings-appointments-container">
+      <Calendar userType='salon' salonId={auth?.id} />
+    </div>
   )
 }
 
