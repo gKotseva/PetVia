@@ -2,7 +2,6 @@ import { Navigate, Route, Routes } from "react-router-dom"
 import { Footer } from "./components/Footer"
 import { Navigation } from "./components/Navigation"
 import { useAuth } from "./context/AuthContext"
-import { NotificationProvider } from "./context/NotificationContext"
 import { SalonSettings } from "./pages/salon/SalonSettings"
 import { paths } from "./paths"
 import { ClientProfile } from "./pages/customer/ClientProfile"
@@ -12,11 +11,12 @@ import { SalonProfile } from "./pages/shared/SalonProfile"
 import { NotFound } from "./pages/shared/NotFound"
 
 function App() {
-  const { auth } = useAuth()
+  const { auth } = useAuth();
 
   return (
-    <>
-        <Navigation />
+    <div className="page-wrapper">
+      <Navigation />
+      <main>
         <Routes>
           <Route
             path={paths.salonSettings}
@@ -39,9 +39,10 @@ function App() {
           <Route path={paths.salonProfile} element={<SalonProfile />} />
           <Route path='*' element={<NotFound />} />
         </Routes>
-        <Footer />
-    </>
-  )
+      </main>
+      <Footer />
+    </div>
+  );
 }
 
 export default App
