@@ -251,7 +251,7 @@ function TeamSettings() {
         <hr></hr>
         <div className="settings-add-team-member-container">
           <div className="settings-individual-heading">
-            <h5>Your team members</h5>
+            <h5>Add members</h5>
           </div>
           <div className="settings-add-team-member">
             <form onSubmit={onSubmit}>

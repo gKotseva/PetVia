@@ -125,24 +125,37 @@ input {
     gap: 1em;
 }
 
+.settings-account-container .custom-button {
+    width: 20%;
+}
+
 /* Team CSS */
 
 .settings-team-contents {
     display: flex;
     gap: 2em;
-    justify-content: space-evenly;
+    justify-content: space-between;
+}
+
+.setting-team-member {
+    background: white;
+    padding: 2em 3em;
+    border-radius: 2em;
+    text-transform: capitalize;
 }
 
 .settings-team-members {
     display: flex;
     flex-wrap: wrap;
-    gap: 3em;
-    padding: 2em;
+    gap: 2em;
     text-align: center;
+    margin-top: 1em;
 }
 
 .settings-team-members h4 {
     margin-bottom: 10px;
+    border-bottom: 1px solid var(--accent-color);
+    padding: 0em 0em 0.5em 0em;
 }
 
 .settings-team-members svg:hover {
@@ -218,4 +231,17 @@ input {
 
 .settings-details-container.full-width {
     width: 100%;
+}
+
+/* Gallery CSS */
+
+.settings-images-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2em;
+}
+
+.settings-images-container img {
+    width: 15em;
+    margin-top: 1em;
 }
