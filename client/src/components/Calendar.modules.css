@@ -106,3 +106,8 @@
     color: white;
     pointer-events: none;
 }
+
+.today {
+    background: var(--accent-color);
+    color: white;
+}

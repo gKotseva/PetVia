@@ -48,11 +48,12 @@ export function Calendar ({userType, salonId, customerId, serviceDuration, servi
           const today = formatDate(new Date());
           const formattedDate = formatDate(date);
           const isPast = formattedDate < today;
+          const isToday = formattedDate === today
           const hasSchedule = !!schedule[formattedDate];
           const isUnavailable = !hasSchedule;
 
           return (
-            <div key={date} className={`calendar-day-card ${(isPast || isUnavailable) ? 'past' : ''}`}>
+            <div key={date} className={`calendar-day-card ${isToday ? 'today' : (isPast || isUnavailable) ? 'past' : ''}`}>
               <div className="calendar-day-heading">
                 <p>{getDayName(date)}</p>
                 <p>{formatDate(date)}</p>
