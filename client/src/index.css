@@ -15,7 +15,7 @@
 }
 
 body {
-    background: var(--background);
+    background: var(--light-color);
     font-family: "Cormorant Garamond", serif;
     font-weight: 300;
     font-style: normal;
