@@ -27,3 +27,21 @@ export function getWeekDays(currentWeekIndex) {
         return day;
     });
 }
+
+export function getDaysInMonth (year, month) {
+    const daysInMonth = new Date(year, month, 0).getDate();
+  
+    const days = [];
+    for (let day = 1; day <= daysInMonth; day++) {
+      days.push(formatDate(new Date(year, month - 1, day)));
+    }
+  
+    return days;
+};
+
+export function getStartDayOfMonth(year, month) {
+    const date = new Date(year, month - 1, 1);
+    return date.getDay();
+}
+
+export const weekDays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
