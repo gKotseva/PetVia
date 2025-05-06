@@ -1,0 +1,113 @@
+.add-schedule-container {
+    display: flex;
+    align-items: center;
+    padding: 20px;
+    gap: 3em;
+    border-radius: 8px;
+    width: 40%;
+    max-width: 1000px;
+}
+
+.small-calendar-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    justify-content: center;
+}
+
+.small-calendar-heading {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    margin-bottom: 15px;
+    margin-top: 15px;
+    background-color: var(--dark-color);
+    border-radius: 8px;
+}
+
+.small-calendar-heading h5 {
+    margin: 0;
+    color: white;
+}
+
+.small-calendar-days-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.calendar-weekday {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #333;
+    font-weight: bold;
+}
+
+.small-calendar-day {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: white;
+    border-radius: 50%;
+    color: #333;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s ease;
+}
+
+.small-calendar-day:hover {
+    background-color: #f0f0f0;
+    transform: scale(1.1);
+}
+
+.small-calendar-day.selected {
+    background-color: var(--accent-color);
+    color: white;
+    font-weight: bold;
+}
+
+.arrows {
+    display: flex;
+    gap: 1em;
+}
+
+.small-calendar-day.empty {
+    visibility: hidden;
+}
+
+.schedule-form-container {
+    border-radius: 8px;
+}
+
+.schedule-form-container h4 {
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.schedule-form-container form {
+    display: flex;
+    flex-direction: column;
+    background: white;
+    border-radius: 1em;
+    padding: 1em 3em;
+}
+
+.schedule-form-container label {
+    color: #555;
+    margin-top: 1.5em;
+}
+
+.schedule-form-container input[type="time"] {
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.schedule-form-container .custom-button {
+    width: 15em;
+    margin-top: 2em;
+}
