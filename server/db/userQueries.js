@@ -25,3 +25,9 @@ exports.deleteUser = (id) => {
 
     return query;
 }
+
+exports.deleteAppointment = (id) => {
+    const query = `DELETE FROM appointments WHERE appointment_id=${id}`
+
+    return query;
+}

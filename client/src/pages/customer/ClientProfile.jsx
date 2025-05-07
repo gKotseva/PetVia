@@ -2,46 +2,48 @@ import './ClientProfile.modules.css';
 
 import { useEffect, useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
-import { getUserBookings, getUserDetails, updateUserDetails } from '../../handlers/userHandlers';
+import { cancelAppointment, getUserBookings, getUserDetails, updateUserDetails } from '../../handlers/userHandlers';
 import { Loading } from '../../components/Loading';
 import { Confirm } from '../../components/Confirm';
 import { Modal } from '../../components/Modal';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from '../../hooks/useForm';
 
-export function ClientProfile () {
+export function ClientProfile() {
   const { auth, logout } = useAuth();
   const [userData, setUserData] = useState(null);
   const [bookings, setBookings] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [futurePage, setFuturePage] = useState(1);
   const [pastPage, setPastPage] = useState(1);
+  const [modalContent, setModalContent] = useState('')
   const handler = updateUserDetails;
   const [initialValues, setInitialValues] = useState({});
   const form = 'edit-user'
   const navigate = useNavigate()
+  const [appointmentId, setAppointmentId] = useState(null)
 
   const { values, setValues, errors, success, successMessage, onChange, onSubmit } = useForm(handler, form, initialValues);
 
 
   const itemsPerPage = 4;
 
+  const fetchBookings = async () => {
+    const response = await getUserBookings(auth.id)
+    setBookings(response.result)
+  }
+
   useEffect(() => {
     if (!auth?.id) return;
     const fetchAccountDetails = async () => {
-        const response = await getUserDetails(auth.id)
-        setUserData(response.result)
-        setValues(response.result)
-        setInitialValues(response.result)
+      const response = await getUserDetails(auth.id)
+      setUserData(response.result)
+      setValues(response.result)
+      setInitialValues(response.result)
     }
     fetchAccountDetails()
-
-    const fetchBookings = async () => {
-        const response = await getUserBookings(auth.id)
-        setBookings(response.result)
-    }
     fetchBookings()
-}, [auth?.id])
+  }, [auth?.id])
 
   if (!userData || !bookings) return <Loading />;
 
@@ -56,8 +58,6 @@ export function ClientProfile () {
     (pastPage - 1) * itemsPerPage,
     pastPage * itemsPerPage
   );
-
-  console.log(paginatedFuture)
 
   return (
     <div className="customer-profile-container">
@@ -102,11 +102,14 @@ export function ClientProfile () {
           <button className='custom-button'>Save</button>
         </form>
         <button
-            className="delete-button"
-            onClick={() => setShowModal(true)}
-          >
-            Delete Profile
-          </button>
+          className="delete-button"
+          onClick={() => {
+            setModalContent('delete-profile')
+            setShowModal(true)
+          }}
+        >
+          Delete Profile
+        </button>
       </div>
       <div className="customer-profile-appointments">
         <div className="customer-profile-upcoming-appointments">
@@ -117,6 +120,11 @@ export function ClientProfile () {
                 <div className="appointment-date">
                   <p>{booking.appointment_date}</p>
                   <p>{booking.start_time.slice(0, 5)}</p>
+                  <p onClick={() => {
+                    setModalContent('delete-appointment')
+                    setAppointmentId(booking.appointment_id)
+                    setShowModal(true)
+                  }}>cancel</p>
                 </div>
                 <div className="appointment-data">
                   <p>{booking.salon_name}</p>
@@ -178,16 +186,30 @@ export function ClientProfile () {
       </div>
       {showModal && (
         <Modal onClose={() => setShowModal(false)}>
-          <Confirm
-            title="Delete profile"
-            text="Are you sure you would like to delete your profile with PetVia?"
-            onConfirm={async () => {
-              setShowModal(false);
-              await deleteUser(auth.id)
-              logout()
-            }}
-            onDeny={() => setShowModal(false)}
-          />
+          {modalContent === 'delete-profile' ? (
+            <Confirm
+              title="Delete profile"
+              text="Are you sure you would like to delete your profile with PetVia?"
+              onConfirm={async () => {
+                setShowModal(false);
+                await deleteUser(auth.id)
+                logout()
+              }}
+              onDeny={() => setShowModal(false)}
+            />
+          ) : (
+            <Confirm
+              title="Cancel appointment"
+              text="Are you sure you would like to cancel your appointment?"
+              onConfirm={async () => {
+                setShowModal(false);
+                await cancelAppointment(appointmentId)
+                fetchBookings()
+                setAppointmentId(null)
+              }}
+              onDeny={() => setShowModal(false)}
+            />
+          )}
         </Modal>
       )}
     </div>

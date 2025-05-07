@@ -102,6 +102,12 @@
     font-weight: bold;
 }
 
+.appointment-date p:nth-child(3) {
+    margin-top: 1em;
+    text-decoration: underline;
+    color: red;
+}
+
 .appointment-data p:nth-child(1) {
     font-weight: bold;
 }
@@ -138,6 +144,7 @@
 
 .delete-button:hover,
 .pagination button,
-.customer-profile-appointment-container img:hover {
+.customer-profile-appointment-container img:hover,
+.appointment-date p:nth-child(3):hover {
     cursor: pointer;
 }

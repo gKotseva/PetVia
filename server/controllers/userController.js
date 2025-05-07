@@ -1,6 +1,6 @@
 const router = require('express').Router()
 const db = require('../db/db');
-const { getUserData, getUserBookings, editUserDetails, deleteUser } = require('../db/userQueries');
+const { getUserData, getUserBookings, editUserDetails, deleteUser, deleteAppointment } = require('../db/userQueries');
 const { compareDates, checkDateStatus } = require('../utils/date');
 const { hashPassword, comparePassword } = require('../utils/hash');
 
@@ -50,9 +50,17 @@ router.put('/edit-user', async (req, res) => {
 router.delete('/delete-user', async (req, res) => {
     const {id} = req.body
     const query = deleteUser(id)
-    const results = await db.executeQuery(query);
+    await db.executeQuery(query);
 
     res.status(200).send({ message: 'User removed successfully!' });
+});
+
+router.delete('/cancel-appointment', async (req, res) => {
+    const {id} = req.body
+    const query = deleteAppointment(id)
+    await db.executeQuery(query);
+
+    res.status(200).send({ message: 'Appointment canceled!' });
 });
 
 

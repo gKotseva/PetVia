@@ -35,3 +35,12 @@ export const deleteUser = async (id) => {
         throw error;
     }
 }
+
+export const cancelAppointment = async (id) => {
+    try {
+        const response = await request.remove(`/api/user/cancel-appointment`, {id});
+        return response;
+    } catch (error) {
+        throw error;
+    }
+}
