@@ -4,7 +4,12 @@ exports.getUserData = (id) => {
 }
 
 exports.getUserBookings = (id) => {
-    const query = `SELECT * FROM appointments WHERE user_id = ${id}`
+    const query = `
+    SELECT a.appointment_id, a.appointment_date, a.start_time, s.salon_id, s.name as salon_name, ss.name as service_name FROM appointments a
+        JOIN salons s ON a.salon_id = s.salon_id
+        JOIN services ss ON a.service_id = ss.service_id
+        WHERE a.user_id = ${id};
+`
     return query
 }
 
