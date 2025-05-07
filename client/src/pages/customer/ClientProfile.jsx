@@ -1,161 +1,195 @@
 import './ClientProfile.modules.css';
 
 import { useEffect, useState } from 'react';
-import { useForm } from '../../hooks/useForm';
 import { useAuth } from '../../context/AuthContext';
+import { getUserBookings, getUserDetails, updateUserDetails } from '../../handlers/userHandlers';
 import { Loading } from '../../components/Loading';
-import { useNavigate } from 'react-router-dom';
-import { getUserDetails, getUserBookings, updateUserDetails, deleteUser } from '../../handlers/userHandlers';
 import { Confirm } from '../../components/Confirm';
 import { Modal } from '../../components/Modal';
+import { useNavigate } from 'react-router-dom';
+import { useForm } from '../../hooks/useForm';
 
-export function ClientProfile() {
-    const handler = updateUserDetails;
-    const [initialValues, setInitialValues] = useState({});
-    const [showModal, setShowModal] = useState(false);
-    const form = 'edit-user'
-    const navigate = useNavigate()
+export function ClientProfile () {
+  const { auth, logout } = useAuth();
+  const [userData, setUserData] = useState(null);
+  const [bookings, setBookings] = useState(null);
+  const [showModal, setShowModal] = useState(false);
+  const [futurePage, setFuturePage] = useState(1);
+  const [pastPage, setPastPage] = useState(1);
+  const handler = updateUserDetails;
+  const [initialValues, setInitialValues] = useState({});
+  const form = 'edit-user'
+  const navigate = useNavigate()
 
-    const { auth, logout } = useAuth();
-    const [userData, setUserData] = useState(null);
-    const [bookings, setBookings] = useState(null);
+  const { values, setValues, errors, success, successMessage, onChange, onSubmit } = useForm(handler, form, initialValues);
 
-    const { values, setValues, errors, success, successMessage, onChange, onSubmit } = useForm(handler, form, initialValues);
 
-    useEffect(() => {
-        if (!auth?.id) return;
-        const fetchAccountDetails = async () => {
-            const response = await getUserDetails(auth.id)
-            setUserData(response.result)
-            setValues(response.result)
-            setInitialValues(response.result)
-        }
-        fetchAccountDetails()
+  const itemsPerPage = 4;
 
-        const fetchBookings = async () => {
-            const response = await getUserBookings(auth.id)
-            setBookings(response.result)
-        }
-        fetchBookings()
-    }, [auth?.id])
+  useEffect(() => {
+    if (!auth?.id) return;
+    const fetchAccountDetails = async () => {
+        const response = await getUserDetails(auth.id)
+        setUserData(response.result)
+        setValues(response.result)
+        setInitialValues(response.result)
+    }
+    fetchAccountDetails()
 
-    return (
-        <div className="customer-profile-container">
-            <div className="customer-update-info">
-                <h4>My Information</h4>
-                {userData ? (
-                    <form onSubmit={onSubmit}>
-                        <label>First Name</label>
-                        <input
-                            type='text'
-                            value={values.first_name}
-                            name='first_name'
-                            onChange={onChange}
-                        />
-                        <label>Last Name</label>
-                        <input
-                            type='text'
-                            value={values.last_name}
-                            name='last_name'
-                            onChange={onChange}
-                        />
-                        <label>Email</label>
-                        <input
-                            type='email'
-                            value={values.email}
-                            name='email'
-                            onChange={onChange}
-                        />
-                        <label>Mobile Phone</label>
-                        <input
-                            type='text'
-                            value={values.phone_number}
-                            name='phone_number'
-                            onChange={onChange}
-                        />
-                        <label>Password</label>
-                        <input
-                            type='password'
-                            value={values.password || ''}
-                            name='password'
-                            onChange={onChange}
-                        />
-                        <button className='custom-button'>Save</button>
-                    </form>
-                ) : (
-                    <Loading />
-                )}
-                <button
-                    className="delete-button"
-                    onClick={() => setShowModal(true)}
-                >
-                    Delete Profile
-                </button>
+    const fetchBookings = async () => {
+        const response = await getUserBookings(auth.id)
+        setBookings(response.result)
+    }
+    fetchBookings()
+}, [auth?.id])
+
+  if (!userData || !bookings) return <Loading />;
+
+  const totalFuturePages = Math.ceil(bookings.future.length / itemsPerPage);
+  const paginatedFuture = bookings.future.slice(
+    (futurePage - 1) * itemsPerPage,
+    futurePage * itemsPerPage
+  );
+
+  const totalPastPages = Math.ceil(bookings.past.length / itemsPerPage);
+  const paginatedPast = bookings.past.slice(
+    (pastPage - 1) * itemsPerPage,
+    pastPage * itemsPerPage
+  );
+
+  console.log(paginatedFuture)
+
+  return (
+    <div className="customer-profile-container">
+      <div className="customer-profile-settings">
+        <h4>Personal Information</h4>
+        <form onSubmit={onSubmit}>
+          <label>First Name</label>
+          <input
+            type='text'
+            value={values.first_name}
+            name='first_name'
+            onChange={onChange}
+          />
+          <label>Last Name</label>
+          <input
+            type='text'
+            value={values.last_name}
+            name='last_name'
+            onChange={onChange}
+          />
+          <label>Email</label>
+          <input
+            type='email'
+            value={values.email}
+            name='email'
+            onChange={onChange}
+          />
+          <label>Mobile Phone</label>
+          <input
+            type='text'
+            value={values.phone_number}
+            name='phone_number'
+            onChange={onChange}
+          />
+          <label>Password</label>
+          <input
+            type='password'
+            value={values.password || ''}
+            name='password'
+            onChange={onChange}
+          />
+          <button className='custom-button'>Save</button>
+        </form>
+        <button
+            className="delete-button"
+            onClick={() => setShowModal(true)}
+          >
+            Delete Profile
+          </button>
+      </div>
+      <div className="customer-profile-appointments">
+        <div className="customer-profile-upcoming-appointments">
+          <h4>Upcoming Appointments</h4>
+          {paginatedFuture.length > 0 ? (
+            paginatedFuture.map(booking => (
+              <div className="customer-profile-appointment-container" key={booking.appointment_id}>
+                <div className="appointment-date">
+                  <p>{booking.appointment_date}</p>
+                  <p>{booking.start_time.slice(0, 5)}</p>
+                </div>
+                <div className="appointment-data">
+                  <p>{booking.salon_name}</p>
+                  <p>{booking.service_name}</p>
+                </div>
+                <div className="appointment-image" onClick={() => navigate(`/salon/${booking.salon_id}`)}>
+                  <img src='./image.png' />
+                </div>
+              </div>
+            ))
+          ) : (
+            <h4>No upcoming bookings</h4>
+          )}
+          {totalFuturePages > 1 && (
+            <div className="pagination">
+              <button onClick={() => setFuturePage(prev => Math.max(prev - 1, 1))} disabled={futurePage === 1}>
+                {'<'}
+              </button>
+              <span>{futurePage} ... {totalFuturePages}</span>
+              <button onClick={() => setFuturePage(prev => Math.min(prev + 1, totalFuturePages))} disabled={futurePage === totalFuturePages}>
+                {'>'}
+              </button>
             </div>
-            {bookings ? (
-                <>
-                    <div className="customer-outstanding-appointments">
-                        {bookings.future?.length > 0 ? (
-                            <div className='places-container'>
-                                <h4>Upcoming Appointments</h4>
-                                {bookings.future.map(e => (
-                                    <div className='place-details' key={e.appointment_id} onClick={() => navigate(`/salon/${e.salon_id}`)}>
-                                        <img src='/image.png' alt={e.name} />
-                                        <h3>{e.name}</h3>
-                                        <h4>{e.appointment_date}</h4>
-                                        <h4>{new Date(`1970-01-01T${e.start_time}`).toLocaleTimeString('en-US', {
-                                            hour: '2-digit',
-                                            minute: '2-digit',
-                                        })}</h4>
-                                    </div>
-                                ))}
-                            </div>
-                        ) : (
-                            <div className='place-details'>
-                                <h4>You have no upcoming appointments!</h4>
-                            </div>
-                        )}
-                    </div>
-                    <div className="customer-past-appointments">
-                        {bookings.past?.length > 0 ? (
-                            <div className='places-container'>
-                                <h4>Past Appointments</h4>
-                                {bookings.past.map(e => (
-                                    <div className='place-details' key={e.appointment_id} onClick={() => navigate(`/salon/${e.salon_id}`)}>
-                                        <img src='/image.png' alt={e.name} />
-                                        <h3>{e.name}</h3>
-                                        <h4>{e.appointment_date}</h4>
-                                        <h4>{new Date(`1970-01-01T${e.start_time}`).toLocaleTimeString('en-US', {
-                                            hour: '2-digit',
-                                            minute: '2-digit',
-                                        })}</h4>
-                                    </div>
-                                ))}
-                            </div>
-                        ) : (
-                            <div className='place-details'>
-                                <h4>You have no past appointments!</h4>
-                            </div>
-                        )}
-                    </div>
-                </>
-            ) : (
-                <Loading />
-            )}
-            {showModal && (
-                <Modal onClose={() => setShowModal(false)}>
-                    <Confirm
-                        title="Delete profile"
-                        text="Are you sure you would like to delete your profile with PetVia?"
-                        onConfirm={async () => {
-                            setShowModal(false);
-                            await deleteUser(auth.id)
-                            logout()
-                        }}
-                        onDeny={() => setShowModal(false)}
-                    />
-                </Modal>
-            )}
+          )}
         </div>
-    );
+        <div className="customer-profile-past-appointments">
+          <h4>Past Appointments</h4>
+          {paginatedPast.length > 0 ? (
+            paginatedPast.map(booking => (
+              <div className="customer-profile-appointment-container" key={booking.appointment_id}>
+                <div className="appointment-date">
+                  <p>{booking.appointment_date}</p>
+                  <p>{booking.start_time.slice(0, 5)}</p>
+                </div>
+                <div className="appointment-data">
+                  <p>{booking.salon_name}</p>
+                  <p>{booking.service_name}</p>
+                </div>
+                <div className="appointment-image" onClick={() => navigate(`/salon/${booking.salon_id}`)}>
+                  <img src='./image.png' />
+                </div>
+              </div>
+            ))
+          ) : (
+            <h4>No past bookings</h4>
+          )}
+          {totalPastPages > 1 && (
+            <div className="pagination">
+              <button onClick={() => setPastPage(prev => Math.max(prev - 1, 1))} disabled={pastPage === 1}>
+                {'<'}
+              </button>
+              <span>{pastPage} ... {totalPastPages}</span>
+              <button onClick={() => setPastPage(prev => Math.min(prev + 1, totalPastPages))} disabled={pastPage === totalPastPages}>
+                {'>'}
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
+      {showModal && (
+        <Modal onClose={() => setShowModal(false)}>
+          <Confirm
+            title="Delete profile"
+            text="Are you sure you would like to delete your profile with PetVia?"
+            onConfirm={async () => {
+              setShowModal(false);
+              await deleteUser(auth.id)
+              logout()
+            }}
+            onDeny={() => setShowModal(false)}
+          />
+        </Modal>
+      )}
+    </div>
+  );
 }

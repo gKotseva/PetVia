@@ -1,65 +1,125 @@
 .customer-profile-container {
+    margin: 0;
+    padding: 0;
+    width: 100%;
     display: flex;
-    padding: 1em;
-    justify-content: space-evenly;
-    border-top: 1px solid var(--accent-color);
+    justify-content: flex-start;
 }
 
-.customer-update-info form {
-    display: flex;
-    flex-direction: column;
-}
-
-.customer-update-info form label {
-    text-transform: uppercase;
-    margin-bottom: 5px;
-    margin-top: 1em;
-}
-
-.customer-update-info form input {
-    margin-bottom: 1em;
-    padding: 0.5em 0.5em;
-    border: none;
-    border-bottom: 1px solid var(--dark-color);
-    background: inherit;
-    outline: none;
-}
-
-.customer-past-appointments img,
-.customer-outstanding-appointments img {
-    width: 10%;
-    height: auto;
-}
-
-.customer-outstanding-appointments,
-.customer-past-appointments,
-.customer-update-info form {
-    max-width: 30em;
-    background: rgba(255, 255, 255, 0.61);
-    border-radius: 1em;
+.customer-profile-settings {
+    background: var(--dark-color);
     padding: 2em;
+    width: 40%;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+.customer-profile-settings h4 {
+    color: white;
+    text-align: center;
+    margin-bottom: 2em;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.customer-profile-settings form {
     display: flex;
     flex-direction: column;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    text-transform: uppercase;
+    padding: 2em;
+    background: white;
+    border-radius: 1em;
+    width: 20em;
 }
 
-.places-container {
+.customer-profile-settings form label {
+    margin-top: 2em;
+}
+
+.customer-profile-settings form input {
+    border-radius: 1em;
+    width: 20em;
+}
+
+.customer-profile-settings button {
+    margin-top: 2em;
+    width: 14em;
+    align-self: center;
+}
+
+.customer-profile-appointments {
     display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
     gap: 2em;
+    margin-top: 2em;
+    padding: 0em 4em;
 }
 
-.place-details {
+.customer-profile-upcoming-appointments,
+.customer-profile-past-appointments {
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+  min-height: 420px;
+  position: relative;
+}
+
+.customer-profile-upcoming-appointments .pagination,
+.customer-profile-past-appointments .pagination {
+  margin-top: 1em;
+  align-self: center;
+}
+
+.customer-profile-appointment-container {
+    background: white;
     display: flex;
-    gap: 2em;
+    border-radius: 1em;
     align-items: center;
-    justify-content: center;
 }
 
-.place-details:hover {
-    cursor: pointer;
+.customer-profile-appointment-container img {
+    width: 5em;
+}
+
+.appointment-date,
+.appointment-data,
+.appointment-image {
+    padding: 1em 2em;
+    text-transform: capitalize;
+}
+
+.appointment-image {
+    margin-left: auto;
+}
+
+.appointment-date {
+    border-right: 1px solid var(--accent-color);
+    color: var(--accent-color);
+    font-size: 18px;
+}
+
+.appointment-date p:nth-child(2) {
+    font-weight: bold;
+}
+
+.appointment-data p:nth-child(1) {
+    font-weight: bold;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    gap: 1em;
+    align-items: center;
+}
+
+.pagination button {
+    background: var(--accent-color);
+    border: none;
+    padding: 0.5em 1em;
+    border-radius: 1em;
+    color: white;
+
 }
 
 .delete-button {
@@ -74,4 +134,10 @@
     text-transform: uppercase;
     color: white;
     letter-spacing: 1px;
+}
+
+.delete-button:hover,
+.pagination button,
+.customer-profile-appointment-container img:hover {
+    cursor: pointer;
 }
