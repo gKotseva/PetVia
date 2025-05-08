@@ -35,8 +35,6 @@ export function SalonProfile() {
         setOpenCalendar(true);
     };
 
-    console.log(salonInfo)
-
     return (
         <div className="salon-profile-container">
             {Object.keys(salonInfo).length > 0 ? (

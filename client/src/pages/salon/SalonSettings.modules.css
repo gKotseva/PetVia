@@ -233,6 +233,36 @@ input {
     width: 100%;
 }
 
+.settings-appointments-container {
+    display: flex;
+    flex-direction: column;
+}
+  
+.settings-appointments-header {
+    display: flex;
+    justify-content: space-between;
+    background: var(--dark-color);
+    padding: 2em;
+    border-radius: 4em;
+    color: white;
+    text-transform: uppercase;
+    align-items: center;
+    letter-spacing: 1px;
+}
+
+.settings-appointments-container button {
+    border: none;
+    background: var(--accent-color);
+    color: white;
+    text-transform: uppercase;
+    padding: 0.5em 1em;
+    border-radius: 2em;
+}
+
+.settings-appointments-container button:hover {
+    cursor: pointer;
+}
+
 /* Gallery CSS */
 
 .settings-images-container {

@@ -17,6 +17,7 @@ import { Modal } from '../../components/Modal';
 import { Form } from '../../components/Form';
 import { displayReviewStars } from '../../components/DisplayReviewStars';
 import { Calendar } from '../../components/Calendar';
+import { Schedule } from '../../components/Schedule';
 
 export function SalonSettings() {
   const [activeSetting, setActiveSetting] = useState('account');
@@ -55,7 +56,7 @@ export function SalonSettings() {
         <div className="settings-active-schedule-container">
           <h2>Today</h2>
           <div className="settings-appointments-view">
-                        {/* <Appointments
+            {/* <Appointments
               user_type="salon"
               id={auth.auth.id}
               service_duration={null}
@@ -389,9 +390,20 @@ function ServicesSettings() {
 
 function AppointmentsSettings() {
   const { auth } = useAuth()
+  const [showModal, setShowModal] = useState(false);
+
   return (
     <div className="settings-appointments-container">
-      <Calendar userType='salon' salonId={auth?.id} />
+      <div className="settings-appointments-header">
+        <h4>Your appointments</h4>
+        <button onClick={() => setShowModal(true)}>bulk add schedule</button>
+      </div>
+      <Calendar userType="salon" salonId={auth?.id} />
+      {showModal && (
+        <Modal onClose={() => setShowModal(false)}>
+          <Schedule salonId={auth?.id} closeModal={() => setShowModal(false)}/>
+        </Modal>
+      )}
     </div>
   )
 }

@@ -4,8 +4,6 @@
     padding: 20px;
     gap: 3em;
     border-radius: 8px;
-    width: 40%;
-    max-width: 1000px;
 }
 
 .small-calendar-container {
@@ -110,4 +108,10 @@
 .schedule-form-container .custom-button {
     width: 15em;
     margin-top: 2em;
+}
+
+.working {
+    background: green;
+    color: white;
+    pointer-events: none;
 }

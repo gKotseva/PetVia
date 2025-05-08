@@ -31,7 +31,7 @@
     justify-content: space-evenly; 
     margin: 0.2em;
     padding: 1em 2em;
-    background: var(--light-color);
+    background: white;
     border-radius: 1em;
     align-items: center;
 }
@@ -52,6 +52,7 @@
 .service-container:hover {
     background: var(--accent-color);
     color: white;
+    cursor: pointer;
 }
 
 .selected {
