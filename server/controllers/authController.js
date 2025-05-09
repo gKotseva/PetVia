@@ -7,6 +7,10 @@ router.post('/login', async (req, res) => {
   const { email, password } = req.body.values
   const accountType = req.body.accountType
 
+  if(!email || !password) {
+    return res.status(400).send({ message: 'All fields must not be empty!' });
+  }
+
   const query = checkEmail(email, accountType)
   const checkEmailResult = await db.executeQuery(query);
 
@@ -38,6 +42,17 @@ router.post('/register', async (req, res) => {
   const { password, confirm_password } = values;
   let userData = {};
 
+  // Проверка за празни полета
+  const requiredFields = accountType === 'customer'
+    ? ['first_name', 'last_name', 'email', 'phone_number']
+    : ['salon_name', 'email', 'phone_number', 'state', 'city', 'address'];
+
+  for (let field of requiredFields) {
+    if (!values[field]) {
+      return res.status(400).json({ message: `All fields must not be empty!` });
+    }
+  }
+
   if (accountType === 'customer') {
     const { first_name, last_name, email, phone_number } = values;
     userData = { first_name, last_name, email, phone_number };
@@ -50,25 +65,23 @@ router.post('/register', async (req, res) => {
   userData.password = hashedPassword;
 
   try {
-    const emailCheckQuery = await checkEmail(userData.email, accountType)
-    const emailCheck = await db.executeQuery(emailCheckQuery)
+    const emailCheckQuery = await checkEmail(userData.email, accountType);
+    const emailCheck = await db.executeQuery(emailCheckQuery);
 
     if (emailCheck.length > 0) {
-      return res.status(400).json({ message: 'Email is already in use' });
+      return res.status(400).json({ message: 'Email is already in use!' });
     }
 
     if (password !== confirm_password) {
-      const error = new Error('Passwords must match!');
-      error.status = 400;
-      throw error;
+      return res.status(400).json({ message: 'Passwords must match!' });
     }
 
-    const query = register(userData, accountType)
-    const result = await db.executeQuery(query)
+    const query = register(userData, accountType);
+    const result = await db.executeQuery(query);
 
     res.status(200).send({ message: 'Registration successful!', result });
   } catch (error) {
-    res.status(error).json({ error })
+    res.status(error.status || 500).json({ error: error.message });
   }
 });
 
