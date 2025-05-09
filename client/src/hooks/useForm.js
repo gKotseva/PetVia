@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNotification } from '../context/NotificationContext';
 
@@ -12,7 +12,6 @@ export function useForm(handler, form, initialValues, closeModal, openModal, ref
             ...state,
             [e.target.name]: e.target.value
         }));
-
     };
 
     const getChangedFields = () => {
@@ -30,6 +29,7 @@ export function useForm(handler, form, initialValues, closeModal, openModal, ref
 
         return {id: auth.id, changedFields};
     };    
+
     const onSubmit = async (e) => {
         e.preventDefault();
 
@@ -43,6 +43,7 @@ export function useForm(handler, form, initialValues, closeModal, openModal, ref
                 response = await handler(changedFields)
             } else if (form === 'add-schedule') {
                 response = await handler(auth.id, values, selectedDates)
+                closeModal()
             } else {
                 response = await handler(auth.id, values)
                 refreshData()
