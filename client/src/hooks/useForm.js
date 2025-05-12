@@ -2,7 +2,9 @@ import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNotification } from '../context/NotificationContext';
 
-export function useForm(handler, form, initialValues, closeModal, openModal, refreshData, selectedDates) {
+export function useForm(options = {}) {
+    const {handler, form, initialValues, closeModal, openModal, refreshData, selectedDates} = options
+
     const { login, auth } = useAuth();
     const { showNotification } = useNotification();
     const [values, setValues] = useState(() => initialValues || {});
