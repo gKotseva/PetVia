@@ -75,7 +75,7 @@ function AccountSettings() {
   const handler = editSalonDetails;
   const [initialValues, setInitialValues] = useState({});
   const formName = 'edit-salon'
-  const { values, setValues, onChange, onSubmit } = useForm(handler, formName, initialValues);
+  const { values, setValues, onChange, onSubmit } = useForm({handler, form: formName, initialValues});
 
   useEffect(() => {
     const fetchSalonDetails = async () => {
@@ -223,7 +223,7 @@ function TeamSettings() {
     fetchTeamDetails()
   }
 
-  const { onChange, onSubmit } = useForm(handler, 'add-team-member', null, null, null, fetchTeamDetails);
+  const { onChange, onSubmit } = useForm({handler, form: 'add-team-member', refreshData: fetchTeamDetails});
 
   return (
     <div className="team-settings-container">
@@ -302,7 +302,10 @@ function ServicesSettings() {
     fetchServices()
   };
 
-  const { onChange, onSubmit } = useForm(handler, 'add-service', null, null, null, fetchServices);
+  const { onChange, onSubmit } = useForm({
+    handler: handler, 
+    form: 'add-service', 
+    refreshData: fetchServices});
 
   return (
     <div className="services-settings-container">
@@ -323,8 +326,8 @@ function ServicesSettings() {
                     <p>{description}</p>
                   </div>
                   <div className="settings-buttons-container">
-                    <FaEdit color='green' onClick={() => openModal({ service_id, name, price, duration, description })} />
-                    <FaTrashAlt color='red' onClick={() => onDelete(service_id)} />
+                    <FaEdit data-testid={`edit-service-${service_id}`}color='green' onClick={() => openModal({ service_id, name, price, duration, description })} />
+                    <FaTrashAlt data-testid={`delete-service-${service_id}`} color='red' onClick={() => onDelete(service_id)} />
                   </div>
                 </div>
                 || <Loading />
@@ -340,7 +343,7 @@ function ServicesSettings() {
             <h5>Add new service</h5>
           </div>
           <div className="settings-add-new-service">
-            <form onSubmit={onSubmit}>
+            <form onSubmit={onSubmit} data-testid="submit-service">
               <div className="form-row row">
                 <div className='form-row'>
                   <label>Service name</label>

@@ -23,7 +23,7 @@ export function ClientProfile() {
   const navigate = useNavigate()
   const [appointmentId, setAppointmentId] = useState(null)
 
-  const { values, setValues, errors, success, successMessage, onChange, onSubmit } = useForm(handler, form, initialValues);
+  const { values, setValues, errors, success, successMessage, onChange, onSubmit } = useForm({handler, form, initialValues});
 
 
   const itemsPerPage = 4;

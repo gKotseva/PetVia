@@ -12,7 +12,7 @@ export function Schedule ({salonId, closeModal}) {
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
   const [schedule, setSchedule] = useState([])
 
-  const { values, setValues, errors, success, successMessage, onChange, onSubmit } = useForm(addSchedule, 'add-schedule', null, closeModal, null, null, selectedDates);
+  const { values, setValues, errors, success, successMessage, onChange, onSubmit } = useForm({handler: addSchedule, form: 'add-schedule', closeModal, selectedDates});
 
   useEffect(() => {
     const fetchSchedule = async () => {

@@ -28,10 +28,17 @@ export function Form({ formName, closeModal, openModal, editData, refreshData })
             login: [{ label: 'Email', name: 'email', type: 'text' }, { label: 'Password', name: 'password', type: 'password' }],
             register: [{ label: 'Email', name: 'email', type: 'text' }, { label: 'Password', name: 'password', type: 'password' }, { label: 'Confirm password', name: 'confirm_password', type: 'password' }, { label: 'Salon name', name: 'salon_name', type: 'text' }, { label: 'Phone number', name: 'phone_number', type: 'text' }, { label: 'State', name: 'state', type: 'text' }, { label: 'City', name: 'city', type: 'text' }, { label: 'Address', name: 'address', type: 'text' }],
         },
-        'edit-service': [{ label: 'Name', name: 'name', type: 'text' }, { label: 'Price', name: 'price', type: 'text' }, { label: 'Duration', name: 'duration', type: 'text' }, { label: 'Description', name: 'description', type: 'text' }]
+        'edit-service': [{ label: 'Name', name: 'name', type: 'text' }, { label: 'Price', name: 'price', type: 'text' }, { label: 'Duration', name: 'duration', type: 'text' }, { label: 'Description', name: 'description', type: 'text' }],
+        'edit-schedule': [{ label: 'Open Time', name: 'open_time', type: 'time' }, { label: 'Close Time', name: 'close_time', type: 'time' }, { label: 'Break start', name: 'break_start', type: 'time' }, { label: 'Break end', name: 'break_end', type: 'time' }]
     };
 
-    const { values, onChange, onSubmit } = useForm(handler, formName === 'login' || formName === 'register' ? { accountType, form: formName } : formName, editData, closeModal, openModal, refreshData);
+    const { values, onChange, onSubmit } = useForm({
+        handler:handler, 
+        form:(handler, formName === 'login' || formName === 'register' ? { accountType, form: formName } : formName), 
+        initialValues: editData, 
+        closeModal, 
+        openModal, 
+        refreshData});
 
     return (
         formName === 'login' || formName === 'register' ? (
@@ -39,7 +46,7 @@ export function Form({ formName, closeModal, openModal, editData, refreshData })
                 <p className='switch' onClick={toggleAccountType}>Switch to {accountType === "customer" ? "Salon" : "Customer"} <CiLogin /></p>
                 <hr></hr>
                 <p className='form-heading'>{accountType} {formName}</p>
-                <form onSubmit={onSubmit}>
+                <form onSubmit={onSubmit} data-testid={formName}>
                     {formName === 'register' ? (
                         <div className="form-form-row">
                             {forms[accountType][formName].map(({ type, label, name }, index) => (
