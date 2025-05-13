@@ -22,7 +22,7 @@ export function Navigation() {
     return (
         <div className="navigation-container">
             <div className="navigation-logo-container">
-                <img src="/image.png" alt="Logo" />
+                <img src="/logo.png" alt="Logo" />
             </div>
             <div className="navigation-links-container">
                 <ul>
