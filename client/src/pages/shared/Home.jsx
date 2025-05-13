@@ -2,13 +2,16 @@ import './Home.modules.css';
 
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { fetchServicesPerDetails, getAllAppointmentsCount, getAllSalons } from '../../handlers/sharedHandlers';
+import { fetchServicesPerDetails, getAllCounts, getAllSalons } from '../../handlers/sharedHandlers';
 import { MdLocationPin } from "react-icons/md";
+import { BsCalendar2CheckFill } from "react-icons/bs";
+import { HiScissors } from "react-icons/hi2";
+import { MdPeople } from "react-icons/md";
 
 export function Home() {
     const navigate = useNavigate()
     const [salons, setSalons] = useState([])
-    const [appointmentsCount, setAppointmentsCount] = useState(Number)
+    const [counts, setCounts] = useState({})
     const [states, setStates] = useState([])
     const [cities, setCities] = useState([])
     const [services, setServices] = useState([])
@@ -25,27 +28,20 @@ export function Home() {
         fetchAllSalons()
 
         const fetchAllAppointmentsCount = async () => {
-            const response = await getAllAppointmentsCount()
-            setAppointmentsCount(response.appointments)
+            const response = await getAllCounts()
+            setCounts(response)
         }
         fetchAllAppointmentsCount()
     }, [])
 
     useEffect(() => {
-        if (salons.length > 0) {
-            const states = [...new Set(salons.map(salon => salon.state))].sort()
-            setStates(states)
-        }
-
-        const gallery = setInterval(() => {
-            setGalleryIndex(prev => {
-                const nextIndex = prev + 1;
-                return nextIndex >= salons.length ? 0 : nextIndex;
-            });
-        }, 2000);
-
-        return () => clearInterval(gallery);
-
+            if (salons.length < 2) return;
+        
+            const gallery = setInterval(() => {
+                setGalleryIndex(prev => (prev + 1) % salons.length);
+            }, 2000);
+        
+            return () => clearInterval(gallery);
     }, [salons]);
 
     const handleSelectChange = async (event) => {
@@ -69,15 +65,19 @@ export function Home() {
         navigate('/salons', { state: { selectedCity, selectedState, selectedService } });
     };
 
-    const visibleSalons = [
-        ...salons.slice(galleryIndex, galleryIndex + 5),
-        ...salons.slice(0, Math.max(0, (galleryIndex + 5) - salons.length))
-    ];
-
+    const maxVisible = Math.min(5, salons.length);
+    const end = galleryIndex + maxVisible;
+    
+    const visibleSalons =
+        end <= salons.length
+            ? salons.slice(galleryIndex, end)
+            : [...salons.slice(galleryIndex), ...salons.slice(0, end - salons.length)];
+    
     return (
         <div className="home-container">
             <div className="home-heading-container">
                 <div className="home-heading-form-container">
+                    <h5>Book your appointment today <br /> and give your pet the grooming they <br /> <span>deserve!</span></h5>
                     <form onSubmit={showSalons}>
                         <select name="state" id="state" onChange={handleSelectChange} value={selectedState}>
                             <option value="" disabled>Select a state</option>
@@ -110,25 +110,22 @@ export function Home() {
                         <button className='custom-button'>Show salons</button>
                     </form>
                 </div>
-                <div className="home-heading-image-container">
-                    <img src='./image.png' />
-                </div>
             </div>
             <div className="home-information-container">
                 <div className="home-information-card1-container">
-                    <img src="./image.png" />
-                    <span></span>
-                    <p></p>
+                <MdPeople />
+                    <span>{counts.customers}</span>
+                    <p>Customers</p>
                 </div>
                 <div className="home-information-card2-container">
-                    <img src="./image.png" />
-                    <span>{appointmentsCount}</span>
+                <BsCalendar2CheckFill />
+                    <span>{counts.appointments}</span>
                     <p>Appointments Booked</p>
                 </div>
                 <div className="home-information-card3-container">
-                    <img src="./image.png" />
-                    <span>{salons.length}</span>
-                    <p>Salons available</p>
+                <HiScissors />
+                    <span>{counts.salons}</span>
+                    <p>Salons</p>
                 </div>
             </div>
             <div className="home-gallery-container">
@@ -139,15 +136,15 @@ export function Home() {
                 {salons.length > 0 ? (
                     <div className="salon-cards">
                         {visibleSalons.map(e => (
-                            <div className="salon-card" key={e.salon_id}>
-                                <img src='image.png' className='salon-image' />
-                                <h2>{e.name}</h2>
-                                <h3><MdLocationPin /> {e.state}</h3>
+                            <div className="salon-card" key={e.salon_id} style={{ backgroundImage: `url(./images/${e.image})` }}>
+                                <div className="salon-card-information">
+                                <h3>{e.name}</h3>
+                                <h4><MdLocationPin /> {e.state}</h4>
                                 <p>{e.city}, {e.address}</p>
+                                </div>
                             </div>
                         ))}
                     </div>
-
                 ) : (
                     <div className="no-salons">
                         <p>No salons to show!</p>
