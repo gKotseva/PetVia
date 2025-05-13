@@ -9,9 +9,9 @@ export const getAllSalons = async () => {
     }
 }
 
-export const getAllAppointmentsCount = async () => {
+export const getAllCounts = async () => {
     try {
-        const response = await request.get(`/api/shared/appointments-count`);
+        const response = await request.get(`/api/shared/count`);
         return response;
     } catch (error) {
         throw error;

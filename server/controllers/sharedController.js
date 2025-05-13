@@ -1,6 +1,6 @@
 const router = require('express').Router()
 const db = require('../db/db');
-const { getAllSalons, getAllAppointmentsCount, getAllServicesPerDetails, getSalonsPerData, getSalonReviews, getDetails, getTeam, getServices, getAppointments, getSchedule } = require('../db/sharedQueries');
+const { getAllSalons, getAllAppointmentsCount, getAllServicesPerDetails, getSalonsPerData, getSalonReviews, getDetails, getTeam, getServices, getAppointments, getSchedule, getAllSalonsCount, getAllCustomersCount } = require('../db/sharedQueries');
 const { generateSlots } = require('../utils/calendar');
 const { formatDate } = require('../utils/date');
 const { averageRating } = require('../utils/rating');
@@ -12,12 +12,22 @@ router.get('/salons', async (req, res) => {
     res.status(200).send({ result: results })
 })
 
-router.get('/appointments-count', async (req, res) => {
-    const query = getAllAppointmentsCount()
-    const results = await db.executeQuery(query);
+router.get('/count', async (req, res) => {
+    const appointmentsQuery = getAllAppointmentsCount();
+    const appointments = await db.executeQuery(appointmentsQuery);
 
-    res.status(200).send(results[0])
-})
+    const salonsQuery = getAllSalonsCount();
+    const salons = await db.executeQuery(salonsQuery);
+
+    const customersQuery = getAllCustomersCount();
+    const customers = await db.executeQuery(customersQuery);
+
+    res.status(200).send({
+        appointments: appointments[0].appointments,
+        salons: salons[0].salons,
+        customers: customers[0].customers
+    });
+});
 
 router.get('/services-per-details', async (req, res) => {
     const {city, state} = req.query

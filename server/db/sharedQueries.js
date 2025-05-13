@@ -1,10 +1,20 @@
 exports.getAllSalons = () => {
-    const query = `SELECT * FROM salons`
+    const query = `SELECT salon_id, name, address, city, state, image FROM salons;`
     return query
 }
 
 exports.getAllAppointmentsCount = () => {
     const query = `SELECT COUNT(*) as appointments FROM appointments;`
+    return query
+}
+
+exports.getAllCustomersCount = () => {
+    const query = `SELECT COUNT(*) as customers FROM users;`
+    return query
+}
+
+exports.getAllSalonsCount = () => {
+    const query = `SELECT COUNT(*) as salons FROM salons;`
     return query
 }
 
