@@ -46,6 +46,10 @@ export function useForm(options = {}) {
             } else if (form === 'add-schedule') {
                 response = await handler(auth.id, values, selectedDates)
                 closeModal()
+            } else if (form === 'edit-schedule') {
+                response = await handler(auth.id, selectedDates, values)
+                closeModal()
+                refreshData()
             } else {
                 response = await handler(auth.id, values)
                 refreshData()
