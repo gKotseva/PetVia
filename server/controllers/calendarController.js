@@ -1,4 +1,4 @@
-const { getSchedule, getAppointments, addAppointment } = require('../db/calendarQueries');
+const { getSchedule, getAppointments, addAppointment, deleteSchedule } = require('../db/calendarQueries');
 const db = require('../db/db');
 const { checkDayStatus, generateSlots } = require('../utils/calendar');
 const { formatDate } = require('../utils/date');
@@ -42,6 +42,16 @@ router.post('/book-appointment', async (req, res) => {
     const result = await db.executeQuery(insertAppointmentQuery);
 
     res.status(200).json({ message: 'Booking successfull!' });
+
+})
+
+router.delete('/delete-schedule', async (req, res) => {
+    const {date, salonId} = req.body;
+
+    const query = deleteSchedule(date, salonId)
+    const result = await db.executeQuery(query);
+
+    res.status(200).json({ message: `Schedule for ${date} removed! Please refresh the page!` });
 
 })
 

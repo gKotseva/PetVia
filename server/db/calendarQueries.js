@@ -23,3 +23,12 @@ exports.addAppointment = (userID, salonID, serviceID, date, start_time) => {
 
     return query;
 }
+
+exports.deleteSchedule = (date, salonId) => {
+    const query = `
+                DELETE FROM salon_schedule
+                WHERE work_date = '${date}' AND salon_id = ${salonId};
+                `
+
+    return query;
+}

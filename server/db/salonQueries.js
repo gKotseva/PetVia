@@ -95,15 +95,40 @@ exports.getOpenCloseTime = (id, month) => {
 }
 
 exports.getSchedule = (id, month) => {
-    const paddedMonth = String(month).padStart(2, '0');
-    const query = `
-    SELECT *
-        FROM
-    salon_schedule
-    WHERE
-    salon_id = ${id}
-    AND
-            work_date LIKE '%-${paddedMonth}-%'; `;
+    let query = `
+      SELECT *
+      FROM salon_schedule
+      WHERE salon_id = ${id}
+    `;
 
+    if (month) {
+        const paddedMonth = String(month).padStart(2, '0');
+        query += ` AND work_date LIKE '%-${paddedMonth}-%'`;
+    }
+
+    query += ';';
     return query;
-}
+};
+
+exports.editSchedule = (id, date, values) => {
+    const query = `
+      UPDATE salon_schedule
+      SET
+        open_time = ?,
+        close_time = ?,
+        break_start = ?,
+        break_end = ?
+      WHERE salon_id = ? AND work_date = ?;
+    `;
+
+    const params = [
+        values.open_time || null,
+        values.close_time || null,
+        values.break_start || null,
+        values.break_end || null,
+        id,
+        date
+    ];
+
+    return { query, params };
+};

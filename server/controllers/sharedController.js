@@ -35,7 +35,7 @@ router.get('/services-per-details', async (req, res) => {
     const query = getAllServicesPerDetails(city, state)
     const results = await db.executeQuery(query);
 
-    res.status(200).send(results[0])
+    res.status(200).send({data: results})
 })
 
 router.get('/salons-per-data', async(req, res) => {

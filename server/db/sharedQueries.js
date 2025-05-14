@@ -28,7 +28,7 @@ exports.getAllServicesPerDetails = (city, state) => {
 exports.getSalonsPerData = (state, city, service) => {
     return (
         `
-        SELECT s.salon_id, s.name, s.address, s.city, s.state FROM salons s
+        SELECT s.salon_id, s.name, s.address, s.city, s.state, s.image FROM salons s
         JOIN services ss on s.salon_id = ss.salon_id
         WHERE state='${state}' AND city='${city}' AND ss.name='${service}';
         `

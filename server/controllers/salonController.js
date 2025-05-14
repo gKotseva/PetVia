@@ -1,4 +1,4 @@
-const { getDetails, editDetails, getTeam, addTeamMember, deleteTeamMember, getServices, addService, deleteService, editService, addSchedule, getReviews, getSchedule, getAppointments, getOpenCloseTime } = require('../db/salonQueries')
+const { getDetails, editDetails, getTeam, addTeamMember, deleteTeamMember, getServices, addService, deleteService, editService, addSchedule, getReviews, getSchedule, getAppointments, getOpenCloseTime, editSchedule } = require('../db/salonQueries')
 const db = require('../db/db');
 const { formatDate } = require('../utils/date');
 const { generateSlots } = require('../utils/calendar');
@@ -119,6 +119,23 @@ router.get('/reviews', async (req, res) => {
     const result = await db.executeQuery(query)
 
     res.status(200).json({ data: result });
+})
+
+router.get('/schedule', async (req, res) => {
+    const { id } = req.query
+    const query = getSchedule(id)
+    const result = await db.executeQuery(query)
+
+    res.status(200).json({ data: result });
+})
+
+router.put('/edit-schedule', async (req, res) => {
+    const { id, date, values } = req.body
+
+    const { query, params } = editSchedule(id, date, values);
+    await db.executeQuery(query, params);
+
+    res.status(200).json({ message: 'Schedule updated successfully' });
 })
 
 module.exports = router
