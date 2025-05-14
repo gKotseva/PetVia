@@ -21,6 +21,12 @@ form {
     margin-top: 1em;
 }
 
+.form-edit-schedule {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
 .form-container button {
     margin-bottom: 2em;
 }

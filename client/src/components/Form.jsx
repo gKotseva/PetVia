@@ -3,11 +3,17 @@ import React, { useState } from 'react';
 import { useForm } from '../hooks/useForm';
 import { CiLogin } from "react-icons/ci";
 import { login, register } from '../handlers/authHandlers';
-import { editService } from '../handlers/salonHandlers';
+import { editSchedule, editService } from '../handlers/salonHandlers';
 
 
 export function Form({ formName, closeModal, openModal, editData, refreshData }) {
     const [accountType, setAccountType] = useState('customer');
+    let initialValues
+
+    if (formName === 'edit-service'){
+        initialValues = editData
+    } else 
+    initialValues = null
 
     const toggleAccountType = () => {
         setAccountType(prev => (prev === "customer" ? "salon" : "customer"));
@@ -16,9 +22,10 @@ export function Form({ formName, closeModal, openModal, editData, refreshData })
     const handler = {
         login,
         register,
-        'edit-service': editService
+        'edit-service': editService,
+        'edit-schedule': editSchedule
     }[formName];
-
+    
     const forms = {
         customer: {
             login: [{ label: 'Email', name: 'email', type: 'text' }, { label: 'Password', name: 'password', type: 'password' }],
@@ -35,10 +42,11 @@ export function Form({ formName, closeModal, openModal, editData, refreshData })
     const { values, onChange, onSubmit } = useForm({
         handler:handler, 
         form:(handler, formName === 'login' || formName === 'register' ? { accountType, form: formName } : formName), 
-        initialValues: editData, 
+        initialValues,
         closeModal, 
         openModal, 
-        refreshData});
+        refreshData,
+        selectedDates: editData});
 
     return (
         formName === 'login' || formName === 'register' ? (
@@ -89,7 +97,9 @@ export function Form({ formName, closeModal, openModal, editData, refreshData })
                 )}
             </div>
         ) : (
-            <form onSubmit={onSubmit}>
+            <form onSubmit={onSubmit} className={`form-${formName}`}>
+                {formName === 'edit-schedule' ? (<h2>Editing schedule for {editData}</h2>) : <h2>Editing service "{editData.name}"</h2>}
+                <br></br>
                 {forms[formName].map(({ name, label, type }) => (
                     <div key={name} className="input-group">
                         <label htmlFor={name}>{label}</label>
@@ -97,7 +107,7 @@ export function Form({ formName, closeModal, openModal, editData, refreshData })
                             id={name}
                             type={type}
                             name={name}
-                            value={values[name] || ''}
+                            value={values[name] || editData[name] || ''}
                             onChange={onChange}
                         />
                     </div>
