@@ -35,6 +35,11 @@ export function Home() {
     }, [])
 
     useEffect(() => {
+            if (salons.length > 0) {
+                const states = [...new Set(salons.map(salon => salon.state))].sort()
+                setStates(states)
+            }
+
             if (salons.length < 2) return;
         
             const gallery = setInterval(() => {
@@ -54,7 +59,7 @@ export function Home() {
         } else if (name === "city") {
             setSelectedCity(value);
             const response = await fetchServicesPerDetails(value, selectedState)
-            setServices([response.name])
+            setServices(response.data.map(e => e.name))
         } else if (name === "service") {
             setSelectedService(value);
         }
@@ -136,7 +141,7 @@ export function Home() {
                 {salons.length > 0 ? (
                     <div className="salon-cards">
                         {visibleSalons.map(e => (
-                            <div className="salon-card" key={e.salon_id} style={{ backgroundImage: `url(./images/${e.image})` }}>
+                            <div className="salon-card" key={e.salon_id} style={{ backgroundImage: (e.image ? `url(./images/${e.image})` : `url('./image.png')`)}}>
                                 <div className="salon-card-information">
                                 <h3>{e.name}</h3>
                                 <h4><MdLocationPin /> {e.state}</h4>
