@@ -2,7 +2,7 @@ import React, { createContext, useState, useContext, useEffect } from 'react';
 import { useNotification } from './NotificationContext';
 import { useNavigate } from 'react-router-dom';
 
-const AuthContext = createContext();
+export const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
     const [auth, setAuth] = useState(null);
