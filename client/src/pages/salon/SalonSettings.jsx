@@ -18,6 +18,7 @@ import { Form } from '../../components/Form';
 import { displayReviewStars } from '../../components/DisplayReviewStars';
 import { Calendar } from '../../components/Calendar';
 import { Schedule } from '../../components/Schedule';
+import { formatDate } from '../../utils/date';
 
 export function SalonSettings() {
   const [activeSetting, setActiveSetting] = useState('account');
@@ -440,7 +441,7 @@ function CustomerReviewsSettings() {
     }
     fetchReviews()
   }, [])
-
+  
   return (
     <div className="customer-reviews-settings-container">
       <h3>Customer Reviews Settings</h3>
@@ -450,6 +451,7 @@ function CustomerReviewsSettings() {
             <div className="settings-review-container" key={review.review_id}>
               <h3>{review.first_name}, {review.last_name}</h3>
               <h4>{displayReviewStars(review.rating)}</h4>
+              <p>{formatDate(new Date(review.created_at))}</p>
               <p>{review.comment}</p>
             </div>
           ))

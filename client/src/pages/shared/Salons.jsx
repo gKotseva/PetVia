@@ -24,7 +24,7 @@ export function Salons() {
         <div className="salons-container">
             {salonsData.length > 0 ? (
                 salonsData.map((salon) => {
-                    const backgroundImage = salon.image ? `url(${salon.image})` : `url('./image.png')`;
+                    const backgroundImage = salon.image ? `url(./images/${salon.image})` : `url('./image.png')`;
 
                     return (
                         <Link

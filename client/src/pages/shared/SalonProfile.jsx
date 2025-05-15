@@ -56,7 +56,7 @@ export function SalonProfile() {
                                     <h2>{service.name}</h2>
                                     <h2>{service.duration} minutes</h2>
                                     <h2>{service.price}$</h2>
-                                    <IoIosArrowForward color='white' />
+                                    <IoIosArrowForward color='black' />
                                 </div>
                             ))}
                         </div>
@@ -67,22 +67,22 @@ export function SalonProfile() {
                                 salonId={id}
                                 customerId={auth?.id}
                                 serviceDuration={selectedService?.duration}
-                                service = {selectedService}
-                                registeredUser = {auth?.role}
+                                service={selectedService}
+                                registeredUser={auth?.role}
                             />
                         }
                     </div>
                     <div className="salon-team-about">
                         <div className="salon-team">
-                        <h1>Meet Our Team</h1>
-                        <div className="team-members">
-                            {salonInfo.team.map(member => (
-                                <div className="team-member" key={member.team_member_id}>
-                                    <img src='/image.png' />
-                                    <h2>{member.name}</h2>
-                                </div>
-                            ))}
-                        </div>
+                            <h1>Meet Our Team</h1>
+                            <div className="team-members">
+                                {salonInfo.team.map(member => (
+                                    <div className="team-member" key={member.team_member_id}>
+                                        <img src='/image.png' />
+                                        <h2>{member.name}</h2>
+                                    </div>
+                                ))}
+                            </div>
                         </div>
                         <div className="salon-about-us">
                             <h1>About us</h1>
