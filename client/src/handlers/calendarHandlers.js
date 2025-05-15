@@ -17,3 +17,12 @@ export const bookAppointment = async (userID, salonID, serviceID, date, start_ti
         throw error;
     }
 }
+
+export const deleteSchedule = async (date, salonId) => {
+    try {
+        const response = await request.remove(`/api/calendar/delete-schedule`, { date, salonId });
+        return response;
+    } catch (error) {
+        throw error;
+    }
+}

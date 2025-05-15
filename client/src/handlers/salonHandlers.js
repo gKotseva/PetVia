@@ -101,9 +101,18 @@ export const getReviews = async (id) => {
     }
 }
 
-export const getSchedule = async () => {
+export const getSchedule = async (id) => {
     try {
-        const response = await request.get(`/api/salon/schedule`);
+        const response = await request.get(`/api/salon/schedule?id=${id}`);
+        return response;
+    } catch (error) {
+        throw error;
+    }
+}
+
+export const editSchedule = async (id, date, values) => {
+    try {
+        const response = await request.put(`/api/salon/edit-schedule`, {id, date, values});
         return response;
     } catch (error) {
         throw error;
