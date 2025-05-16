@@ -8,13 +8,6 @@ import { editSchedule, editService } from '../handlers/salonHandlers';
 
 export function Form({ formName, closeModal, openModal, editData, refreshData }) {
     const [accountType, setAccountType] = useState('customer');
-    let initialValues
-
-    if (formName === 'edit-service'){
-        initialValues = editData
-    } else 
-    initialValues = null
-
     const toggleAccountType = () => {
         setAccountType(prev => (prev === "customer" ? "salon" : "customer"));
     };
@@ -39,7 +32,18 @@ export function Form({ formName, closeModal, openModal, editData, refreshData })
         'edit-schedule': [{ label: 'Open Time', name: 'open_time', type: 'time' }, { label: 'Close Time', name: 'close_time', type: 'time' }, { label: 'Break start', name: 'break_start', type: 'time' }, { label: 'Break end', name: 'break_end', type: 'time' }]
     };
 
-    const { values, onChange, onSubmit } = useForm({
+    let initialValues = {};
+
+    const currentFormFields = 
+        formName === 'login' || formName === 'register'
+            ? forms[accountType]?.[formName] || []
+            : forms[formName] || [];
+    
+    currentFormFields.forEach(({ name }) => {
+        initialValues[name] = editData?.[name] || '';
+    });
+
+    const { values, onChange, onSubmit, errors } = useForm({
         handler:handler, 
         form:(handler, formName === 'login' || formName === 'register' ? { accountType, form: formName } : formName), 
         initialValues,
@@ -60,7 +64,7 @@ export function Form({ formName, closeModal, openModal, editData, refreshData })
                             {forms[accountType][formName].map(({ type, label, name }, index) => (
                                 <div key={name} className="form-column">
                                     <div className="input-group">
-                                        <label htmlFor={name}>{label}</label>
+                                        <label htmlFor={name}><span className='required-field'>*</span> {label}</label>
                                         <input
                                             id={name}
                                             type={type}
@@ -68,6 +72,7 @@ export function Form({ formName, closeModal, openModal, editData, refreshData })
                                             value={values[name] || ''}
                                             onChange={onChange}
                                         />
+                                        {errors[name] && <p className="input-error">{errors[name]}</p>}
                                     </div>
                                 </div>
                             ))}
@@ -75,7 +80,7 @@ export function Form({ formName, closeModal, openModal, editData, refreshData })
                     ) : (
                         forms[accountType][formName].map(({ type, label, name }) => (
                             <div key={name} className="input-group">
-                                <label htmlFor={name}>{label}</label>
+                                <label htmlFor={name}><span className='required-field'>*</span> {label}</label>
                                 <input
                                     id={name}
                                     type={type}
@@ -83,6 +88,7 @@ export function Form({ formName, closeModal, openModal, editData, refreshData })
                                     value={values[name] || ''}
                                     onChange={onChange}
                                 />
+                                {errors[name] && <p className="input-error">{errors[name]}</p>}
                             </div>
                         ))
                     )}
@@ -102,7 +108,7 @@ export function Form({ formName, closeModal, openModal, editData, refreshData })
                 <br></br>
                 {forms[formName].map(({ name, label, type }) => (
                     <div key={name} className="input-group">
-                        <label htmlFor={name}>{label}</label>
+                        <label htmlFor={name}><span className='required-field'>*</span> {label}</label>
                         <input
                             id={name}
                             type={type}
@@ -110,6 +116,7 @@ export function Form({ formName, closeModal, openModal, editData, refreshData })
                             value={values[name] || editData[name] || ''}
                             onChange={onChange}
                         />
+                        {errors[name] && <p className="input-error">{errors[name]}</p>}
                     </div>
                 ))}
                 <button className="custom-button" type="submit">Submit</button>

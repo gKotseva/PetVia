@@ -1,20 +1,31 @@
 import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNotification } from '../context/NotificationContext';
+import { validate } from '../utils/formValidation';
 
 export function useForm(options = {}) {
-    const {handler, form, initialValues, closeModal, openModal, refreshData, selectedDates} = options
+    const { handler, form, initialValues, closeModal, openModal, refreshData, selectedDates } = options
 
     const { login, auth } = useAuth();
     const { showNotification } = useNotification();
     const [values, setValues] = useState(() => initialValues || {});
+    const [errors, setErrors] = useState({})
 
     const onChange = (e) => {
-        setValues(state => ({
+        const { name, type } = e.target;
+      
+        if (type === 'file') {
+          setValues(state => ({
             ...state,
-            [e.target.name]: e.target.value
-        }));
-    };
+            [name]: e.target.files[0] || null
+          }));
+        } else {
+          setValues(state => ({
+            ...state,
+            [name]: e.target.value
+          }));
+        }
+      };
 
     const getChangedFields = () => {
         const changedFields = {};
@@ -26,19 +37,26 @@ export function useForm(options = {}) {
         });
 
         if (form === 'edit-service' && initialValues?.service_id) {
-            return {id: initialValues.service_id, changedFields}
-        }    
+            return { id: initialValues.service_id, changedFields }
+        }
 
-        return {id: auth.id, changedFields};
-    };    
+        return { id: auth.id, changedFields };
+    };
 
     const onSubmit = async (e) => {
         e.preventDefault();
 
+        const formValidation = validate(values)
+
+        if(Object.keys(formValidation).length > 0) {
+            setErrors(formValidation)
+            return;
+        }
+
         try {
             let response
 
-            if (form.form === 'login' || form.form === 'register'){
+            if (form.form === 'login' || form.form === 'register') {
                 response = await handler(form.accountType, values)
             } else if (form === 'edit-salon' || form === 'edit-service' || form === 'edit-user') {
                 const changedFields = getChangedFields()
@@ -55,7 +73,7 @@ export function useForm(options = {}) {
                 refreshData()
             }
 
-            if (response.status === 200){
+            if (response.status === 200) {
                 showNotification(response.message, 'success')
 
                 if (form.form === 'register') {
@@ -69,7 +87,7 @@ export function useForm(options = {}) {
 
             } else {
                 throw new Error(response.message)
-              }
+            }
 
         } catch (error) {
             showNotification(error.message, 'error');
@@ -81,5 +99,6 @@ export function useForm(options = {}) {
         setValues,
         onChange,
         onSubmit,
+        errors
     };
 }

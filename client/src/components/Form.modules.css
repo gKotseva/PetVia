@@ -10,6 +10,9 @@
     gap: 0.5em;
     cursor: pointer;
     margin-bottom: 1em;
+    color: var(--accent-color);
+    font-weight: bolder;
+    text-decoration: underline;
 }
 
 .switch svg {
@@ -55,11 +58,11 @@ label {
     display: flex;
     flex-direction: column;
     margin-bottom: 1em;
-    padding: 1em;
+    padding: 0.5em;
 }
 
 .existing a {
-    color: var(--lighter-color);
+    color: var(--accent-color);
     font-weight: bolder;
     text-decoration: underline;
 }
@@ -99,4 +102,15 @@ label {
 .form-heading {
     margin-top: 1em;
     text-transform: capitalize;
+}
+
+.input-error {
+    text-align: left;
+    margin-top: 2px;
+    color: red;
+    font-size: 14px;
+}
+
+.required-field {
+    color: red;
 }
