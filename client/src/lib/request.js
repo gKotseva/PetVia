@@ -1,15 +1,26 @@
 const buildOptions = (data) => {
-    const options = {}
-
+    const options = {};
+  
     if (data) {
-        options.body = JSON.stringify(data)
-        options.headers = {
-            'content-type': 'application/json'
+      const hasFile = Object.values(data).some(value => value instanceof File);
+  
+      if (hasFile) {
+        const formData = new FormData();
+        for (const key in data) {
+          formData.append(key, data[key]);
         }
-    }
+        options.body = formData;
 
-    return options
-}
+      } else {
+        options.body = JSON.stringify(data);
+        options.headers = {
+          'content-type': 'application/json',
+        };
+      }
+    }
+  
+    return options;
+  };
 
 const request = async (method, url, data) => {
     try {
@@ -25,16 +36,26 @@ const request = async (method, url, data) => {
         }
 
         const contentType = response.headers.get("Content-Type");
+        let result;
+
         if (contentType && contentType.includes("application/json")) {
-            const result = await response.json();
-            return { status, ...result };
+            result = await response.json();
         } else {
-            const result = await response.text();
-            return { status, message: result };
+            result = await response.text();
         }
+
+        if (!response.ok) {
+            const error = new Error(result.message || 'Error occurred');
+            error.status = status;
+            error.response = result;
+            throw error;
+        }
+
+        return { status, ...result };
+
     } catch (error) {
         console.error("Request failed", error);
-        throw new Error('Network or server error occurred');
+        throw error;
     }
 };
 
