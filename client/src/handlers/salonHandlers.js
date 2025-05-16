@@ -20,6 +20,15 @@ export const editSalonDetails = async (data) => {
     }
 }
 
+export const getTodayAppointments = async (id, date) => {
+    try {
+        const response = await request.get(`/api/salon/today-appointments?id=${id}&date=${date}`);
+        return response;
+    } catch (error) {
+        throw error;
+    }
+}
+
 export const getTeam = async (id) => {
     try {
         const response = await request.get(`/api/salon/team?id=${id}`);
@@ -30,17 +39,18 @@ export const getTeam = async (id) => {
 }
 
 export const addTeamMember = async (id, values) => {
+    const {name, image } = values
     try {
-        const response = await request.post(`/api/salon/add-team-member`, {id, values});
+        const response = await request.post(`/api/salon/add-team-member`, {id, name, image});
         return response;
     } catch (error) {
         throw error;
     }
 }
 
-export const deleteTeamMember = async (id) => {
+export const deleteTeamMember = async (id, image) => {
     try {
-        const response = await request.remove(`/api/salon/delete-team-member`, {id});
+        const response = await request.remove(`/api/salon/delete-team-member`, {id, image});
         return response;
     } catch (error) {
         throw error;

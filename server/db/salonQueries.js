@@ -15,8 +15,16 @@ exports.editDetails = (id, fields, values) => {
     return { query, queryParams };
 }
 
-exports.addTeamMember = (id, values) => {
-    const query = `INSERT INTO team_members(salon_id, name, image) VALUES(${id}, '${values.name}', '${values.image}')`;
+exports.getAppointmentsToday = (id, date) => {
+    const query = `select a.appointment_id, a.appointment_date, a.start_time, s.name, s.duration, u.first_name, u.last_name, u.email from appointments a
+join services s on a.service_id = s.service_id
+join users u on a.user_id = u.user_id
+where a.salon_id = ${id} and appointment_date = '${date}';`
+    return query;
+}
+
+exports.addTeamMember = (id, name, image) => {
+    const query = `INSERT INTO team_members(salon_id, name, image) VALUES(${id}, '${name}', '${image}')`;
 
     return query;
 }
@@ -112,22 +120,22 @@ exports.getSchedule = (id, month) => {
 
 exports.editSchedule = (id, date, values) => {
     const query = `
-      UPDATE salon_schedule
-      SET
-        open_time = ?,
-        close_time = ?,
-        break_start = ?,
-        break_end = ?
-      WHERE salon_id = ? AND work_date = ?;
+        INSERT INTO salon_schedule (salon_id, work_date, open_time, close_time, break_start, break_end)
+        VALUES (?, ?, ?, ?, ?, ?)
+        ON DUPLICATE KEY UPDATE
+            open_time = VALUES(open_time),
+            close_time = VALUES(close_time),
+            break_start = VALUES(break_start),
+            break_end = VALUES(break_end);
     `;
 
     const params = [
+        id,
+        date,
         values.open_time || null,
         values.close_time || null,
         values.break_start || null,
-        values.break_end || null,
-        id,
-        date
+        values.break_end || null
     ];
 
     return { query, params };

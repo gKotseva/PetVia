@@ -1,8 +1,12 @@
-const { getDetails, editDetails, getTeam, addTeamMember, deleteTeamMember, getServices, addService, deleteService, editService, addSchedule, getReviews, getSchedule, getAppointments, getOpenCloseTime, editSchedule } = require('../db/salonQueries')
+const { getDetails, editDetails, getTeam, addTeamMember, deleteTeamMember, getServices, addService, deleteService, editService, addSchedule, getReviews, getSchedule, getAppointments, getOpenCloseTime, editSchedule, getAppointmentsToday } = require('../db/salonQueries')
 const db = require('../db/db');
 const { formatDate } = require('../utils/date');
 const { generateSlots } = require('../utils/calendar');
+const { hashPassword } = require('../utils/hash');
+const { upload } = require('../multer');
 const router = require('express').Router()
+const multer  = require('multer')
+const fs = require('fs')
 
 router.get('/details', async (req, res) => {
     const { id } = req.query
@@ -14,13 +18,13 @@ router.get('/details', async (req, res) => {
 
 router.put('/edit-details', async (req, res) => {
     const { id, changedFields } = req.body
-
+    
     const fields = Object.keys(changedFields);
     const values = Object.values(changedFields);
 
     if (fields.includes('password')) {
         const passwordIndex = fields.indexOf('password');
-        const hashedPassword = await hashedPassword(values[passwordIndex]);
+        const hashedPassword = await hashPassword(values[passwordIndex]);
         values[passwordIndex] = hashedPassword;
     }
 
@@ -39,18 +43,28 @@ router.get('/team', async (req, res) => {
     res.status(200).json({ data: result });
 })
 
-router.post('/add-team-member', async (req, res) => {
-    const { id, values } = req.body
-    const query = addTeamMember(id, values)
+router.post('/add-team-member', upload.single('image'), async (req, res) => {
+    const {id, name} = req.body
+    const imageName = req.file.filename;
+
+    const query = addTeamMember(id, name, imageName)
     const result = await db.executeQuery(query)
 
-    res.status(200).json({ message: `Successfully added ${values.name}!`, data: result });
+    res.status(200).json({ message: `Successfully added ${name}!`, data: result });
 })
 
 router.delete('/delete-team-member', async (req, res) => {
-    const { id } = req.body
+    const { id, image } = req.body
+    const imagePath = `../client/uploads/${image}`
+
     const query = deleteTeamMember(id)
     const result = await db.executeQuery(query)
+
+    fs.unlink(imagePath, (err) => {
+        if (err) {
+          console.error('Error deleting file', err);
+        }
+      });
 
     res.status(200).json({ message: 'Successfully removed team member!', data: result });
 })
@@ -136,6 +150,15 @@ router.put('/edit-schedule', async (req, res) => {
     await db.executeQuery(query, params);
 
     res.status(200).json({ message: 'Schedule updated successfully' });
+})
+
+router.get('/today-appointments', async (req, res) => {
+    const {id, date} = req.query
+
+    const query = getAppointmentsToday(id, date)
+    const result = await db.executeQuery(query)
+
+    res.status(200).json({data: result})
 })
 
 module.exports = router
