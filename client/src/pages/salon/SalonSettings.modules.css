@@ -16,7 +16,8 @@
 
 .settings-form-container form,
 .settings-add-team-member-container form,
-.settings-add-new-service-container form {
+.settings-add-new-service-container form,
+.settings-appointments-view {
     background: rgba(255, 255, 255, 0.61);
     border-radius: 1em;
     padding: 2em;
@@ -139,17 +140,30 @@ input {
 
 .setting-team-member {
     background: white;
-    padding: 2em 3em;
     border-radius: 2em;
     text-transform: capitalize;
+    max-width: 15em;
+}
+
+.team-member-info {
+    padding: 1em;
 }
 
 .settings-team-members {
     display: flex;
     flex-wrap: wrap;
-    gap: 2em;
+    gap: 1em;
     text-align: center;
     margin-top: 1em;
+}
+
+.team-member-image {
+    width: 100%;
+    height: auto;
+}
+
+.team-member-image img {
+    width: 100%;
 }
 
 .settings-team-members h4 {
@@ -160,11 +174,6 @@ input {
 
 .settings-team-members svg:hover {
     cursor: pointer;
-}
-
-.settings-team-members-container img {
-    width: 6em;
-    margin-bottom: 2em;
 }
 
 /* Services CSS */
@@ -237,7 +246,7 @@ input {
     display: flex;
     flex-direction: column;
 }
-  
+
 .settings-appointments-header {
     display: flex;
     justify-content: space-between;
@@ -274,4 +283,17 @@ input {
 .settings-images-container img {
     width: 15em;
     margin-top: 1em;
+}
+
+.appointment-service-info {
+    background-color: green;
+    color: white;
+    font-weight: bolder;
+    display: flex;
+    justify-content: space-evenly;
+    padding: 0.5em 1em;
+    align-items: center;
+    border-radius: 1em;
+    text-align: center;
+    margin-bottom: 1em;
 }

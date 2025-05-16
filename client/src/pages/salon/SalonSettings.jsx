@@ -10,7 +10,7 @@ import { GrSchedule } from "react-icons/gr";
 
 import { Loading } from '../../components/Loading';
 import { useAuth } from '../../context/AuthContext';
-import { addTeamMember, editSalonDetails, getSalonDetails, getTeam, deleteTeamMember, getServices, addService, deleteService, addSchedule, getReviews } from '../../handlers/salonHandlers';
+import { addTeamMember, editSalonDetails, getSalonDetails, getTeam, deleteTeamMember, getServices, addService, deleteService, addSchedule, getReviews, getTodayAppointments } from '../../handlers/salonHandlers';
 import { useForm } from '../../hooks/useForm';
 import { useNotification } from '../../context/NotificationContext';
 import { Modal } from '../../components/Modal';
@@ -53,18 +53,8 @@ export function SalonSettings() {
         {activeSetting === 'gallery' && <GallerySettings />}
         {activeSetting === 'customer_reviews' && <CustomerReviewsSettings />}
       </div>
-      {auth && activeSetting !== 'appointments' ? (
-        <div className="settings-active-schedule-container">
-          <h2>Today</h2>
-          <div className="settings-appointments-view">
-            {/* <Appointments
-              user_type="salon"
-              id={auth.auth.id}
-              service_duration={null}
-              selected_date={formattedToday}
-            /> */}
-          </div>
-        </div>
+      {activeSetting !== 'appointments' ? (
+        <TodayAppointments />
       ) : null}
     </div>
   );
@@ -76,7 +66,7 @@ function AccountSettings() {
   const handler = editSalonDetails;
   const [initialValues, setInitialValues] = useState({});
   const formName = 'edit-salon'
-  const { values, setValues, onChange, onSubmit } = useForm({handler, form: formName, initialValues});
+  const { values, setValues, onChange, onSubmit } = useForm({ handler, form: formName, initialValues });
 
   useEffect(() => {
     const fetchSalonDetails = async () => {
@@ -218,13 +208,13 @@ function TeamSettings() {
     fetchTeamDetails();
   }, [auth]);
 
-  const onDelete = async (id) => {
-    const response = await deleteTeamMember(id)
+  const onDelete = async (id, image) => {
+    const response = await deleteTeamMember(id, image)
     showNotification(response.message, 'success')
     fetchTeamDetails()
   }
 
-  const { onChange, onSubmit } = useForm({handler, form: 'add-team-member', refreshData: fetchTeamDetails});
+  const { onChange, onSubmit } = useForm({ handler, form: 'add-team-member', refreshData: fetchTeamDetails });
 
   return (
     <div className="team-settings-container">
@@ -242,9 +232,13 @@ function TeamSettings() {
             ) : (
               teamDetails.map(({ team_member_id, name, image }) => (
                 <div key={team_member_id} className="setting-team-member">
-                  <img src={'./image.png'} alt={name} />
-                  <h4>{name}</h4>
-                  <FaTrashAlt color='red' onClick={() => onDelete(team_member_id)} />
+                  <div className="team-member-image">
+                    <img src={`./uploads/${image}`} alt={name} />
+                  </div>
+                  <div className="team-member-info">
+                    <h4>{name}</h4>
+                    <FaTrashAlt color='red' onClick={() => onDelete(team_member_id, image)} />
+                  </div>
                 </div>
               ))
             )}
@@ -304,9 +298,10 @@ function ServicesSettings() {
   };
 
   const { onChange, onSubmit } = useForm({
-    handler: handler, 
-    form: 'add-service', 
-    refreshData: fetchServices});
+    handler: handler,
+    form: 'add-service',
+    refreshData: fetchServices
+  });
 
   return (
     <div className="services-settings-container">
@@ -327,7 +322,7 @@ function ServicesSettings() {
                     <p>{description}</p>
                   </div>
                   <div className="settings-buttons-container">
-                    <FaEdit data-testid={`edit-service-${service_id}`}color='green' onClick={() => openModal({ service_id, name, price, duration, description })} />
+                    <FaEdit data-testid={`edit-service-${service_id}`} color='green' onClick={() => openModal({ service_id, name, price, duration, description })} />
                     <FaTrashAlt data-testid={`delete-service-${service_id}`} color='red' onClick={() => onDelete(service_id)} />
                   </div>
                 </div>
@@ -405,7 +400,7 @@ function AppointmentsSettings() {
       <Calendar userType="salon" salonId={auth?.id} />
       {showModal && (
         <Modal onClose={() => setShowModal(false)}>
-          <Schedule salonId={auth?.id} closeModal={() => setShowModal(false)}/>
+          <Schedule salonId={auth?.id} closeModal={() => setShowModal(false)} />
         </Modal>
       )}
     </div>
@@ -441,7 +436,7 @@ function CustomerReviewsSettings() {
     }
     fetchReviews()
   }, [])
-  
+
   return (
     <div className="customer-reviews-settings-container">
       <h3>Customer Reviews Settings</h3>
@@ -457,6 +452,43 @@ function CustomerReviewsSettings() {
           ))
         ) : (
           <Loading />
+        )}
+      </div>
+    </div>
+  );
+}
+
+function TodayAppointments() {
+  const auth = useAuth()
+  const [appointments, setAppointments] = useState([])
+
+  useEffect(() => {
+    const fetchAppointments = async () => {
+      const result = await getTodayAppointments(auth.auth.id, formatDate(new Date()))
+      setAppointments(result.data)
+    }
+    fetchAppointments()
+  }, [])
+
+  return (
+    <div className="settings-active-schedule-container">
+      <h2>Today</h2>
+      <div className="settings-appointments-view">
+        {appointments?.length > 0 ? (
+          appointments.map(e => (
+            <div className="appointment-div">
+              <div className="appointment-customer-info">
+                <p>Client: {e.first_name} {e.last_name}</p>
+              </div>
+              <div className="appointment-service-info">
+                <p>{e.start_time.slice(0, 5)}</p>
+                <p>{e.duration} min</p>
+                <p>{e.name}</p>
+              </div>
+            </div>
+          ))
+        ) : (
+          <p>No appointments for today.</p>
         )}
       </div>
     </div>

@@ -25,7 +25,6 @@ export function ClientProfile() {
 
   const { values, setValues, errors, success, successMessage, onChange, onSubmit } = useForm({handler, form, initialValues});
 
-
   const itemsPerPage = 4;
 
   const fetchBookings = async () => {
@@ -58,7 +57,7 @@ export function ClientProfile() {
     (pastPage - 1) * itemsPerPage,
     pastPage * itemsPerPage
   );
-
+  
   return (
     <div className="customer-profile-container">
       <div className="customer-profile-settings">
@@ -131,7 +130,7 @@ export function ClientProfile() {
                   <p>{booking.service_name}</p>
                 </div>
                 <div className="appointment-image" onClick={() => navigate(`/salon/${booking.salon_id}`)}>
-                  <img src='./image.png' />
+                  <img src={`/images/${booking.image}`} />
                 </div>
               </div>
             ))

@@ -67,6 +67,7 @@
     background: var(--accent-color);
     color: white;
     width: 100%;
+    align-items: center;
 }
 
 .salon-team {
@@ -98,23 +99,41 @@
 
 .team-member {
     text-transform: capitalize;
-    border-radius: 2em;
-    gap: 2em;
     display: flex;
     flex-direction: column;
+    align-items: center;
+    background-color: white;
+    color: black;
+    width: 15em;
+    gap: 0;
+    border-radius: 1em;
 }
 
-.team-members,
+.team-members {
+    display: flex;
+    text-align: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 1em;
+    margin-top: 1em;
+}
+
 .salon-reviews {
     display: flex;
     text-align: center;
     justify-content: center;
+    flex-wrap: wrap;
     gap: 5em;
     padding: 3em;
 }
 
-.salon-team img {
-    max-width: 5em;
+.salon-team-member-image img {
+    width: 100%;
+    height: 100%;
+}
+
+.salon-team-member-info {
+    padding: 2em;
 }
 
 .review-container {
