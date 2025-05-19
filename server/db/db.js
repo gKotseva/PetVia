@@ -1,4 +1,4 @@
-const mysql = require('mysql');
+const mysql = require('mysql2');
 
 const pool = mysql.createPool({
     host: process.env.DB_HOST || '127.0.0.1',
@@ -10,7 +10,7 @@ const pool = mysql.createPool({
 
 function executeQuery(sql, params) {
     return new Promise((resolve, reject) => {
-        pool.query(sql, params, function(error, results, fields) {
+        pool.query(sql, params, (error, results) => {
             if (error) {
                 console.error('Error executing query: ' + error.message);
                 reject(error);
