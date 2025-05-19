@@ -1,10 +1,11 @@
 const mysql = require('mysql');
 
 const pool = mysql.createPool({
-    host: '127.0.0.1',
-    user: 'root',
-    password: '',
-    database: 'petvia'
+    host: process.env.DB_HOST || '127.0.0.1',
+    user: process.env.DB_USER || 'root',
+    password: process.env.DB_PASS || '',
+    database: process.env.DB_NAME || 'petvia',
+    port: process.env.DB_PORT || 3306
 });
 
 function executeQuery(sql, params) {
@@ -21,5 +22,5 @@ function executeQuery(sql, params) {
 }
 
 module.exports = {
-    executeQuery: executeQuery
+    executeQuery
 };
