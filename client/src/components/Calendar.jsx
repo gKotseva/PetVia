@@ -144,10 +144,16 @@ export function Calendar({ userType, salonId, customerId, serviceDuration, servi
                         return;
                       }
 
-                      const response = await bookAppointment(customerId, salonId, service.service_id, selectedSlot.date, selectedSlot.slot.slot)
-                      showNotification(response.message, 'success')
-                      fetchSchedule()
-                      setShowModal(false);
+                      try {
+                        const response = await bookAppointment(customerId, salonId, service.service_id, selectedSlot.date, selectedSlot.slot.slot)
+                        showNotification(response.message, 'success')
+                        fetchSchedule()
+                        setShowModal(false);
+                      } catch (error) {
+                        showNotification(error, 'error')
+                        fetchSchedule()
+                        setShowModal(false);
+                      }
                     }}
                     onDeny={() => setShowModal(false)}
                   />
