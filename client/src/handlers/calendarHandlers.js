@@ -14,7 +14,7 @@ export const bookAppointment = async (userID, salonID, serviceID, date, start_ti
         const response = await request.post(`/api/calendar/book-appointment`, { userID, salonID, serviceID, date, start_time });
         return response;
     } catch (error) {
-        throw error;
+        throw error.message;
     }
 }
 

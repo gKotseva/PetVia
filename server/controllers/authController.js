@@ -42,7 +42,6 @@ router.post('/register', async (req, res) => {
   const { password, confirm_password } = values;
   let userData = {};
 
-  // Проверка за празни полета
   const requiredFields = accountType === 'customer'
     ? ['first_name', 'last_name', 'email', 'phone_number']
     : ['salon_name', 'email', 'phone_number', 'state', 'city', 'address'];

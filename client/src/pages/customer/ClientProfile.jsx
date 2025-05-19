@@ -130,7 +130,7 @@ export function ClientProfile() {
                   <p>{booking.service_name}</p>
                 </div>
                 <div className="appointment-image" onClick={() => navigate(`/salon/${booking.salon_id}`)}>
-                  <img src={`/images/${booking.image}`} />
+                  <img src={`./images/${booking.image}`} />
                 </div>
               </div>
             ))
@@ -163,7 +163,7 @@ export function ClientProfile() {
                   <p>{booking.service_name}</p>
                 </div>
                 <div className="appointment-image" onClick={() => navigate(`/salon/${booking.salon_id}`)}>
-                  <img src='./image.png' />
+                  <img src={`./images/${booking.image}`} />
                 </div>
               </div>
             ))
