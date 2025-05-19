@@ -13,7 +13,7 @@
 }
 
 .modal-content {
-    background: var(--background);
+    background: var(--light-color);
     padding: 2em;
     border-radius: 10px;
     max-width: 800px;
@@ -29,5 +29,5 @@
     border: none;
     font-size: 18px;
     cursor: pointer;
-    color: var(--dark-color);
+    color: var(--accent-color);
 }

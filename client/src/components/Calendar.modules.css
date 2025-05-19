@@ -11,6 +11,7 @@
     justify-content: space-between;
     align-items: center;
     font-weight: bold;
+    padding: 1em 0em 0em 1em;
 }
 
 .calendar-buttons {
@@ -134,4 +135,24 @@
     color: #999;
     pointer-events: none;
     cursor: not-allowed;
+}
+
+@media (max-width: 1700px) {
+    .calendar-day-card {
+        flex: 1 1 auto !important;
+        max-width: 100% !important;
+        min-height: 150px;
+        margin-bottom: 1em;
+        min-width: auto;
+    }
+
+    .slot {
+        padding: 0.2em;
+        letter-spacing: 0;
+    }
+
+    .calendar-container,
+    .caledar-contents {
+        padding: 1em 0em;
+    }
 }

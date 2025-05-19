@@ -67,7 +67,7 @@ label {
     text-decoration: underline;
 }
 
-.existing a:hover{
+.existing a:hover {
     cursor: pointer;
 }
 
@@ -113,4 +113,16 @@ label {
 
 .required-field {
     color: red;
+}
+
+@media (max-width: 767px) {
+    .form-form-row {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 544px) {
+    .form-form-row {
+        grid-template-columns: repeat(1, 1fr);
+    }
 }

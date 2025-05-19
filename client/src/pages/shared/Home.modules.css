@@ -2,11 +2,11 @@
     display: flex;
     align-items: center;
     background: var(--dark-color);
-    background-image: url('./images/14.jpg');
+    /* background-image: url('/client/public/images/14.jpg'); */
+    background-image: url('/images/14.jpg');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    height: 70vh;
 }
 
 .home-heading-form-container h5 {
@@ -158,4 +158,37 @@
 
 .no-salons img {
     width: 5em;
+}
+
+@media (max-width: 767px) {
+
+    .home-heading-container {
+        justify-content: center;
+    }
+    
+    .home-heading-form-container {
+        margin: 0;
+        border-radius: 0;
+        overflow: visible;
+    }
+
+    .home-information-container {
+        flex-wrap: wrap;
+        gap: 1em;
+    }
+
+    .home-information-container .home-information-card1-container,
+    .home-information-container .home-information-card2-container,
+    .home-information-container .home-information-card3-container {
+        width: 15em;
+    }
+
+    .salon-cards {
+        flex-wrap: wrap;
+    }
+
+    .salon-card {
+        flex: 1 1 calc(50% - 1em);
+        max-width: calc(50% - 1em);
+    }
 }
