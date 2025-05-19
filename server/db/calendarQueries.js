@@ -15,6 +15,14 @@ exports.getAppointments = (id) => {
     return query;
 }
 
+exports.checkAppointment = (date, start_time) => {
+    const query = `
+    select * from appointments
+    where appointment_date = '${date}' and start_time = '${start_time}:00'`
+
+    return query;
+}
+
 exports.addAppointment = (userID, salonID, serviceID, date, start_time) => {
     const query = `
                 INSERT INTO appointments(user_id, salon_id, service_id, appointment_date, start_time)

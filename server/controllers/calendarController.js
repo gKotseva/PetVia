@@ -1,4 +1,4 @@
-const { getSchedule, getAppointments, addAppointment, deleteSchedule } = require('../db/calendarQueries');
+const { getSchedule, getAppointments, addAppointment, deleteSchedule, checkAppointment } = require('../db/calendarQueries');
 const db = require('../db/db');
 const { checkDayStatus, generateSlots } = require('../utils/calendar');
 const { formatDate } = require('../utils/date');
@@ -26,7 +26,7 @@ router.get('/schedule', async (req, res) => {
                 ? generateSlots(date, appointmentsForDate, null, user_type)
                 : generateSlots(date, appointmentsForDate, service_duration, user_type);
 
-                schedule[formattedDate] = {working_hours: `${date.open_time.substring(0,5)} - ${date.close_time.substring(0,5)}`, slots: daySlots};
+            schedule[formattedDate] = { working_hours: `${date.open_time.substring(0, 5)} - ${date.close_time.substring(0, 5)}`, slots: daySlots };
         }
 
         res.status(200).json({ data: schedule });
@@ -36,17 +36,23 @@ router.get('/schedule', async (req, res) => {
 })
 
 router.post('/book-appointment', async (req, res) => {
-    const {userID, salonID, serviceID, date, start_time} = req.body;
+    const { userID, salonID, serviceID, date, start_time } = req.body;
 
-    const insertAppointmentQuery = addAppointment(userID, salonID, serviceID, date, start_time)
-    const result = await db.executeQuery(insertAppointmentQuery);
+    const isAppointmentBookedQuery = checkAppointment(date, start_time)
+    const isAppointmentBooked = await db.executeQuery(isAppointmentBookedQuery);
 
-    res.status(200).json({ message: 'Booking successfull!' });
+    if (isAppointmentBooked.length === 0) {
+        const insertAppointmentQuery = addAppointment(userID, salonID, serviceID, date, start_time)
+        await db.executeQuery(insertAppointmentQuery);
 
+        res.status(200).json({ message: 'Booking successfull!' });
+    } else {
+        res.status(500).json({ message: 'Appointment has already been booked!' });
+    }
 })
 
 router.delete('/delete-schedule', async (req, res) => {
-    const {date, salonId} = req.body;
+    const { date, salonId } = req.body;
 
     const query = deleteSchedule(date, salonId)
     const result = await db.executeQuery(query);
