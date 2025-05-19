@@ -1,3 +1,5 @@
+const BASE_URL = import.meta.env.VITE_API_URL || '';
+
 const buildOptions = (data) => {
     const options = {};
   
@@ -24,7 +26,7 @@ const buildOptions = (data) => {
 
 const request = async (method, url, data) => {
     try {
-        const response = await fetch(url, {
+        const response = await fetch(BASE_URL + url, {
             ...buildOptions(data),
             method
         });
