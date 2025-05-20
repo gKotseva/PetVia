@@ -48,8 +48,8 @@ router.get('/salons-per-data', async(req, res) => {
         const salonReviews = await db.executeQuery(salonReviewsQuery);
     
         salon['reviews'] = salonReviews;
+        salon['averageRating'] = averageRating(salon);
 
-        averageRating(salon)
     }
 
     res.status(200).json({salonDetails});
