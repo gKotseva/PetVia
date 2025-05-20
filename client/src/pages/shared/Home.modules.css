@@ -51,7 +51,7 @@
 
 .home-heading-form-container form select {
     padding: 1em;
-    background: none;
+    background: black;
     color: white;
     border: none;
     border-bottom: 2px solid var(--accent-color);
