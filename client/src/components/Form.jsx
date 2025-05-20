@@ -1,5 +1,5 @@
 import './Form.modules.css';
-import React, { useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useForm } from '../hooks/useForm';
 import { CiLogin } from "react-icons/ci";
 import { login, register } from '../handlers/authHandlers';
@@ -31,17 +31,19 @@ export function Form({ formName, closeModal, openModal, editData, refreshData })
         'edit-service': [{ label: 'Name', name: 'name', type: 'text' }, { label: 'Price', name: 'price', type: 'text' }, { label: 'Duration', name: 'duration', type: 'text' }, { label: 'Description', name: 'description', type: 'text' }],
         'edit-schedule': [{ label: 'Open Time', name: 'open_time', type: 'time' }, { label: 'Close Time', name: 'close_time', type: 'time' }, { label: 'Break start', name: 'break_start', type: 'time' }, { label: 'Break end', name: 'break_end', type: 'time' }]
     };
-
-    let initialValues = {};
-
-    const currentFormFields = 
-        formName === 'login' || formName === 'register'
-            ? forms[accountType]?.[formName] || []
-            : forms[formName] || [];
-    
-    currentFormFields.forEach(({ name }) => {
-        initialValues[name] = editData?.[name] || '';
-    });
+    const currentFormFields = useMemo(() => {
+        return (formName === 'login' || formName === 'register')
+          ? forms[accountType]?.[formName] || []
+          : forms[formName] || [];
+      }, [formName, accountType]);
+      
+      const initialValues = useMemo(() => {
+        const values = {};
+        currentFormFields.forEach(({ name }) => {
+          values[name] = editData?.[name] || '';
+        });
+        return values;
+      }, [currentFormFields, editData]);
 
     const { values, onChange, onSubmit, errors } = useForm({
         handler:handler, 

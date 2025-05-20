@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNotification } from '../context/NotificationContext';
 import { validate } from '../utils/formValidation';
@@ -10,6 +10,10 @@ export function useForm(options = {}) {
     const { showNotification } = useNotification();
     const [values, setValues] = useState(() => initialValues || {});
     const [errors, setErrors] = useState({})
+
+    useEffect(() => {
+        setValues(initialValues || {});
+      }, [initialValues]);
 
     const onChange = (e) => {
         const { name, type } = e.target;
@@ -52,6 +56,7 @@ export function useForm(options = {}) {
             setErrors(formValidation)
             return;
         }
+
 
         try {
             let response
