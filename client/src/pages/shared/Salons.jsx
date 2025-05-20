@@ -49,7 +49,7 @@ export function Salons() {
                                     </div>
                                     <div className="review-summary">
                                         <div className="stars">
-                                            {displayReviewStars(salon.stars)}
+                                            {displayReviewStars(salon.averageRating)}
                                         </div>
                                         <p>{salon.reviews.length} reviews</p>
                                     </div>

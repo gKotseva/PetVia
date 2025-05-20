@@ -153,7 +153,6 @@ export function Home() {
                 ) : (
                     <div className="no-salons">
                         <p>No salons to show!</p>
-                        <img src='./image.png'></img>
                     </div>
                 )}
             </div>

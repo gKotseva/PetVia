@@ -319,7 +319,7 @@ function ServicesSettings() {
                     <h4>{name}</h4>
                     <h4>{price}$</h4>
                     <h4>{duration} min</h4>
-                    <p>{description}</p>
+                    <p>{description || ''}</p>
                   </div>
                   <div className="settings-buttons-container">
                     <FaEdit data-testid={`edit-service-${service_id}`} color='green' onClick={() => openModal({ service_id, name, price, duration, description })} />
