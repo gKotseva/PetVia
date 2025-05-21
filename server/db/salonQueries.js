@@ -24,7 +24,9 @@ where a.salon_id = ${id} and appointment_date = '${date}';`
 }
 
 exports.addTeamMember = (id, name, image) => {
-    const query = `INSERT INTO team_members(salon_id, name, image) VALUES(${id}, '${name}', '${image}')`;
+    const imageValue = image === null ? 'NULL' : `'${image}'`;
+
+    const query = `INSERT INTO team_members(salon_id, name, image) VALUES(${id}, '${name}', ${imageValue})`;
 
     return query;
 }
@@ -41,10 +43,15 @@ exports.getServices = (id) => {
 }
 
 exports.addService = (id, values) => {
-    const query = `INSERT INTO services(salon_id, name, price, duration, description) VALUES(${id}, '${values.name}', '${values.price}', '${values.duration}', '${values.description}')`
-    return query
-}
+    const valOrNull = (v) => v !== undefined && v !== '' ? `'${v}'` : 'NULL';
 
+    const query = `
+        INSERT INTO services (salon_id, name, price, duration, description)
+        VALUES (${id}, ${valOrNull(values.name)}, ${valOrNull(values.price)}, ${valOrNull(values.duration)}, ${valOrNull(values.description)})
+    `;
+
+    return query;
+};
 exports.deleteService = (id) => {
     const query = `DELETE FROM services WHERE service_id = ${id}`
     return query

@@ -18,7 +18,7 @@ router.get('/details', async (req, res) => {
 
 router.put('/edit-details', async (req, res) => {
     const { id, changedFields } = req.body
-    
+
     const fields = Object.keys(changedFields);
     const values = Object.values(changedFields);
 
@@ -45,7 +45,7 @@ router.get('/team', async (req, res) => {
 
 router.post('/add-team-member', upload.single('image'), async (req, res) => {
     const {id, name} = req.body
-    const imageName = req.file.filename;
+    const imageName = req.file ? req.file.filename : null;
 
     const query = addTeamMember(id, name, imageName)
     const result = await db.executeQuery(query)
@@ -95,7 +95,6 @@ router.put('/edit-service', async (req, res) => {
     const { query, queryParams } = editService(id, fields, values);
 
     await db.executeQuery(query, queryParams);
-
     res.status(200).send({ message: 'Service updated successfully' });
 })
 
