@@ -18,41 +18,82 @@ export function Form({ formName, closeModal, openModal, editData, refreshData })
         'edit-service': editService,
         'edit-schedule': editSchedule
     }[formName];
-    
+
     const forms = {
         customer: {
-            login: [{ label: 'Email', name: 'email', type: 'text' }, { label: 'Password', name: 'password', type: 'password' }],
-            register: [{ label: 'Email', name: 'email', type: 'text' }, { label: 'Password', name: 'password', type: 'password' }, { label: 'Confrim password', name: 'confirm_password', type: 'password' }, { label: 'First name', name: 'first_name', type: 'text' }, { label: 'Last name', name: 'last_name', type: 'text' }, { label: 'Phone number', name: 'phone_number', type: 'text' }],
+            login: [
+                { label: 'Email', name: 'email', type: 'text', required: true },
+                { label: 'Password', name: 'password', type: 'password', required: true }
+            ],
+            register: [
+                { label: 'Email', name: 'email', type: 'text', required: true },
+                { label: 'Password', name: 'password', type: 'password', required: true },
+                { label: 'Confirm password', name: 'confirm_password', type: 'password', required: true },
+                { label: 'First name', name: 'first_name', type: 'text', required: true },
+                { label: 'Last name', name: 'last_name', type: 'text', required: true },
+                { label: 'Phone number', name: 'phone_number', type: 'text', required: true }
+            ]
         },
         salon: {
-            login: [{ label: 'Email', name: 'email', type: 'text' }, { label: 'Password', name: 'password', type: 'password' }],
-            register: [{ label: 'Email', name: 'email', type: 'text' }, { label: 'Password', name: 'password', type: 'password' }, { label: 'Confirm password', name: 'confirm_password', type: 'password' }, { label: 'Salon name', name: 'salon_name', type: 'text' }, { label: 'Phone number', name: 'phone_number', type: 'text' }, { label: 'State', name: 'state', type: 'text' }, { label: 'City', name: 'city', type: 'text' }, { label: 'Address', name: 'address', type: 'text' }],
+            login: [
+                { label: 'Email', name: 'email', type: 'text', required: true },
+                { label: 'Password', name: 'password', type: 'password', required: true }
+            ],
+            register: [
+                { label: 'Email', name: 'email', type: 'text', required: true },
+                { label: 'Password', name: 'password', type: 'password', required: true },
+                { label: 'Confirm password', name: 'confirm_password', type: 'password', required: true },
+                { label: 'Salon name', name: 'salon_name', type: 'text', required: true },
+                { label: 'Phone number', name: 'phone_number', type: 'text', required: true },
+                { label: 'State', name: 'state', type: 'text', required: true },
+                { label: 'City', name: 'city', type: 'text', required: true },
+                { label: 'Address', name: 'address', type: 'text', required: true }
+            ]
         },
-        'edit-service': [{ label: 'Name', name: 'name', type: 'text' }, { label: 'Price', name: 'price', type: 'text' }, { label: 'Duration', name: 'duration', type: 'text' }, { label: 'Description', name: 'description', type: 'text' }],
-        'edit-schedule': [{ label: 'Open Time', name: 'open_time', type: 'time' }, { label: 'Close Time', name: 'close_time', type: 'time' }, { label: 'Break start', name: 'break_start', type: 'time' }, { label: 'Break end', name: 'break_end', type: 'time' }]
+        'edit-service': [
+            { label: 'Name', name: 'name', type: 'text', required: true },
+            { label: 'Price', name: 'price', type: 'text', required: true },
+            { label: 'Duration', name: 'duration', type: 'text', required: true },
+            { label: 'Description', name: 'description', type: 'text', required: false }
+        ],
+        'edit-schedule': [
+            { label: 'Open Time', name: 'open_time', type: 'time', required: true },
+            { label: 'Close Time', name: 'close_time', type: 'time', required: true },
+            { label: 'Break start', name: 'break_start', type: 'time', required: false },
+            { label: 'Break end', name: 'break_end', type: 'time', required: false }
+        ]
     };
+
     const currentFormFields = useMemo(() => {
         return (formName === 'login' || formName === 'register')
-          ? forms[accountType]?.[formName] || []
-          : forms[formName] || [];
-      }, [formName, accountType]);
-      
-      const initialValues = useMemo(() => {
+            ? forms[accountType]?.[formName] || []
+            : forms[formName] || [];
+    }, [formName, accountType]);
+
+    const initialValues = useMemo(() => {
         const values = {};
         currentFormFields.forEach(({ name }) => {
-          values[name] = editData?.[name] || '';
+            values[name] = editData?.[name] || '';
         });
+
+        if (editData?.service_id) {
+            values.service_id = editData.service_id;
+        } else if (editData?.id) {
+            values.id = editData.id;
+        }
+
         return values;
-      }, [currentFormFields, editData]);
+    }, [currentFormFields, editData]);
 
     const { values, onChange, onSubmit, errors } = useForm({
-        handler:handler, 
-        form:(handler, formName === 'login' || formName === 'register' ? { accountType, form: formName } : formName), 
+        handler: handler,
+        form: (handler, formName === 'login' || formName === 'register' ? { accountType, form: formName } : formName),
         initialValues,
-        closeModal, 
-        openModal, 
+        closeModal,
+        openModal,
         refreshData,
-        selectedDates: editData});
+        selectedDates: editData
+    });
 
     return (
         formName === 'login' || formName === 'register' ? (
@@ -80,10 +121,11 @@ export function Form({ formName, closeModal, openModal, editData, refreshData })
                             ))}
                         </div>
                     ) : (
-                        forms[accountType][formName].map(({ type, label, name }) => (
+                        forms[accountType][formName].map(({ type, label, name, required }) => (
                             <div key={name} className="input-group">
-                                <label htmlFor={name}><span className='required-field'>*</span> {label}</label>
-                                <input
+                                <label htmlFor={name}>
+                                    {required && <span className="required-field">*</span>} {label}
+                                </label>                                <input
                                     id={name}
                                     type={type}
                                     name={name}
@@ -108,9 +150,11 @@ export function Form({ formName, closeModal, openModal, editData, refreshData })
             <form onSubmit={onSubmit} className={`form-${formName}`}>
                 {formName === 'edit-schedule' ? (<h2>Editing schedule for {editData}</h2>) : <h2>Editing service "{editData.name}"</h2>}
                 <br></br>
-                {forms[formName].map(({ name, label, type }) => (
+                {forms[formName].map(({ name, label, type, required }) => (
                     <div key={name} className="input-group">
-                        <label htmlFor={name}><span className='required-field'>*</span> {label}</label>
+                        <label htmlFor={name}>
+                            {required && <span className="required-field">*</span>} {label}
+                        </label>                       
                         <input
                             id={name}
                             type={type}
@@ -126,6 +170,4 @@ export function Form({ formName, closeModal, openModal, editData, refreshData })
         )
     )
 }
-
-
 
