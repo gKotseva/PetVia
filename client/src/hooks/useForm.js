@@ -13,7 +13,7 @@ export function useForm(options = {}) {
 
     useEffect(() => {
         setValues(initialValues || {});
-      }, [initialValues]);
+      }, [form !== 'login' || form !== 'register']);
 
     const onChange = (e) => {
         const { name, type } = e.target;
@@ -57,7 +57,6 @@ export function useForm(options = {}) {
             return;
         }
 
-
         try {
             let response
 
@@ -80,7 +79,9 @@ export function useForm(options = {}) {
 
             if (response.status === 200) {
                 showNotification(response.message, 'success')
-
+                setValues(initialValues || {});
+                setErrors({})
+                
                 if (form.form === 'register') {
                     openModal('login');
                 } else if (form.form === 'login') {
