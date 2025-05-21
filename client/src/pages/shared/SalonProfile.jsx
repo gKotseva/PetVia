@@ -79,7 +79,7 @@ export function SalonProfile() {
                                 {salonInfo.team.map(member => (
                                     <div className="team-member" key={member.team_member_id}>
                                         <div className="salon-team-member-image">
-                                            <img src={`../../../public/images/${member.image}`} />
+                                            <img src={member.image ? `/images/${member.image}` : '/image.png'} alt={member.name} />
                                         </div>
                                         <div className="salon-team-member-info">
                                             <h3>{member.name}</h3>

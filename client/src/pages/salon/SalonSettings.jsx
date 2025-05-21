@@ -19,6 +19,7 @@ import { displayReviewStars } from '../../components/DisplayReviewStars';
 import { Calendar } from '../../components/Calendar';
 import { Schedule } from '../../components/Schedule';
 import { formatDate } from '../../utils/date';
+import { Confirm } from '../../components/Confirm';
 
 export function SalonSettings() {
   const [activeSetting, setActiveSetting] = useState('account');
@@ -233,7 +234,7 @@ function TeamSettings() {
               teamDetails.map(({ team_member_id, name, image }) => (
                 <div key={team_member_id} className="setting-team-member">
                   <div className="team-member-image">
-                    <img src={`./uploads/${image}`} alt={name} />
+                    <img src={image ? `/images/${image}` : 'image.png'} alt={name} />
                   </div>
                   <div className="team-member-info">
                     <h4>{name}</h4>
@@ -270,6 +271,7 @@ function ServicesSettings() {
   const handler = addService
   const [services, setServices] = useState([])
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [modalType, setModalType] = useState('')
   const [initialValues, setInitialValues] = useState(null)
 
   const fetchServices = async () => {
@@ -281,14 +283,9 @@ function ServicesSettings() {
     fetchServices()
   }, [auth])
 
-  const onDelete = async (service_id) => {
-    await deleteService(service_id)
-    fetchServices()
-    showNotification('Service removed!', 'success')
-  }
-
-  const openModal = (service) => {
+  const openModal = (service, modalType) => {
     setInitialValues(service);
+    setModalType(modalType)
     setIsModalOpen(true);
   };
 
@@ -297,10 +294,17 @@ function ServicesSettings() {
     fetchServices()
   };
 
-  const { onChange, onSubmit } = useForm({
+  const formValues = {
+    name: '',
+    price: '',
+    duration: '',
+  };
+
+  const { values, onChange, onSubmit, errors } = useForm({
     handler: handler,
     form: 'add-service',
-    refreshData: fetchServices
+    refreshData: fetchServices,
+    initialValues: formValues
   });
 
   return (
@@ -319,18 +323,22 @@ function ServicesSettings() {
                     <h4>{name}</h4>
                     <h4>{price}$</h4>
                     <h4>{duration} min</h4>
-                    <p>{description || ''}</p>
+                    <p>{description || 'No description added!'}</p>
                   </div>
                   <div className="settings-buttons-container">
-                    <FaEdit data-testid={`edit-service-${service_id}`} color='green' onClick={() => openModal({ service_id, name, price, duration, description })} />
-                    <FaTrashAlt data-testid={`delete-service-${service_id}`} color='red' onClick={() => onDelete(service_id)} />
+                    <FaEdit data-testid={`edit-service-${service_id}`} color='green' onClick={() => openModal({ service_id, name, price, duration, description }, 'edit')} />
+                    <FaTrashAlt data-testid={`delete-service-${service_id}`} color='red' onClick={() => openModal({ service_id, name }, 'delete')} />
                   </div>
                 </div>
                 || <Loading />
               ))}
             </div>
           ) : (
-            <p>You have no services added!</p>
+            <div className='settings-single-service'>
+              <div className='settings-service'>
+                <p>You have no services added!</p>
+              </div>
+            </div>
           )}
         </div>
         <hr></hr>
@@ -342,34 +350,42 @@ function ServicesSettings() {
             <form onSubmit={onSubmit} data-testid="submit-service">
               <div className="form-row row">
                 <div className='form-row'>
-                  <label>Service name</label>
+                  <label>Service name <span>*</span></label>
                   <input
                     type='text'
                     name='name'
+                    value={values.name || ''}
                     onChange={onChange}
                   />
+                  {errors.name && <p className="input-error">{errors.name}</p>}
+
                 </div>
                 <div className='form-row'>
-                  <label>Price</label>
+                  <label>Price <span>*</span></label>
                   <input
-                    type='text'
+                    type='number'
                     name='price'
+                    value={values.price || ''}
                     onChange={onChange}
                   />
+                  {errors.price && <p className="input-error">{errors.price}</p>}
                 </div>
                 <div className='form-row'>
-                  <label>Duration</label>
+                  <label>Duration <span>*</span></label>
                   <input
-                    type='text'
+                    type='number'
                     name='duration'
+                    value={values.duration || ''}
                     onChange={onChange}
                   />
+                  {errors.duration && <p className="input-error">{errors.duration}</p>}
                 </div>
               </div>
               <div className="form-row">
                 <label>Description</label>
                 <textarea
                   name='description'
+                  value={values.description || ''}
                   onChange={onChange}
                 />
               </div>
@@ -380,7 +396,25 @@ function ServicesSettings() {
       </div>
       {isModalOpen && (
         <Modal onClose={closeModal}>
-          <Form formName={'edit-service'} closeModal={closeModal} openModal={openModal} editData={initialValues} refreshData={fetchServices} />
+          {modalType === 'edit' ? (
+            <Form formName={'edit-service'} closeModal={closeModal} openModal={openModal} editData={initialValues} refreshData={fetchServices} />
+          ) : (
+            <Confirm
+              title="Deleting service"
+              text={
+                <>
+                  Are you sure you would like to delete service <strong>{initialValues.name}</strong>?
+                </>
+              }
+              onConfirm={async () => {
+                await deleteService(initialValues.service_id)
+                fetchServices()
+                setIsModalOpen(false)
+                showNotification('Service removed!', 'success')
+              }}
+              onDeny={() => setIsModalOpen(false)}
+            />
+          )}
         </Modal>
       )}
     </div>
@@ -451,7 +485,9 @@ function CustomerReviewsSettings() {
             </div>
           ))
         ) : (
-          <Loading />
+          <div className="settings-review-container">
+            <p>There are no reviews for your salon!</p>
+          </div>
         )}
       </div>
     </div>
