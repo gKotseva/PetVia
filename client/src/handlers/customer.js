@@ -2,7 +2,7 @@ import * as request from '../lib/request'
 
 export const getUserDetails = async (id) => {
     try {
-        const response = await request.get(`/api/user/details?id=${id}`);
+        const response = await request.get(`/api/customer/details?id=${id}`);
         return response;
     } catch (error) {
         throw error;
@@ -11,16 +11,16 @@ export const getUserDetails = async (id) => {
 
 export const getUserBookings = async (id) => {
     try {
-        const response = await request.get(`/api/user/bookings?id=${id}`);
+        const response = await request.get(`/api/customer/bookings?id=${id}`);
         return response;
     } catch (error) {
         throw error;
     }
 }
 
-export const updateUserDetails = async (values) => {
+export const updateUserDetails = async (id, values) => {
     try {
-        const response = await request.put(`/api/user/edit-user`, values);
+        const response = await request.put(`/api/customer/edit-user`, {id, data: values});
         return response;
     } catch (error) {
         throw error;
@@ -29,7 +29,7 @@ export const updateUserDetails = async (values) => {
 
 export const deleteUser = async (id) => {
     try {
-        const response = await request.remove(`/api/user/delete-user`, {id});
+        const response = await request.remove(`/api/customer/delete-user`, {id});
         return response;
     } catch (error) {
         throw error;
@@ -38,7 +38,7 @@ export const deleteUser = async (id) => {
 
 export const cancelAppointment = async (id) => {
     try {
-        const response = await request.remove(`/api/user/cancel-appointment`, {id});
+        const response = await request.remove(`/api/customer/cancel-appointment`, {id});
         return response;
     } catch (error) {
         throw error;
