@@ -1,173 +1,176 @@
-import './Form.modules.css';
-import React, { useEffect, useMemo, useState } from 'react';
-import { useForm } from '../hooks/useForm';
+import { useState } from 'react'
+import './Form.modules.css'
 import { CiLogin } from "react-icons/ci";
-import { login, register } from '../handlers/authHandlers';
-import { editSchedule, editService } from '../handlers/salonHandlers';
+import { login, register } from '../handlers/auth';
+import { useForm } from '../hooks/useForm';
+import { updateUserDetails } from '../handlers/customer';
+import { addSchedule, addService, addTeamMember, editSalonDetails, editService } from '../handlers/salon';
 
 
-export function Form({ formName, closeModal, openModal, editData, refreshData }) {
-    const [accountType, setAccountType] = useState('customer');
-    const toggleAccountType = () => {
-        setAccountType(prev => (prev === "customer" ? "salon" : "customer"));
-    };
+export function Form(options = {}) {
+  const { form, account, openModal, closeModal, initialData, refreshData } = options
+  const [accountType, setAccountType] = useState(account || 'customer')
 
-    const handler = {
-        login,
-        register,
-        'edit-service': editService,
-        'edit-schedule': editSchedule
-    }[formName];
+  const formDetails = {
+    login: {
+      customer: [
+        { label: 'email', name: 'email', type: 'text', required: true },
+        { label: 'password', name: 'password', type: 'password', required: true },
+      ],
+      salon: [
+        { label: 'email', name: 'email', type: 'text', required: true },
+        { label: 'password', name: 'password', type: 'password', required: true },
+      ]
+    },
+    register: {
+      customer: [
+        { label: 'email', name: 'email', type: 'text', required: true },
+        { label: 'password', name: 'password', type: 'password', required: true },
+        { label: 'confirm password', name: 'confirm-password', type: 'password', required: true },
+        { label: 'first name', name: 'first_name', type: 'text', required: true },
+        { label: 'last name', name: 'last_name', type: 'text', required: true },
+        { label: 'phone number', name: 'phone_number', type: 'text', required: true },
+      ],
+      salon: [
+        { label: 'email', name: 'email', type: 'text', required: true },
+        { label: 'password', name: 'password', type: 'password', required: true },
+        { label: 'confirm password', name: 'confirm-password', type: 'password', required: true },
+        { label: 'salon name', name: 'name', type: 'text', required: true },
+        { label: 'phone number', name: 'phone_number', type: 'text', required: true },
+        { label: 'state', name: 'state', type: 'text', required: true },
+        { label: 'city', name: 'city', type: 'text', required: true },
+        { label: 'address', name: 'address', type: 'text', required: true },
+      ]
+    },
+    'edit-user': [
+      { label: 'first name', name: 'first_name', type: 'text', required: true },
+      { label: 'last name', name: 'last_name', type: 'text', required: true },
+      { label: 'email', name: 'email', type: 'text', required: true },
+      { label: 'phone number', name: 'phone_number', type: 'text', required: true },
+      { label: 'password', name: 'password', type: 'text', required: false },
+    ],
+    'edit-salon': [
+      { label: 'email', name: 'email', type: 'text', required: true },
+      { label: 'password', name: 'password', type: 'text', required: false },
+      { label: 'name', name: 'name', type: 'text', required: true },
+      { label: 'phone number', name: 'phone_number', type: 'text', required: true },
+      { label: 'state', name: 'state', type: 'text', required: true },
+      { label: 'city', name: 'city', type: 'text', required: true },
+      { label: 'address', name: 'address', type: 'text', required: true },
+      { label: 'description', name: 'description', type: 'textarea', required: false },
+    ],
+    'add-team-member': [
+      { label: 'name', name: 'name', type: 'text', required: true },
+      { label: 'image', name: 'image', type: 'file', required: false },
+    ],
+    'add-service': [
+      { label: 'name', name: 'name', type: 'text', required: true },
+      { label: 'price', name: 'price', type: 'number', required: true },
+      { label: 'duration', name: 'duration', type: 'number', required: true },
+      { label: 'description', name: 'description', type: 'textarea', required: false },
+    ],
+    'edit-service': [
+      { label: 'name', name: 'name', type: 'text', required: true },
+      { label: 'price', name: 'price', type: 'number', required: true },
+      { label: 'duration', name: 'duration', type: 'number', required: true },
+      { label: 'description', name: 'description', type: 'textarea', required: false },
+    ],
+    'add-schedule': [
+      { label: 'open time', name: 'open_time', type: 'time', required: true },
+      { label: 'close time', name: 'close_time', type: 'time', required: true },
+      { label: 'break start', name: 'break_start', type: 'time', required: false },
+      { label: 'break end', name: 'break_end', type: 'time', required: false },
+    ],
+    'edit-schedule': [
+      { label: 'open time', name: 'open_time', type: 'time', required: true },
+      { label: 'close time', name: 'close_time', type: 'time', required: true },
+      { label: 'break start', name: 'break_start', type: 'time', required: false },
+      { label: 'break end', name: 'break_end', type: 'time', required: false },
+    ],
+    'add-review': [
+      { label: 'rating', name: 'rating', type: 'number', required: true },
+      { label: 'text', name: 'text', type: 'textarea', required: true },
+    ],
+    'add-photos': {},
+  }
 
-    const forms = {
-        customer: {
-            login: [
-                { label: 'Email', name: 'email', type: 'text', required: true },
-                { label: 'Password', name: 'password', type: 'password', required: true }
-            ],
-            register: [
-                { label: 'Email', name: 'email', type: 'text', required: true },
-                { label: 'Password', name: 'password', type: 'password', required: true },
-                { label: 'Confirm password', name: 'confirm_password', type: 'password', required: true },
-                { label: 'First name', name: 'first_name', type: 'text', required: true },
-                { label: 'Last name', name: 'last_name', type: 'text', required: true },
-                { label: 'Phone number', name: 'phone_number', type: 'text', required: true }
-            ]
-        },
-        salon: {
-            login: [
-                { label: 'Email', name: 'email', type: 'text', required: true },
-                { label: 'Password', name: 'password', type: 'password', required: true }
-            ],
-            register: [
-                { label: 'Email', name: 'email', type: 'text', required: true },
-                { label: 'Password', name: 'password', type: 'password', required: true },
-                { label: 'Confirm password', name: 'confirm_password', type: 'password', required: true },
-                { label: 'Salon name', name: 'salon_name', type: 'text', required: true },
-                { label: 'Phone number', name: 'phone_number', type: 'text', required: true },
-                { label: 'State', name: 'state', type: 'text', required: true },
-                { label: 'City', name: 'city', type: 'text', required: true },
-                { label: 'Address', name: 'address', type: 'text', required: true }
-            ]
-        },
-        'edit-service': [
-            { label: 'Name', name: 'name', type: 'text', required: true },
-            { label: 'Price', name: 'price', type: 'text', required: true },
-            { label: 'Duration', name: 'duration', type: 'text', required: true },
-            { label: 'Description', name: 'description', type: 'text', required: false }
-        ],
-        'edit-schedule': [
-            { label: 'Open Time', name: 'open_time', type: 'time', required: true },
-            { label: 'Close Time', name: 'close_time', type: 'time', required: true },
-            { label: 'Break start', name: 'break_start', type: 'time', required: false },
-            { label: 'Break end', name: 'break_end', type: 'time', required: false }
-        ]
-    };
+  const toggleAccountType = () => {
+    setAccountType(prev => (prev === "customer" ? "salon" : "customer"));
+  };
 
-    const currentFormFields = useMemo(() => {
-        return (formName === 'login' || formName === 'register')
-            ? forms[accountType]?.[formName] || []
-            : forms[formName] || [];
-    }, [formName, accountType]);
+  const fields = formDetails[form]?.[accountType] || formDetails[form];
 
-    const initialValues = useMemo(() => {
-        const values = {};
-        currentFormFields.forEach(({ name }) => {
-            values[name] = editData?.[name] || '';
-        });
+  const colsPerForm = {
+    register: 3,
+    'edit-salon': 2,
+    'add-service': 3,
+    'edit-service': 3,
+  };
 
-        if (editData?.service_id) {
-            values.service_id = editData.service_id;
-        } else if (editData?.id) {
-            values.id = editData.id;
-        }
+  const cols = colsPerForm[form] || 1;
 
-        return values;
-    }, [currentFormFields, editData]);
+  const handler = {
+    login,
+    register,
+    'edit-user': updateUserDetails,
+    'edit-salon': editSalonDetails,
+    'add-team-member': addTeamMember,
+    'add-service': addService,
+    'edit-service': editService,
+    'add-schedule': addSchedule,
+    // 'edit-schedule',
+    // 'add-review',
+    // 'add-photos',
+  }[form]
 
-    const { values, onChange, onSubmit, errors } = useForm({
-        handler: handler,
-        form: (handler, formName === 'login' || formName === 'register' ? { accountType, form: formName } : formName),
-        initialValues,
-        closeModal,
-        openModal,
-        refreshData,
-        selectedDates: editData
-    });
+  const { values, onChange, onSubmit, errors } = useForm({
+    handler: handler,
+    form: (form === 'login' || form === 'register' ? { accountType, formName: form, fields } : { formName: form, fields }),
+    initialValues: form !== 'add-schedule' ? initialData : null,
+    closeModal,
+    openModal,
+    refreshData,
+    selectedDates: initialData
+  });
 
-    return (
-        formName === 'login' || formName === 'register' ? (
-            <div className="form-container">
-                <p className='switch' onClick={toggleAccountType}>Switch to {accountType === "customer" ? "Salon" : "Customer"} <CiLogin /></p>
-                <hr></hr>
-                <p className='form-heading'>{accountType} {formName}</p>
-                <form onSubmit={onSubmit} data-testid={formName}>
-                    {formName === 'register' ? (
-                        <div className="form-form-row">
-                            {forms[accountType][formName].map(({ type, label, name }, index) => (
-                                <div key={name} className="form-column">
-                                    <div className="input-group">
-                                        <label htmlFor={name}><span className='required-field'>*</span> {label}</label>
-                                        <input
-                                            id={name}
-                                            type={type}
-                                            name={name}
-                                            value={values[name] || ''}
-                                            onChange={onChange}
-                                        />
-                                        {errors[name] && <p className="input-error">{errors[name]}</p>}
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    ) : (
-                        forms[accountType][formName].map(({ type, label, name, required }) => (
-                            <div key={name} className="input-group">
-                                <label htmlFor={name}>
-                                    {required && <span className="required-field">*</span>} {label}
-                                </label>                                <input
-                                    id={name}
-                                    type={type}
-                                    name={name}
-                                    value={values[name] || ''}
-                                    onChange={onChange}
-                                />
-                                {errors[name] && <p className="input-error">{errors[name]}</p>}
-                            </div>
-                        ))
-                    )}
-                    <button className="custom-button" type="submit">
-                        {formName === "login" ? "Login" : "Register"}
-                    </button>
-                </form>
-                {formName === 'register' ? (
-                    <p className='existing'>Already have an account? <a href="#" onClick={() => openModal('login')}>Log In</a></p>
-                ) : (
-                    <p className='existing'>Don't have an account? <a href="#" onClick={() => openModal('register')}>Register</a></p>
-                )}
-            </div>
-        ) : (
-            <form onSubmit={onSubmit} className={`form-${formName}`}>
-                {formName === 'edit-schedule' ? (<h2>Editing schedule for {editData}</h2>) : <h2>Editing service "{editData.name}"</h2>}
-                <br></br>
-                {forms[formName].map(({ name, label, type, required }) => (
-                    <div key={name} className="input-group">
-                        <label htmlFor={name}>
-                            {required && <span className="required-field">*</span>} {label}
-                        </label>                       
-                        <input
-                            id={name}
-                            type={type}
-                            name={name}
-                            value={values[name] || editData[name] || ''}
-                            onChange={onChange}
-                        />
-                        {errors[name] && <p className="input-error">{errors[name]}</p>}
-                    </div>
-                ))}
-                <button className="custom-button" type="submit">Submit</button>
-            </form>
-        )
-    )
+  return (
+    <div className="form-container">
+      <div className='form-heading'>
+        {(form === 'login' || form === 'register')
+          ? <div>
+            <p className='switch' onClick={toggleAccountType}>Switch to {accountType === "customer" ? "Salon" : "Customer"} <CiLogin /></p>
+            <hr></hr>
+            <br />
+            <h5>{form} as {accountType}</h5>
+            <br />
+          </div>
+          : <h5>{(form === 'login' && form === 'register') ? form.replace(/-/g, ' ') : null }</h5>}
+      </div>
+      <form className={'form ' + form} style={{ '--cols': cols }} onSubmit={onSubmit}>
+        {fields.map(form => (
+          <div key={form.name} className="form-group">
+            <label htmlFor={form.name}>{form.required && <span className="required-field">*</span>} {form.label}</label>
+            {form.type === 'textarea' ? (
+              <>
+                <textarea name={form.name} id={form.name} rows="5" onChange={onChange} value={values[form.name] ?? ''} />
+                {errors[form.name] && <p className="input-error">{errors[form.name]}</p>}
+              </>
+            ) : (
+              <>
+                <input type={form.type} name={form.name} id={form.name} onChange={onChange} {...(form.type === 'file' ? {} : { value: values[form.name] ?? '' })} />
+                {errors[form.name] && <p className="input-error">{errors[form.name]}</p>}
+              </>
+            )}
+          </div>
+        ))}
+        <button className='custom-button'>submit</button>
+      </form>
+      <br />
+      {form === 'login'
+        ? <p className='existing'>Don't have an account? <a href="#" onClick={() => openModal('register')}>Register</a></p>
+        : form === 'register' ? <p className='existing'>Already have an account? <a href="#" onClick={() => openModal('login')}>Log In</a></p>
+          : null
+      }
+    </div>
+  )
 }
-

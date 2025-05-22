@@ -1,128 +1,121 @@
 .form-container {
-    color: black;
-    text-align: center;
-    padding: 1em 2em;
+    display: flex;
+    flex-direction: column;
+    color: white;
+    letter-spacing: 1px;
+} 
+
+.form-container .form {
+    display: grid;
+    gap: 1em;
+    grid-template-columns: repeat(var(--cols, 1), 1fr);
+    padding: 2em;
+    border-radius: 1em;
+    color: white;
 }
 
-.switch {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5em;
-    cursor: pointer;
+.form-heading div {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.form-heading p {
     margin-bottom: 1em;
     color: var(--accent-color);
-    font-weight: bolder;
     text-decoration: underline;
 }
 
-.switch svg {
-    width: 1.5em;
-    height: auto;
-}
-
-form {
-    margin-top: 1em;
-}
-
-.form-edit-schedule {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.form-container button {
-    margin-bottom: 2em;
-}
-
-.form-container input {
-    outline: none;
-    border: 1px solid rgb(176, 173, 173);
-    border-radius: 0.5em;
-    padding: 0.5em 1em;
-}
-
-label {
-    text-transform: uppercase;
-    font-weight: bolder;
-    text-align: left;
-    margin-bottom: 0.5em;
-}
-
-.form-form-row {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 0.5em;
-}
-
-.input-group {
-    display: flex;
-    flex-direction: column;
-    margin-bottom: 1em;
-    padding: 0.5em;
+.existing {
+    text-align: center;
 }
 
 .existing a {
     color: var(--accent-color);
-    font-weight: bolder;
     text-decoration: underline;
+    font-weight: bold;
 }
 
-.existing a:hover {
-    cursor: pointer;
-}
-
-.line {
-    width: 100%;
-    text-align: center;
-    border-bottom: 1px solid rgb(189, 188, 188);
-    line-height: 0.1em;
-    margin: 10px 0 20px;
-    margin-bottom: 2em;
-    margin-top: 1em;
-}
-
-.line span {
-    background: var(--background);
-    padding: 0 10px;
-    color: grey;
-}
-
-.icon {
-    width: 2.5em;
-    height: 2.5em;
-    padding: 0.5em;
-    border: 2px solid grey;
-    border-radius: 50%;
-}
-
-.icon:hover {
-    cursor: pointer;
-}
-
-.form-heading {
-    margin-top: 1em;
+.form-heading h5 {
     text-transform: capitalize;
+    margin-bottom: 1em;
+    text-align: center;
 }
 
-.input-error {
-    text-align: left;
-    margin-top: 2px;
-    color: red;
-    font-size: 14px;
+.form-container .form-group {
+    display: flex;
+    flex-direction: column;
 }
 
+.form-container label {
+    text-transform: capitalize;
+    margin-bottom: 0.3em;
+    margin-left: 0.2em;
+    letter-spacing: 0.5px;
+}
+
+.form-container textarea, input {
+    background: var(--light-color);
+    border: 1px solid white;
+    border-radius: 0.5em;
+    padding: 0.8em;
+    width: 100%;
+    margin-bottom: 0.5em;
+    outline: none;
+}
+
+.form-container .form-group:has(textarea) {
+    grid-column: 1 / -1;
+}
+
+.form-container .custom-button {
+    grid-column: 1 / -1;
+    width: 10em;
+    justify-self: center;
+}
+
+.input-error,
 .required-field {
-    color: red;
+    color: rgb(255, 83, 83);
 }
 
-@media (max-width: 767px) {
-    .form-form-row {
-        grid-template-columns: repeat(2, 1fr);
-    }
+.form-container input[type="file"]::-webkit-file-upload-button {
+    font-family: inherit;
+    background-color: var(--accent-color);
+    color: white;
+    border: none;
+    padding: 0.5em 1em;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s;
 }
 
-@media (max-width: 544px) {
-    .form-form-row {
-        grid-template-columns: repeat(1, 1fr);
-    }
+.form-container input[type="file"]::-webkit-file-upload-button:hover {
+    background-color: var(--dark-color);
+}
+
+.form.edit-user,
+.form.add-service,
+.form.edit-service,
+.form.add-team-member,
+.form.edit-salon {
+    color: black;
+    background: white;
+}
+
+.form.add-service,
+.form.edit-salon {
+    width: 45em;
+}
+
+.form.add-team-member input,
+.form.edit-salon input {
+    width: 20em;
+}
+
+.form.add-service textarea,
+.form.edit-service textarea,
+.form.edit-salon textarea {
+    background: inherit;
 }
