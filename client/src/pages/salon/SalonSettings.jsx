@@ -10,8 +10,7 @@ import { GrSchedule } from "react-icons/gr";
 
 import { Loading } from '../../components/Loading';
 import { useAuth } from '../../context/AuthContext';
-import { addTeamMember, editSalonDetails, getSalonDetails, getTeam, deleteTeamMember, getServices, addService, deleteService, addSchedule, getReviews, getTodayAppointments } from '../../handlers/salonHandlers';
-import { useForm } from '../../hooks/useForm';
+import { getSalonDetails, getTeam, deleteTeamMember, getServices, deleteService, getReviews, getTodayAppointments } from '../../handlers/salon';
 import { useNotification } from '../../context/NotificationContext';
 import { Modal } from '../../components/Modal';
 import { Form } from '../../components/Form';
@@ -64,127 +63,28 @@ export function SalonSettings() {
 function AccountSettings() {
   const auth = useAuth()
   const [salonDetails, setSalonDetails] = useState({})
-  const handler = editSalonDetails;
   const [initialValues, setInitialValues] = useState({});
-  const formName = 'edit-salon'
-  const { values, setValues, onChange, onSubmit } = useForm({ handler, form: formName, initialValues });
+
+  const fetchSalonDetails = async () => {
+    const result = await getSalonDetails(auth.auth.id)
+    const salonData = result.data
+    setSalonDetails(salonData)
+
+    if (salonData) {
+      setInitialValues(salonData);
+    }
+  }
 
   useEffect(() => {
-    const fetchSalonDetails = async () => {
-      const result = await getSalonDetails(auth.auth.id)
-      const salonData = result.data
-      setSalonDetails(salonData)
-
-      if (salonData) {
-        const salonValues = {
-          name: salonData.name || '',
-          address: salonData.address || '',
-          city: salonData.city || '',
-          state: salonData.state || '',
-          description: salonData.description || '',
-          email: salonData.email || '',
-          phone_number: salonData.phone_number || '',
-          password: ''
-        };
-
-        setValues(salonValues);
-        setInitialValues(salonValues);
-      }
-
-    }
     auth.auth?.id && fetchSalonDetails()
   }, [auth])
 
   return (
     <div className="settings-account-container">
       <h2>Account settings</h2>
-      <div className="settings-individual-heading">
-        <h5>Edit your information</h5>
-      </div>
       <div className="settings-form-container">
-        {salonDetails && Object.keys(values).length > 0 ? (
-          <form onSubmit={onSubmit}>
-            <div className="form-row row">
-              <div className='form-row'>
-                <label>Email</label>
-                <input
-                  type='text'
-                  value={values.email}
-                  name='email'
-                  onChange={onChange}
-                />
-              </div>
-              <div className='form-row'>
-                <label>Password</label>
-                <input
-                  type='password'
-                  value={values.password}
-                  name='password'
-                  onChange={onChange}
-                />
-              </div>
-            </div>
-            <div className="form-row row">
-              <div className='form-row'>
-                <label>Salon name</label>
-                <input
-                  type='text'
-                  value={values.name}
-                  name='name'
-                  onChange={onChange}
-                />
-              </div>
-              <div className='form-row'>
-                <label>Phone number</label>
-                <input
-                  type='text'
-                  value={values.phone_number}
-                  name='phone_number'
-                  onChange={onChange}
-                />
-              </div>
-            </div>
-            <div className="form-row row">
-              <div className='form-row'>
-                <label>State</label>
-                <input
-                  type='text'
-                  value={values.state}
-                  name='state'
-                  onChange={onChange}
-                />
-              </div>
-              <div className='form-row'>
-                <label>City</label>
-                <input
-                  type='text'
-                  value={values.city}
-                  name='city'
-                  onChange={onChange}
-                />
-              </div>
-
-              <div className='form-row'>
-                <label>Address</label>
-                <input
-                  type='text'
-                  value={values.address}
-                  name='address'
-                  onChange={onChange}
-                />
-              </div>
-            </div>
-            <div className='form-row'>
-              <label>Description</label>
-              <textarea
-                type='text'
-                value={values.description}
-                name='description'
-                onChange={onChange}
-              />
-            </div>
-            <button className='custom-button'>Submit</button>
-          </form>
+        {salonDetails && Object.keys(initialValues).length > 0 ? (
+          <Form form={'edit-salon'} initialData={initialValues} refreshData={fetchSalonDetails}/>
         ) : (
           <Loading />
         )}
@@ -197,8 +97,6 @@ function TeamSettings() {
   const auth = useAuth()
   const [teamDetails, setTeamDetails] = useState([])
   const { showNotification } = useNotification();
-
-  const handler = addTeamMember;
 
   const fetchTeamDetails = async () => {
     const result = await getTeam(auth.auth.id);
@@ -214,8 +112,6 @@ function TeamSettings() {
     showNotification(response.message, 'success')
     fetchTeamDetails()
   }
-
-  const { onChange, onSubmit } = useForm({ handler, form: 'add-team-member', refreshData: fetchTeamDetails });
 
   return (
     <div className="team-settings-container">
@@ -251,13 +147,7 @@ function TeamSettings() {
             <h5>Add members</h5>
           </div>
           <div className="settings-add-team-member">
-            <form onSubmit={onSubmit}>
-              <label>Name</label>
-              <input type='text' name='name' onChange={onChange}></input>
-              <label>Image</label>
-              <input type='file' name='image' onChange={onChange}></input>
-              <button className='custom-button'>Submit</button>
-            </form>
+            <Form form={'add-team-member'} refreshData={fetchTeamDetails} />
           </div>
         </div>
       </div>
@@ -266,9 +156,9 @@ function TeamSettings() {
 }
 
 function ServicesSettings() {
-  const { showNotification } = useNotification();
   const auth = useAuth()
-  const handler = addService
+
+  const { showNotification } = useNotification();
   const [services, setServices] = useState([])
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [modalType, setModalType] = useState('')
@@ -293,19 +183,6 @@ function ServicesSettings() {
     setIsModalOpen(false);
     fetchServices()
   };
-
-  const formValues = {
-    name: '',
-    price: '',
-    duration: '',
-  };
-
-  const { values, onChange, onSubmit, errors } = useForm({
-    handler: handler,
-    form: 'add-service',
-    refreshData: fetchServices,
-    initialValues: formValues
-  });
 
   return (
     <div className="services-settings-container">
@@ -347,57 +224,14 @@ function ServicesSettings() {
             <h5>Add new service</h5>
           </div>
           <div className="settings-add-new-service">
-            <form onSubmit={onSubmit} data-testid="submit-service">
-              <div className="form-row row">
-                <div className='form-row'>
-                  <label>Service name <span>*</span></label>
-                  <input
-                    type='text'
-                    name='name'
-                    value={values.name || ''}
-                    onChange={onChange}
-                  />
-                  {errors.name && <p className="input-error">{errors.name}</p>}
-
-                </div>
-                <div className='form-row'>
-                  <label>Price <span>*</span></label>
-                  <input
-                    type='number'
-                    name='price'
-                    value={values.price || ''}
-                    onChange={onChange}
-                  />
-                  {errors.price && <p className="input-error">{errors.price}</p>}
-                </div>
-                <div className='form-row'>
-                  <label>Duration <span>*</span></label>
-                  <input
-                    type='number'
-                    name='duration'
-                    value={values.duration || ''}
-                    onChange={onChange}
-                  />
-                  {errors.duration && <p className="input-error">{errors.duration}</p>}
-                </div>
-              </div>
-              <div className="form-row">
-                <label>Description</label>
-                <textarea
-                  name='description'
-                  value={values.description || ''}
-                  onChange={onChange}
-                />
-              </div>
-              <button className='custom-button'>Submit</button>
-            </form>
+            <Form form={'add-service'} refreshData={fetchServices}/>
           </div>
         </div>
       </div>
       {isModalOpen && (
         <Modal onClose={closeModal}>
           {modalType === 'edit' ? (
-            <Form formName={'edit-service'} closeModal={closeModal} openModal={openModal} editData={initialValues} refreshData={fetchServices} />
+            <Form form={'edit-service'} closeModal={closeModal} openModal={openModal} initialData={initialValues} refreshData={fetchServices} />
           ) : (
             <Confirm
               title="Deleting service"

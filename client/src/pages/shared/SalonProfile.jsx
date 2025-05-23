@@ -1,15 +1,17 @@
 import './SalonProfile.modules.css'
+
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { getSalonDetails } from '../../handlers/sharedHandlers';
-import { Loading } from '../../components/Loading';
-import { displayReviewStars } from '../../components/DisplayReviewStars';
 import { IoIosArrowForward } from "react-icons/io";
-import { Calendar } from '../../components/Calendar';
-import { useAuth } from '../../context/AuthContext';
 import { MdLocationPin } from "react-icons/md";
 
-export function SalonProfile() {
+import { getSalonDetails } from '../../handlers/shared';
+import { Loading } from '../../components/Loading';
+import { displayReviewStars } from '../../components/DisplayReviewStars';
+import { Calendar } from '../../components/Calendar';
+import { useAuth } from '../../context/AuthContext';
+
+export function SalonProfile () {
     const { id } = useParams();
     const { auth } = useAuth()
     const [salonInfo, setSalonInfo] = useState({})

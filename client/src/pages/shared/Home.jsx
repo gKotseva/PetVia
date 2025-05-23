@@ -2,11 +2,12 @@ import './Home.modules.css';
 
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { fetchServicesPerDetails, getAllCounts, getAllSalons } from '../../handlers/sharedHandlers';
 import { MdLocationPin } from "react-icons/md";
 import { BsCalendar2CheckFill } from "react-icons/bs";
 import { HiScissors } from "react-icons/hi2";
 import { MdPeople } from "react-icons/md";
+
+import { fetchServicesPerDetails, getAllCounts, getAllSalons } from '../../handlers/shared';
 
 export function Home() {
     const navigate = useNavigate()

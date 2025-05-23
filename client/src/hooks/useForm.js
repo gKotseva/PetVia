@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+
 import { useAuth } from '../context/AuthContext';
 import { useNotification } from '../context/NotificationContext';
 import { validate } from '../utils/formValidation';
@@ -8,68 +9,52 @@ export function useForm(options = {}) {
 
     const { login, auth } = useAuth();
     const { showNotification } = useNotification();
-    const [values, setValues] = useState(() => initialValues || {});
+    const [values, setValues] = useState(initialValues || {});
     const [errors, setErrors] = useState({})
 
     useEffect(() => {
-        setValues(initialValues || {});
-      }, [form !== 'login' || form !== 'register']);
+        if (initialValues) {
+          setValues(initialValues);
+        }
+      }, [initialValues]);
 
     const onChange = (e) => {
         const { name, type } = e.target;
-      
+
         if (type === 'file') {
-          setValues(state => ({
-            ...state,
-            [name]: e.target.files[0] || null
-          }));
+            setValues(state => ({
+                ...state,
+                [name]: e.target.files[0] || null
+            }));
         } else {
-          setValues(state => ({
-            ...state,
-            [name]: e.target.value
-          }));
+            setValues(state => ({
+                ...state,
+                [name]: e.target.value
+            }));
         }
-      };
-
-    const getChangedFields = () => {
-        const changedFields = {};
-
-        Object.keys(values).forEach(key => {
-            if (values[key] !== initialValues[key] && values[key] !== '') {
-                changedFields[key] = values[key];
-            }
-        });
-
-        if (form === 'edit-service' && initialValues?.service_id) {
-            return { id: initialValues.service_id, changedFields }
-        }
-
-        return { id: auth.id, changedFields };
     };
 
     const onSubmit = async (e) => {
         e.preventDefault();
 
-        const formValidation = validate(values)
+        const validation = validate(values, form.fields)
 
-        if(Object.keys(formValidation).length > 0) {
-            setErrors(formValidation)
+        if (Object.keys(validation).length > 0) {
+            setErrors(validation)
             return;
         }
 
-        try {
-            let response
+        let response
 
-            if (form.form === 'login' || form.form === 'register') {
+        try {
+            if (form.formName === 'login' || form.formName === 'register') {
                 response = await handler(form.accountType, values)
-            } else if (form === 'edit-salon' || form === 'edit-service' || form === 'edit-user') {
-                const changedFields = getChangedFields()
-                response = await handler(changedFields)
-            } else if (form === 'add-schedule') {
-                response = await handler(auth.id, values, selectedDates)
+            } else if (form.formName === 'edit-service') {
+                response = await handler(values.service_id, values)
                 closeModal()
-            } else if (form === 'edit-schedule') {
-                response = await handler(auth.id, selectedDates, values)
+                refreshData()
+            } else if (form.formName === 'add-schedule') {
+                response = await handler(auth.id, values, selectedDates)
                 closeModal()
                 refreshData()
             } else {
@@ -78,25 +63,21 @@ export function useForm(options = {}) {
             }
 
             if (response.status === 200) {
+                if (form.formName === 'register') {
+                    openModal('login');
+                } else if (form.formName === 'login') {
+                    login(response.results)
+                    closeModal()
+                }
+                
                 showNotification(response.message, 'success')
                 setValues(initialValues || {});
                 setErrors({})
-                
-                if (form.form === 'register') {
-                    openModal('login');
-                } else if (form.form === 'login') {
-                    login(response.results)
-                    closeModal()
-                } else if (form === 'edit-service') {
-                    closeModal()
-                }
-
-            } else {
-                throw new Error(response.message)
             }
 
         } catch (error) {
             showNotification(error.message, 'error');
+            setErrors({})
         }
     };
 

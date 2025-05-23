@@ -1,11 +1,11 @@
 import './Navigation.modules.css';
 
 import { Link } from 'react-router-dom';
+import { useState } from 'react';
 
 import { useAuth } from '../context/AuthContext';
 import { Form } from './Form';
 import { Modal } from './Modal';
-import { useEffect, useState } from 'react';
 
 export function Navigation() {
     const { auth, logout } = useAuth();
@@ -48,7 +48,7 @@ export function Navigation() {
                 </ul>
                 {isModalOpen && (
                     <Modal onClose={closeModal}>
-                        <Form formName={formName} closeModal={closeModal} openModal={openModal}/>
+                        <Form form={formName} closeModal={closeModal} openModal={openModal}/>
                     </Modal>
                 )}
             </div>

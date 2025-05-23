@@ -1,9 +1,11 @@
 import './Schedule.modules.css';
+
 import { useEffect, useState } from "react";
+
 import { getDaysInMonth, getStartDayOfMonth, weekDays } from "../utils/date";
-import { addSchedule, getSchedule } from '../handlers/salonHandlers';
+import { getSchedule } from '../handlers/salon';
 import { formatDate } from '../utils/date';
-import { useForm } from '../hooks/useForm';
+import { Form } from './Form';
 
 export function Schedule ({salonId, closeModal}) {
   const [daysInMonth, setDaysInMonth] = useState([]);
@@ -12,16 +14,13 @@ export function Schedule ({salonId, closeModal}) {
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
   const [schedule, setSchedule] = useState([])
 
-  const { values, setValues, errors, success, successMessage, onChange, onSubmit } = useForm({handler: addSchedule, form: 'add-schedule', closeModal, selectedDates});
+  const fetchSchedule = async () => {
+    const response = await getSchedule(salonId)
+    setSchedule(response.data)
+  }
 
   useEffect(() => {
-    const fetchSchedule = async () => {
-      const response = await getSchedule(salonId)
-      setSchedule(response.data)
-    }
-
     fetchSchedule()
-
     const days = getDaysInMonth(currentYear, currentMonth + 1);
     setDaysInMonth(days);
   }, [currentMonth, currentYear]);
@@ -106,17 +105,7 @@ export function Schedule ({salonId, closeModal}) {
       </div>
       <div className="schedule-form-container">
         <h5>Enter time for selected dates:</h5>
-        <form onSubmit={onSubmit}>
-          <label>Open time</label>
-          <input type="time" name='open_time' value={values.open_time || ''} onChange={onChange}></input>
-          <label>Close time</label>
-          <input type="time" name='close_time' value={values.close_time || ''} onChange={onChange}></input>
-          <label>Break start time</label>
-          <input type="time" name='break_start' value={values.break_start || ''} onChange={onChange}></input>
-          <label>Break end time</label>
-          <input type="time" name='break_end' value={values.break_end || ''} onChange={onChange}></input>
-          <button className='custom-button'>Submit</button>
-        </form>
+        <Form form={'add-schedule'} refreshData={fetchSchedule} initialData={selectedDates}/>
       </div>
     </div>
   );

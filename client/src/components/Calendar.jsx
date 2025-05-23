@@ -1,13 +1,14 @@
 import './Calendar.modules.css';
 
 import { useEffect, useState } from 'react';
+import { MdEditCalendar } from "react-icons/md";
+import { RiDeleteBack2Fill } from "react-icons/ri";
+
 import { formatDate, getDayName, getWeekDays } from '../utils/date';
-import { bookAppointment, deleteSchedule, getSchedule } from '../handlers/calendarHandlers';
+import { bookAppointment, deleteSchedule, getSchedule } from '../handlers/schedule';
 import { useNotification } from '../context/NotificationContext';
 import { Modal } from './Modal';
 import { Confirm } from './Confirm';
-import { MdEditCalendar } from "react-icons/md";
-import { RiDeleteBack2Fill } from "react-icons/ri";
 import { Form } from './Form';
 
 export function Calendar({ userType, salonId, customerId, serviceDuration, service, registeredUser }) {

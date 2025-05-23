@@ -56,7 +56,6 @@ const request = async (method, url, data) => {
         return { status, ...result };
 
     } catch (error) {
-        console.error("Request failed", error);
         throw error;
     }
 };

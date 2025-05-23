@@ -1,6 +1,8 @@
-import { useState } from 'react'
 import './Form.modules.css'
+
+import { useState } from 'react'
 import { CiLogin } from "react-icons/ci";
+
 import { login, register } from '../handlers/auth';
 import { useForm } from '../hooks/useForm';
 import { updateUserDetails } from '../handlers/customer';

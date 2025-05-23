@@ -1,13 +1,14 @@
 import './ClientProfile.modules.css';
 
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+
 import { useAuth } from '../../context/AuthContext';
-import { cancelAppointment, getUserBookings, getUserDetails, updateUserDetails } from '../../handlers/userHandlers';
+import { cancelAppointment, getUserBookings, getUserDetails } from '../../handlers/customer';
 import { Loading } from '../../components/Loading';
 import { Confirm } from '../../components/Confirm';
 import { Modal } from '../../components/Modal';
-import { useNavigate } from 'react-router-dom';
-import { useForm } from '../../hooks/useForm';
+import { Form } from '../../components/Form';
 
 export function ClientProfile() {
   const { auth, logout } = useAuth();
@@ -17,13 +18,9 @@ export function ClientProfile() {
   const [futurePage, setFuturePage] = useState(1);
   const [pastPage, setPastPage] = useState(1);
   const [modalContent, setModalContent] = useState('')
-  const handler = updateUserDetails;
   const [initialValues, setInitialValues] = useState({});
-  const form = 'edit-user'
   const navigate = useNavigate()
   const [appointmentId, setAppointmentId] = useState(null)
-
-  const { values, setValues, errors, success, successMessage, onChange, onSubmit } = useForm({handler, form, initialValues});
 
   const itemsPerPage = 4;
 
@@ -32,14 +29,14 @@ export function ClientProfile() {
     setBookings(response.result)
   }
 
+  const fetchAccountDetails = async () => {
+    const response = await getUserDetails(auth.id)
+    setUserData(response.result)
+    setInitialValues(response.result)
+  }
+
   useEffect(() => {
     if (!auth?.id) return;
-    const fetchAccountDetails = async () => {
-      const response = await getUserDetails(auth.id)
-      setUserData(response.result)
-      setValues(response.result)
-      setInitialValues(response.result)
-    }
     fetchAccountDetails()
     fetchBookings()
   }, [auth?.id])
@@ -57,49 +54,12 @@ export function ClientProfile() {
     (pastPage - 1) * itemsPerPage,
     pastPage * itemsPerPage
   );
-  
+
   return (
     <div className="customer-profile-container">
       <div className="customer-profile-settings">
         <h4>Personal Information</h4>
-        <form onSubmit={onSubmit}>
-          <label>First Name</label>
-          <input
-            type='text'
-            value={values.first_name}
-            name='first_name'
-            onChange={onChange}
-          />
-          <label>Last Name</label>
-          <input
-            type='text'
-            value={values.last_name}
-            name='last_name'
-            onChange={onChange}
-          />
-          <label>Email</label>
-          <input
-            type='email'
-            value={values.email}
-            name='email'
-            onChange={onChange}
-          />
-          <label>Mobile Phone</label>
-          <input
-            type='text'
-            value={values.phone_number}
-            name='phone_number'
-            onChange={onChange}
-          />
-          <label>Password</label>
-          <input
-            type='password'
-            value={values.password || ''}
-            name='password'
-            onChange={onChange}
-          />
-          <button className='custom-button'>Save</button>
-        </form>
+        <Form form='edit-user' initialData={initialValues} refreshData={fetchAccountDetails} />
         <button
           className="delete-button"
           onClick={() => {
