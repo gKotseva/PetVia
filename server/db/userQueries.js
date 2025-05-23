@@ -1,8 +1,8 @@
-const db = require('./db');
+const { executeQuery } = require("./db");
 
 exports.getUserData = (id) => {
     const query = `SELECT first_name, last_name, email, phone_number FROM users WHERE user_id = ?`
-    return db.executeQuery(query, [id])
+    return executeQuery(query, [id])
 }
 
 exports.getUserBookings = (id) => {
@@ -12,24 +12,24 @@ exports.getUserBookings = (id) => {
         JOIN services ss ON a.service_id = ss.service_id
         WHERE a.user_id = ?;
 `
-    return db.executeQuery(query, [id])
+    return executeQuery(query, [id])
 }
 
 exports.editUserDetails = (id, fields, values) => {
     const query = `UPDATE users SET ${fields.map(field => `${field} = ?`).join(', ')} WHERE user_id = ?`;
     const queryParams = [...values, id];
 
-    return db.executeQuery(query, queryParams)
+    return executeQuery(query, queryParams)
 }
 
 exports.deleteUser = (id) => {
     const query = `DELETE FROM users WHERE user_id= ? `
 
-    return db.executeQuery(query, [id])
+    return executeQuery(query, [id])
 }
 
 exports.deleteAppointment = (id) => {
     const query = `DELETE FROM appointments WHERE appointment_id= ? `
 
-    return db.executeQuery(query, [id])
+    return executeQuery(query, [id])
 }

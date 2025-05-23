@@ -1,79 +1,78 @@
+const { executeQuery } = require("./db");
+
 exports.getDetails = (id) => {
-    const query = `SELECT * FROM salons WHERE salon_id = ${id}`
-    return query
-}
+    const query = `SELECT salon_id, email, phone_number, name, address, city, state, description FROM salons WHERE salon_id = ?`;
+    return executeQuery(query, [id]);
+};
 
 exports.getTeam = (id) => {
-    const query = `SELECT * FROM team_members WHERE salon_id = ${id}`
-    return query
-}
+    const query = `SELECT * FROM team_members WHERE salon_id = ?`;
+    return executeQuery(query, [id]);
+};
 
 exports.editDetails = (id, fields, values) => {
     const query = `UPDATE salons SET ${fields.map(field => `${field} = ?`).join(', ')} WHERE salon_id = ?`;
     const queryParams = [...values, id];
-
-    return { query, queryParams };
-}
+    return executeQuery(query, queryParams);
+};
 
 exports.getAppointmentsToday = (id, date) => {
-    const query = `select a.appointment_id, a.appointment_date, a.start_time, s.name, s.duration, u.first_name, u.last_name, u.email from appointments a
-join services s on a.service_id = s.service_id
-join users u on a.user_id = u.user_id
-where a.salon_id = ${id} and appointment_date = '${date}';`
-    return query;
-}
+    const query = `
+        SELECT a.appointment_id, a.appointment_date, a.start_time, s.name, s.duration, u.first_name, u.last_name, u.email 
+        FROM appointments a
+        JOIN services s ON a.service_id = s.service_id
+        JOIN users u ON a.user_id = u.user_id
+        WHERE a.salon_id = ? AND appointment_date = ?;
+    `;
+    return executeQuery(query, [id, date]);
+};
 
 exports.addTeamMember = (id, name, image) => {
-    const imageValue = image === null ? 'NULL' : `'${image}'`;
-
-    const query = `INSERT INTO team_members(salon_id, name, image) VALUES(${id}, '${name}', ${imageValue})`;
-
-    return query;
-}
+    const query = `INSERT INTO team_members(salon_id, name, image) VALUES(?, ?, ?)`;
+    return executeQuery(query, [id, name, image || null]);
+};
 
 exports.deleteTeamMember = (id) => {
-    const query = `DELETE FROM team_members WHERE team_member_id = ${id}`;
-
-    return query;
-}
+    const query = `DELETE FROM team_members WHERE team_member_id = ?`;
+    return executeQuery(query, [id]);
+};
 
 exports.getServices = (id) => {
-    const query = `SELECT * FROM services WHERE salon_id = ${id}`
-    return query
-}
+    const query = `SELECT * FROM services WHERE salon_id = ?`;
+    return executeQuery(query, [id]);
+};
 
 exports.addService = (id, values) => {
-    const valOrNull = (v) => v !== undefined && v !== '' ? `'${v}'` : 'NULL';
-
     const query = `
         INSERT INTO services (salon_id, name, price, duration, description)
-        VALUES (${id}, ${valOrNull(values.name)}, ${valOrNull(values.price)}, ${valOrNull(values.duration)}, ${valOrNull(values.description)})
+        VALUES (?, ?, ?, ?, ?)
     `;
-
-    return query;
+    const params = [
+        id,
+        values.name || null,
+        values.price || null,
+        values.duration || null,
+        values.description || null
+    ];
+    return executeQuery(query, params);
 };
+
 exports.deleteService = (id) => {
-    const query = `DELETE FROM services WHERE service_id = ${id}`
-    return query
-}
+    const query = `DELETE FROM services WHERE service_id = ?`;
+    return executeQuery(query, [id]);
+};
 
 exports.editService = (id, fields, values) => {
     const query = `UPDATE services SET ${fields.map(field => `${field} = ?`).join(', ')} WHERE service_id = ?`;
     const queryParams = [...values, id];
-
-    return { query, queryParams };
-}
-
-exports.editService = (id, fields, values) => {
-    const query = `UPDATE services SET ${fields.map(field => `${field} = ?`).join(', ')} WHERE service_id = ?`;
-    const queryParams = [...values, id];
-
-    return { query, queryParams };
-}
+    return executeQuery(query, queryParams);
+};
 
 exports.addSchedule = (id, values, date) => {
-    const query = `INSERT INTO salon_schedule (salon_id, work_date, open_time, close_time, break_start, break_end)
-                   VALUES (?, ?, ?, ?, ?, ?)`;
+    const query = `
+        INSERT INTO salon_schedule (salon_id, work_date, open_time, close_time, break_start, break_end)
+        VALUES (?, ?, ?, ?, ?, ?)
+    `;
     const insertValues = [
         id,
         date,
@@ -82,47 +81,40 @@ exports.addSchedule = (id, values, date) => {
         values.break_start || null,
         values.break_end || null
     ];
-    return { query, insertValues };
+    return executeQuery(query, insertValues);
 };
 
 exports.getReviews = (id) => {
-    const query = `SELECT review_id, rating, comment, r.created_at, first_name, last_name FROM reviews r
-                    JOIN users u on r.user_id = u.user_id
-                    WHERE salon_id = ${id}; `
-
-    return query;
-}
+    const query = `
+        SELECT review_id, rating, comment, r.created_at, first_name, last_name 
+        FROM reviews r
+        JOIN users u ON r.user_id = u.user_id
+        WHERE salon_id = ?;
+    `;
+    return executeQuery(query, [id]);
+};
 
 exports.getOpenCloseTime = (id, month) => {
     const paddedMonth = String(month).padStart(2, '0');
     const query = `
-    SELECT
-    MIN(open_time) AS earliest_open_time,
-        MAX(close_time) AS latest_close_time
-    FROM
-    salon_schedule
-    WHERE
-    salon_id = ${id}
-    AND
-            work_date LIKE '%-${paddedMonth}-%'; `;
-
-    return query;
-}
+        SELECT MIN(open_time) AS earliest_open_time, MAX(close_time) AS latest_close_time
+        FROM salon_schedule
+        WHERE salon_id = ? AND work_date LIKE ?;
+    `;
+    return executeQuery(query, [id, `%-${paddedMonth}-%`]);
+};
 
 exports.getSchedule = (id, month) => {
-    let query = `
-      SELECT *
-      FROM salon_schedule
-      WHERE salon_id = ${id}
-    `;
+    let query = `SELECT * FROM salon_schedule WHERE salon_id = ?`;
+    const values = [id];
 
     if (month) {
+        query += ` AND work_date LIKE ?`;
         const paddedMonth = String(month).padStart(2, '0');
-        query += ` AND work_date LIKE '%-${paddedMonth}-%'`;
+        values.push(`%-${paddedMonth}-%`);
     }
 
-    query += ';';
-    return query;
+    return executeQuery(query, values);
 };
 
 exports.editSchedule = (id, date, values) => {
@@ -145,5 +137,5 @@ exports.editSchedule = (id, date, values) => {
         values.break_end || null
     ];
 
-    return { query, params };
+    return executeQuery(query, params);
 };
