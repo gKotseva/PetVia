@@ -1,26 +1,21 @@
-const { getDetails, editDetails, getTeam, addTeamMember, deleteTeamMember, getServices, addService, deleteService, editService, addSchedule, getReviews, getSchedule, getAppointments, getOpenCloseTime, editSchedule, getAppointmentsToday } = require('../db/salonQueries')
-const db = require('../db/db');
-const { formatDate } = require('../utils/date');
-const { generateSlots } = require('../utils/calendar');
+const { getDetails, editDetails, getTeam, addTeamMember, deleteTeamMember, getServices, addService, deleteService, editService, addSchedule, getReviews, getSchedule, editSchedule, getAppointmentsToday } = require('../db/salonQueries')
 const { hashPassword } = require('../utils/hash');
 const { upload } = require('../multer');
 const router = require('express').Router()
-const multer  = require('multer')
 const fs = require('fs')
 
 router.get('/details', async (req, res) => {
     const { id } = req.query
-    const query = getDetails(id)
-    const result = await db.executeQuery(query)
+    const data = await getDetails(id)
 
-    res.status(200).json({ data: result[0] });
+    res.status(200).json({ data: data[0] });
 })
 
 router.put('/edit-details', async (req, res) => {
-    const { id, changedFields } = req.body
+    const { id, data } = req.body
 
-    const fields = Object.keys(changedFields);
-    const values = Object.values(changedFields);
+    const fields = Object.keys(data);
+    const values = Object.values(data);
 
     if (fields.includes('password')) {
         const passwordIndex = fields.indexOf('password');
@@ -28,37 +23,32 @@ router.put('/edit-details', async (req, res) => {
         values[passwordIndex] = hashedPassword;
     }
 
-    const { query, queryParams } = editDetails(id, fields, values);
-
-    await db.executeQuery(query, queryParams);
+    await editDetails(id, fields, values);
 
     res.status(200).send({ message: 'Salon data updated successfully' });
 })
 
 router.get('/team', async (req, res) => {
     const { id } = req.query
-    const query = getTeam(id)
-    const result = await db.executeQuery(query)
+    const data = await getTeam(id)
 
-    res.status(200).json({ data: result });
+    res.status(200).json({ data: data });
 })
 
 router.post('/add-team-member', upload.single('image'), async (req, res) => {
     const {id, name} = req.body
     const imageName = req.file ? req.file.filename : null;
 
-    const query = addTeamMember(id, name, imageName)
-    const result = await db.executeQuery(query)
+    const data = await addTeamMember(id, name, imageName)
 
-    res.status(200).json({ message: `Successfully added ${name}!`, data: result });
+    res.status(200).json({ message: `Successfully added ${name}!`, data: data });
 })
 
 router.delete('/delete-team-member', async (req, res) => {
     const { id, image } = req.body
     const imagePath = `../client/uploads/${image}`
 
-    const query = deleteTeamMember(id)
-    const result = await db.executeQuery(query)
+    const result = await deleteTeamMember(id)
 
     fs.unlink(imagePath, (err) => {
         if (err) {
@@ -71,8 +61,7 @@ router.delete('/delete-team-member', async (req, res) => {
 
 router.get('/services', async (req, res) => {
     const { id } = req.query
-    const query = getServices(id)
-    const result = await db.executeQuery(query)
+    const result = await getServices(id)
 
     res.status(200).json({ data: result });
 })
@@ -80,29 +69,26 @@ router.get('/services', async (req, res) => {
 router.post('/add-service', async (req, res) => {
     const { id, values } = req.body
 
-    const query = addService(id, values)
-    const result = await db.executeQuery(query)
+    const result = await addService(id, values)
 
     res.status(200).json({ message: 'Successfully added new service!', data: result });
 })
 
 router.put('/edit-service', async (req, res) => {
-    const { id, changedFields } = req.body
+    const { id, data } = req.body
 
-    const fields = Object.keys(changedFields);
-    const values = Object.values(changedFields);
+    const fields = Object.keys(data);
+    const values = Object.values(data);
 
-    const { query, queryParams } = editService(id, fields, values);
+    await editService(id, fields, values);
 
-    await db.executeQuery(query, queryParams);
     res.status(200).send({ message: 'Service updated successfully' });
 })
 
 router.delete('/delete-service', async (req, res) => {
     const { id } = req.body
 
-    const query = deleteService(id)
-    const result = await db.executeQuery(query)
+    const result = await deleteService(id)
 
     res.status(200).json({ data: result });
 })
@@ -113,14 +99,12 @@ router.post('/add-schedule', async (req, res) => {
     if (Array.isArray(selectedDates) && selectedDates.length > 1) {
         await Promise.all(
           selectedDates.map(async (date) => {
-            const { query, insertValues } = addSchedule(id, values, date);
-            await db.executeQuery(query, insertValues);
+            await addSchedule(id, values, date);
           })
         );
       } else {
         const singleDate = Array.isArray(selectedDates) ? selectedDates[0] : selectedDates;
-        const { query, insertValues } = addSchedule(id, values, singleDate);
-        await db.executeQuery(query, insertValues);
+        await addSchedule(id, values, singleDate);
       }
       
     res.status(200).json({ message: 'Schedule added successfully, please re-load the page!' });
@@ -128,16 +112,14 @@ router.post('/add-schedule', async (req, res) => {
 
 router.get('/reviews', async (req, res) => {
     const { id } = req.query
-    const query = getReviews(id)
-    const result = await db.executeQuery(query)
+    const result = await getReviews(id)
 
     res.status(200).json({ data: result });
 })
 
 router.get('/schedule', async (req, res) => {
     const { id } = req.query
-    const query = getSchedule(id)
-    const result = await db.executeQuery(query)
+    const result = await getSchedule(id)
 
     res.status(200).json({ data: result });
 })
@@ -145,8 +127,7 @@ router.get('/schedule', async (req, res) => {
 router.put('/edit-schedule', async (req, res) => {
     const { id, date, values } = req.body
 
-    const { query, params } = editSchedule(id, date, values);
-    await db.executeQuery(query, params);
+    await editSchedule(id, date, values);
 
     res.status(200).json({ message: 'Schedule updated successfully' });
 })
@@ -154,8 +135,7 @@ router.put('/edit-schedule', async (req, res) => {
 router.get('/today-appointments', async (req, res) => {
     const {id, date} = req.query
 
-    const query = getAppointmentsToday(id, date)
-    const result = await db.executeQuery(query)
+    const result = await getAppointmentsToday(id, date)
 
     res.status(200).json({data: result})
 })

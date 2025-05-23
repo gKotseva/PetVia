@@ -1,26 +1,19 @@
 const router = require('express').Router()
-const db = require('../db/db');
 const { getAllSalons, getAllAppointmentsCount, getAllServicesPerDetails, getSalonsPerData, getSalonReviews, getDetails, getTeam, getServices, getAppointments, getSchedule, getAllSalonsCount, getAllCustomersCount } = require('../db/sharedQueries');
 const { generateSlots } = require('../utils/calendar');
 const { formatDate } = require('../utils/date');
 const { averageRating } = require('../utils/rating');
 
 router.get('/salons', async (req, res) => {
-    const query = getAllSalons()
-    const results = await db.executeQuery(query);
+    const results = await getAllSalons()
 
     res.status(200).send({ result: results })
 })
 
 router.get('/count', async (req, res) => {
-    const appointmentsQuery = getAllAppointmentsCount();
-    const appointments = await db.executeQuery(appointmentsQuery);
-
-    const salonsQuery = getAllSalonsCount();
-    const salons = await db.executeQuery(salonsQuery);
-
-    const customersQuery = getAllCustomersCount();
-    const customers = await db.executeQuery(customersQuery);
+    const appointments = await getAllAppointmentsCount();
+    const salons = await getAllSalonsCount();
+    const customers = await getAllCustomersCount();
 
     res.status(200).send({
         appointments: appointments[0].appointments,
@@ -31,21 +24,17 @@ router.get('/count', async (req, res) => {
 
 router.get('/services-per-details', async (req, res) => {
     const {city, state} = req.query
-
-    const query = getAllServicesPerDetails(city, state)
-    const results = await db.executeQuery(query);
+    const results = await getAllServicesPerDetails(city, state)
 
     res.status(200).send({data: results})
 })
 
 router.get('/salons-per-data', async(req, res) => {
     const {state, city, service} = req.query;
-    const salonDetailsQuery = getSalonsPerData(state, city, service);
-    const salonDetails = await db.executeQuery(salonDetailsQuery);
+    const salonDetails = await getSalonsPerData(state, city, service);
 
     for (const salon of salonDetails) {
-        const salonReviewsQuery = getSalonReviews(salon.salon_id);
-        const salonReviews = await db.executeQuery(salonReviewsQuery);
+        const salonReviews = await getSalonReviews(salon.salon_id);
     
         salon['reviews'] = salonReviews;
         salon['averageRating'] = averageRating(salon);
@@ -57,11 +46,9 @@ router.get('/salons-per-data', async(req, res) => {
 
 router.get('/details', async(req, res) => {
     const {id} = req.query
-    const query = getDetails(id)
-    const salonInfo = await db.executeQuery(query)
+    const salonInfo = await getDetails(id)
 
-    const salonReviewsQuery = getSalonReviews(id);
-    const salonReviews = await db.executeQuery(salonReviewsQuery);
+    const salonReviews = await getSalonReviews(id);
 
     const average = averageRating(salonReviews)
 
@@ -70,11 +57,9 @@ router.get('/details', async(req, res) => {
         review.created_at = formattedDate
     }
 
-    const salonTeamQuery = getTeam(id);
-    const salonTeam = await db.executeQuery(salonTeamQuery);
+    const salonTeam = await getTeam(id);
 
-    const salonServicesQuery = getServices(id);
-    const salonServices = await db.executeQuery(salonServicesQuery);
+    const salonServices = await getServices(id);
 
     res.status(200).json({data: {salonDetails: salonInfo[0], reviews: salonReviews, team: salonTeam, services: salonServices, averageRating: average}});
 })
@@ -82,12 +67,10 @@ router.get('/details', async(req, res) => {
 router.get('/slots', async(req, res) => {
     const {user_type, id, service_duration, selected_date} = req.query
 
-    const salonScheduleQuery = getSchedule(id, selected_date)
-    const salonSchedule = await db.executeQuery(salonScheduleQuery)
+    const salonSchedule = await getSchedule(id, selected_date)
 
     if (salonSchedule.length > 0){
-        const salonAppointmentsQuery = getAppointments(id, selected_date)
-        const salonAppointments = await db.executeQuery(salonAppointmentsQuery)
+        const salonAppointments = await getAppointments(id, selected_date)
     
         const slots = generateSlots(salonSchedule[0], salonAppointments, service_duration, user_type)
     
