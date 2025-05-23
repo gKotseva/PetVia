@@ -51,7 +51,7 @@
 
 .home-heading-form-container form select {
     padding: 1em;
-    background: black;
+    background: transparent;
     color: white;
     border: none;
     border-bottom: 2px solid var(--accent-color);
@@ -91,6 +91,10 @@
 
 .home-heading-form-container form button {
     width: 15em;
+    margin-top: 1em;
+}
+
+.home-information-container p {
     margin-top: 1em;
 }
 
@@ -150,6 +154,26 @@
     color: white;
     padding: 5em;
     background: var(--lighter-color);
+}
+
+.salon-card {
+    width: 15em;
+    height: 20em;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    border-radius: 1em;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    overflow: hidden;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease;
+    cursor: pointer;
+}
+
+.salon-card:hover {
+    transform: scale(1.03);
 }
 
 .salon-cards {

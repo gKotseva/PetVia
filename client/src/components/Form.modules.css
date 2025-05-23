@@ -119,3 +119,8 @@
 .form.edit-salon textarea {
     background: inherit;
 }
+
+.form.login input,
+.form.register input {
+    color: white;
+}

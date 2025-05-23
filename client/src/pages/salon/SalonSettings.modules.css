@@ -10,8 +10,13 @@
 
 .settings-individual-heading,
 .settings-appointments-view,
-.schedule-settings-contents {
+.schedule-settings-contents,
+.settings-add-new-service {
     margin-top: 2em;
+}
+
+.settings-form-container {
+    margin-top: 1em;
 }
 
 .settings-form-container form,

@@ -24,28 +24,15 @@
 }
 
 .customer-profile-settings form {
-    display: flex;
-    flex-direction: column;
-    text-transform: uppercase;
-    padding: 2em;
     background: white;
-    border-radius: 1em;
-    width: 20em;
 }
 
 .customer-profile-settings form label {
-    margin-top: 2em;
+    margin-top: 1em;
 }
 
 .customer-profile-settings form input {
-    border-radius: 1em;
     width: 20em;
-}
-
-.customer-profile-settings button {
-    margin-top: 2em;
-    width: 14em;
-    align-self: center;
 }
 
 .customer-profile-appointments {
@@ -53,7 +40,7 @@
     flex-wrap: wrap;
     gap: 2em;
     margin-top: 2em;
-    padding: 0em 4em;
+    padding: 0em 2em;
 }
 
 .customer-profile-upcoming-appointments,
