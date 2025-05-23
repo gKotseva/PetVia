@@ -44,21 +44,3 @@ export const getSalonDetails = async (id) => {
         throw error;
     }
 }
-
-export const getAppointments = async (id) => {
-    try {
-        const response = await request.get(`/api/shared/appointments?id=${id}`);
-        return response;
-    } catch (error) {
-        throw error;
-    }
-}
-
-export const getSlots = async (user_type, id, service_duration, selected_date) => {
-    try {
-        const response = await request.get(`/api/shared/slots?user_type=${user_type}&id=${id}&service_duration=${service_duration}&selected_date=${selected_date}`);
-        return response;
-    } catch (error) {
-        throw error;
-    }
-}

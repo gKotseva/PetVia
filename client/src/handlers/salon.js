@@ -9,11 +9,9 @@ export const getSalonDetails = async (id) => {
     }
 }
 
-export const editSalonDetails = async (data) => {
-    const id = data.id
-    const changedFields = data.changedFields
+export const editSalonDetails = async (id, data) => {
     try {
-        const response = await request.put(`/api/salon/edit-details`, {id, changedFields});
+        const response = await request.put(`/api/salon/edit-details`, {id, data});
         return response;
     } catch (error) {
         throw error;
@@ -84,9 +82,9 @@ export const deleteService = async (id) => {
     }
 }
 
-export const editService = async (data) => {
+export const editService = async (id, data) => {
     try {
-        const response = await request.put(`/api/salon/edit-service`, data);
+        const response = await request.put(`/api/salon/edit-service`, {id, data});
         return response;
     } catch (error) {
         throw error;
