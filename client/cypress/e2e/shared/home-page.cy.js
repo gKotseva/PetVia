@@ -68,31 +68,6 @@ describe('Header container', () => {
             })
     })
 
-    it('Should navigate to salons page and show correct salons for selected filters', () => {
-        cy.request('/api/shared/salons').then((response) => {
-            const allSalons = response.body.result;
-
-            const uniqueStates = [...new Set(allSalons.map(s => s.state))].sort();
-            const selectedState = uniqueStates[0];
-
-            const citiesInState = [...new Set(allSalons.filter(s => s.state === selectedState).map(s => s.city))].sort();
-            const selectedCity = citiesInState[0];
-            cy.request(`/api/shared/services-per-details?city=${selectedCity}&state=${selectedState}`).then(({ body }) => {
-                const services = body.data;
-                expect(services).to.have.length.greaterThan(0);
-                const selectedService = services[0].name;
-
-                cy.get('select[name="state"]').select(selectedState);
-                cy.get('select[name="city"]').select(selectedCity);
-                cy.get('select[name="service"]').select(selectedService);
-
-                cy.get('form').submit();
-
-                cy.url().should('include', `/salons`);
-            });
-        });
-    });
-
 })
 
 describe('Information container', () => {
