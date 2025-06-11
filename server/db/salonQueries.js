@@ -139,3 +139,13 @@ exports.editSchedule = (id, date, values) => {
 
     return executeQuery(query, params);
 };
+
+exports.addSalonImages = (id, image) => {
+    const query = `INSERT INTO salon_images(salon_id, image_url) VALUES(?, ?)`;
+    return executeQuery(query, [id, image || null]);
+};
+
+exports.getImages = (id) => {
+    const query = `SELECT * FROM salon_images WHERE salon_id = ?`;
+    return executeQuery(query, [id]);
+};
