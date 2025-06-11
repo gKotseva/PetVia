@@ -1,21 +1,25 @@
 export const validate = (values, fields) => {
     let error = {};
 
+    if (!Array.isArray(fields)) {
+        fields = [fields];
+    }
+
     for (const field of fields) {
         const { name, required } = field;
         const value = values[name];
 
         if (required) {
             if (
-              value === null ||
-              value === undefined ||
-              (typeof value === 'string' && value.trim() === '') ||
-              (typeof value === 'number' && isNaN(value))
+                value === null ||
+                value === undefined ||
+                (typeof value === 'string' && value.trim() === '') ||
+                (typeof value === 'number' && isNaN(value))
             ) {
-              error[name] = 'This field is required.';
-              continue;
+                error[name] = 'This field is required.';
+                continue;
             }
-          }
+        }
 
         if (name === 'email' && value && !/\S+@\S+\.\S+/.test(value)) {
             error[name] = 'Invalid email format.';

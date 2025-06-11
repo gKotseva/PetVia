@@ -332,3 +332,49 @@ input {
         overflow-x: auto;
       }
 }
+
+
+.settings-gallery-container {
+    margin: 2em;
+}
+
+.settings-add-images {
+    display: flex;
+    justify-content: end;
+}
+
+.settings-image-card {
+    width: 15em;
+    border-radius: 1em;
+    background: var(--background);
+}
+
+.image-card-header {
+    padding: 1em;
+    display: flex;
+    justify-content: space-between;
+    text-align: center;
+    align-items: center;
+}
+
+.make-primary-button {
+    border: none;
+    border-radius: 2em;
+    border: 1px solid mediumspringgreen;
+    padding: 5px;
+    background: rgb(21, 210, 21);
+    color: white;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.make-primary-button:hover,
+.image-card-header svg {
+    cursor: pointer;
+}
+
+.image-card-image img {
+        width: 15em;
+        height: auto;
+        object-fit: contain;
+}

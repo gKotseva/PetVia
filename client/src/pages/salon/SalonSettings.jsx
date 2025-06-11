@@ -7,10 +7,11 @@ import { FaTrashAlt, FaEdit } from "react-icons/fa";
 import { RiTeamLine, RiGalleryView2 } from "react-icons/ri";
 import { PiDogLight } from "react-icons/pi";
 import { GrSchedule } from "react-icons/gr";
+import { FaTrashRestore } from "react-icons/fa";
 
 import { Loading } from '../../components/Loading';
 import { useAuth } from '../../context/AuthContext';
-import { getSalonDetails, getTeam, deleteTeamMember, getServices, deleteService, getReviews, getTodayAppointments } from '../../handlers/salon';
+import { getSalonDetails, getTeam, deleteTeamMember, getServices, deleteService, getReviews, getTodayAppointments, getImages } from '../../handlers/salon';
 import { useNotification } from '../../context/NotificationContext';
 import { Modal } from '../../components/Modal';
 import { Form } from '../../components/Form';
@@ -84,7 +85,7 @@ function AccountSettings() {
       <h2>Account settings</h2>
       <div className="settings-form-container">
         {salonDetails && Object.keys(initialValues).length > 0 ? (
-          <Form form={'edit-salon'} initialData={initialValues} refreshData={fetchSalonDetails}/>
+          <Form form={'edit-salon'} initialData={initialValues} refreshData={fetchSalonDetails} />
         ) : (
           <Loading />
         )}
@@ -224,7 +225,7 @@ function ServicesSettings() {
             <h5>Add new service</h5>
           </div>
           <div className="settings-add-new-service">
-            <Form form={'add-service'} refreshData={fetchServices}/>
+            <Form form={'add-service'} refreshData={fetchServices} />
           </div>
         </div>
       </div>
@@ -276,19 +277,45 @@ function AppointmentsSettings() {
 }
 
 function GallerySettings() {
+  const [showModal, setShowModal] = useState(false)
+  const [images, setImages] = useState([])
+  const auth = useAuth()
+
+  const fetchImages = async () => {
+    const result = await getImages(auth.auth.id);
+    setImages(result.data);
+  }
+
+  useEffect(() => {
+    fetchImages()
+  }, [])
+
   return (
-    <div className="gallery-settings-container">
-      <h3>Gallery Settings</h3>
-      <div className="settings-images-container">
-        <img src='image.png' />
-        <img src='image.png' />
-        <img src='image.png' />
-        <img src='image.png' />
-        <img src='image.png' />
-        <img src='image.png' />
-        <img src='image.png' />
-        <img src='image.png' />
+    <div className="settings-gallery-container">
+      <div className="settings-add-images">
+        <button className='add-images-button custom-button' onClick={() => setShowModal(true)}>Add images</button>
       </div>
+      <br></br>
+      <hr></hr>
+      <br></br>
+      <div className="settings-images-container">
+        {images.map(image => (
+          <div className="settings-image-card" key={image.image_id}>
+            <div className="image-card-header">
+              <button className='make-primary-button'>Primary</button>
+              <FaTrashRestore color='red' />
+            </div>
+            <div className="image-card-image">
+              <img src={`./images/${image.image_url}`} />
+            </div>
+          </div>
+        ))}
+      </div>
+      {showModal && (
+        <Modal onClose={() => setShowModal(false)}>
+          <Form form='add-photos' closeModal={() => setShowModal(false)} refreshData={fetchImages}/>
+        </Modal>
+      )}
     </div>
   );
 }

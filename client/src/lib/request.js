@@ -4,14 +4,22 @@ const buildOptions = (data) => {
     const options = {};
   
     if (data) {
-      const hasFile = Object.values(data).some(value => value instanceof File);
-  
-      if (hasFile) {
-        const formData = new FormData();
-        for (const key in data) {
+    const hasFileArray = Object.values(data).some(value =>
+      Array.isArray(value) && value.every(item => item instanceof File)
+    );
+
+    if (hasFileArray) {
+      const formData = new FormData();
+
+      for (const key in data) {
+        if (Array.isArray(data[key]) && data[key].every(item => item instanceof File)) {
+          data[key].forEach(file => formData.append(key, file));
+        } else {
           formData.append(key, data[key]);
         }
-        options.body = formData;
+      }
+
+      options.body = formData;
 
       } else {
         options.body = JSON.stringify(data);

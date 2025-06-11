@@ -14,9 +14,9 @@ export function useForm(options = {}) {
 
     useEffect(() => {
         if (initialValues) {
-          setValues(initialValues);
+            setValues(initialValues);
         }
-      }, [initialValues]);
+    }, [initialValues]);
 
     const onChange = (e) => {
         const { name, type } = e.target;
@@ -24,7 +24,7 @@ export function useForm(options = {}) {
         if (type === 'file') {
             setValues(state => ({
                 ...state,
-                [name]: e.target.files[0] || null
+                [name]: e.target.files.length === 1 ? [e.target.files[0]] : Array.from(e.target.files)
             }));
         } else {
             setValues(state => ({
@@ -57,6 +57,14 @@ export function useForm(options = {}) {
                 response = await handler(auth.id, values, selectedDates)
                 closeModal()
                 refreshData()
+            } else if (form.formName === 'edit-schedule') {
+                response = await handler(auth.id, selectedDates, values)
+                closeModal()
+                refreshData()
+            } else if (form.formName === 'add-photos') {
+                response = await handler(auth.id, values)
+                closeModal()
+                refreshData()
             } else {
                 response = await handler(auth.id, values)
                 refreshData()
@@ -69,7 +77,7 @@ export function useForm(options = {}) {
                     login(response.results)
                     closeModal()
                 }
-                
+
                 showNotification(response.message, 'success')
                 setValues(initialValues || {});
                 setErrors({})

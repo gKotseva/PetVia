@@ -6,7 +6,7 @@ import { CiLogin } from "react-icons/ci";
 import { login, register } from '../handlers/auth';
 import { useForm } from '../hooks/useForm';
 import { updateUserDetails } from '../handlers/customer';
-import { addSchedule, addService, addTeamMember, editSalonDetails, editService } from '../handlers/salon';
+import { addImages, addSchedule, addService, addTeamMember, editSalonDetails, editSchedule, editService } from '../handlers/salon';
 
 
 export function Form(options = {}) {
@@ -93,7 +93,7 @@ export function Form(options = {}) {
       { label: 'rating', name: 'rating', type: 'number', required: true },
       { label: 'text', name: 'text', type: 'textarea', required: true },
     ],
-    'add-photos': {},
+    'add-photos': { label: 'image', name: 'image', type: 'file', required: true }
   }
 
   const toggleAccountType = () => {
@@ -120,9 +120,9 @@ export function Form(options = {}) {
     'add-service': addService,
     'edit-service': editService,
     'add-schedule': addSchedule,
-    // 'edit-schedule',
+    'edit-schedule': editSchedule,
+    'add-photos': addImages,
     // 'add-review',
-    // 'add-photos',
   }[form]
 
   const { values, onChange, onSubmit, errors } = useForm({
@@ -146,20 +146,35 @@ export function Form(options = {}) {
             <h5>{form} as {accountType}</h5>
             <br />
           </div>
-          : <h5>{(form === 'login' && form === 'register') ? form.replace(/-/g, ' ') : null }</h5>}
+          : <h5>{(form === 'login' && form === 'register') ? form.replace(/-/g, ' ') : null}</h5>}
       </div>
       <form className={'form ' + form} style={{ '--cols': cols }} onSubmit={onSubmit}>
-        {fields.map(form => (
+        {(Array.isArray(fields) ? fields : [fields]).map(form => (
           <div key={form.name} className="form-group">
-            <label htmlFor={form.name}>{form.required && <span className="required-field">*</span>} {form.label}</label>
+            <label htmlFor={form.name}>
+              {form.required && <span className="required-field">*</span>} {form.label}
+            </label>
             {form.type === 'textarea' ? (
               <>
-                <textarea name={form.name} id={form.name} rows="5" onChange={onChange} value={values[form.name] ?? ''} />
+                <textarea
+                  name={form.name}
+                  id={form.name}
+                  rows="5"
+                  onChange={onChange}
+                  value={values[form.name] ?? ''}
+                />
                 {errors[form.name] && <p className="input-error">{errors[form.name]}</p>}
               </>
             ) : (
               <>
-                <input type={form.type} name={form.name} id={form.name} onChange={onChange} {...(form.type === 'file' ? {} : { value: values[form.name] ?? '' })} />
+                <input
+                  type={form.type}
+                  name={form.name}
+                  id={form.name}
+                  onChange={onChange}
+                  multiple={options.form === 'add-photos'}
+                  {...(form.type === 'file' ? {} : { value: values[form.name] ?? '' })}
+                />
                 {errors[form.name] && <p className="input-error">{errors[form.name]}</p>}
               </>
             )}
