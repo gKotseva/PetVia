@@ -1,4 +1,4 @@
-const { getDetails, editDetails, getTeam, addTeamMember, deleteTeamMember, getServices, addService, deleteService, editService, addSchedule, getReviews, getSchedule, editSchedule, getAppointmentsToday } = require('../db/salonQueries')
+const { getDetails, editDetails, getTeam, addTeamMember, getImages, addSalonImages, deleteTeamMember, getServices, addService, deleteService, editService, addSchedule, getReviews, getSchedule, editSchedule, getAppointmentsToday } = require('../db/salonQueries')
 const { hashPassword } = require('../utils/hash');
 const { upload } = require('../multer');
 const router = require('express').Router()
@@ -46,7 +46,7 @@ router.post('/add-team-member', upload.single('image'), async (req, res) => {
 
 router.delete('/delete-team-member', async (req, res) => {
     const { id, image } = req.body
-    const imagePath = `../client/uploads/${image}`
+    const imagePath = `../client/public/images/${image}`
 
     const result = await deleteTeamMember(id)
 
@@ -139,5 +139,26 @@ router.get('/today-appointments', async (req, res) => {
 
     res.status(200).json({data: result})
 })
+
+router.get('/images', async (req, res) => {
+    const {id} = req.query
+
+    const result = await getImages(id)
+
+    res.status(200).json({data: result})
+})
+
+router.post('/add-images', upload.array('image', 10), async (req, res) => {
+    const {id} = req.body
+
+    req.files.map(async (file) => {
+        const imageName = file.filename;
+        await addSalonImages(id, imageName)
+    })
+
+    res.status(200).json({message: `Successfully added images!`})
+})
+
+
 
 module.exports = router
