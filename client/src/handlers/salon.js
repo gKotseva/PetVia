@@ -37,7 +37,7 @@ export const getTeam = async (id) => {
 }
 
 export const addTeamMember = async (id, values) => {
-    const {name, image } = values
+    const {name, image} = values
     try {
         const response = await request.post(`/api/salon/add-team-member`, {id, name, image});
         return response;
@@ -121,6 +121,25 @@ export const getSchedule = async (id) => {
 export const editSchedule = async (id, date, values) => {
     try {
         const response = await request.put(`/api/salon/edit-schedule`, {id, date, values});
+        return response;
+    } catch (error) {
+        throw error;
+    }
+}
+
+export const getImages = async (id) => {
+    try {
+        const response = await request.get(`/api/salon/images?id=${id}`);
+        return response;
+    } catch (error) {
+        throw error;
+    }
+}
+
+export const addImages = async (id, images) => {
+    const {image} = images
+    try {
+        const response = await request.post(`/api/salon/add-images`, {id, image});
         return response;
     } catch (error) {
         throw error;
