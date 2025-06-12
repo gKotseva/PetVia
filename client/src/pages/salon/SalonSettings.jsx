@@ -11,7 +11,7 @@ import { FaTrashRestore } from "react-icons/fa";
 
 import { Loading } from '../../components/Loading';
 import { useAuth } from '../../context/AuthContext';
-import { getSalonDetails, getTeam, deleteTeamMember, getServices, deleteService, getReviews, getTodayAppointments, getImages } from '../../handlers/salon';
+import { getSalonDetails, getTeam, deleteTeamMember, getServices, deleteService, getReviews, getTodayAppointments, getImages, removeImage, makeImagePrimary } from '../../handlers/salon';
 import { useNotification } from '../../context/NotificationContext';
 import { Modal } from '../../components/Modal';
 import { Form } from '../../components/Form';
@@ -279,7 +279,9 @@ function AppointmentsSettings() {
 function GallerySettings() {
   const [showModal, setShowModal] = useState(false)
   const [images, setImages] = useState([])
+  const [modalType, setModalType] = useState('')
   const auth = useAuth()
+  const [image, setImage] = useState({})
 
   const fetchImages = async () => {
     const result = await getImages(auth.auth.id);
@@ -290,10 +292,21 @@ function GallerySettings() {
     fetchImages()
   }, [])
 
+  const openModal = (modalType, image) => {
+    image ? setImage(image) : null
+    setModalType(modalType)
+    setShowModal(true);
+  };
+
+  const closeModal = () => {
+    setShowModal(false);
+    fetchImages()
+  };
+
   return (
     <div className="settings-gallery-container">
       <div className="settings-add-images">
-        <button className='add-images-button custom-button' onClick={() => setShowModal(true)}>Add images</button>
+        <button className='add-images-button custom-button' onClick={() => openModal('add-image')}>Add images</button>
       </div>
       <br></br>
       <hr></hr>
@@ -302,8 +315,16 @@ function GallerySettings() {
         {images.map(image => (
           <div className="settings-image-card" key={image.image_id}>
             <div className="image-card-header">
-              <button className='make-primary-button'>Primary</button>
-              <FaTrashRestore color='red' />
+              {!image.primary ? (
+                <button className='make-primary-button' onClick={() => {
+                  makeImagePrimary(image).then(() => {
+                    fetchImages();
+                  });
+                }}>Mark as primary</button>
+              ) : (
+                <button className='primary'>Primary</button>
+              )}
+              <FaTrashRestore color='red' onClick={() => openModal('delete-image', image)} />
             </div>
             <div className="image-card-image">
               <img src={`./images/${image.image_url}`} />
@@ -312,13 +333,27 @@ function GallerySettings() {
         ))}
       </div>
       {showModal && (
-        <Modal onClose={() => setShowModal(false)}>
-          <Form form='add-photos' closeModal={() => setShowModal(false)} refreshData={fetchImages}/>
+        <Modal onClose={closeModal}>
+          {modalType === 'add-image' ? (
+            <Form form='add-photos' closeModal={closeModal} refreshData={fetchImages} />
+          ) : (
+            <Confirm
+              title='Image removal'
+              text='Are you sure you would like to remove this image?'
+              onConfirm={() => {
+                removeImage(auth.auth.id, image)
+                closeModal()
+              }}
+              onDeny={closeModal}
+            />
+          )}
         </Modal>
       )}
     </div>
   );
 }
+
+
 
 function CustomerReviewsSettings() {
   const auth = useAuth()
