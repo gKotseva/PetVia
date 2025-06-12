@@ -146,6 +146,25 @@ exports.addSalonImages = (id, image) => {
 };
 
 exports.getImages = (id) => {
-    const query = `SELECT * FROM salon_images WHERE salon_id = ?`;
+    const query = 'SELECT * FROM salon_images WHERE salon_id = ? ORDER BY `primary` DESC;';
     return executeQuery(query, [id]);
+};
+
+exports.deleteImage = (imageId) => {
+    const query = `DELETE FROM salon_images WHERE image_id = ?`;
+    return executeQuery(query, [imageId]);
+};
+
+exports.makePrimary = async (salon_id, image, currentPrimaryImageID) => {
+  const makePrimaryQuery = 'UPDATE salon_images SET `primary` = 1 WHERE salon_id = ? AND image_id = ?;';
+  const removePreviousPrimaryQuery = 'UPDATE salon_images SET `primary` = 0 WHERE salon_id = ? AND image_id = ?;';
+  const makePrimaryForSalonQuery = 'UPDATE salons SET `image` = ? WHERE salon_id = ?;'
+
+  await executeQuery(makePrimaryQuery, [salon_id, image.image_id]);
+  await executeQuery(makePrimaryForSalonQuery, [image.image_url, salon_id]);
+
+  if (currentPrimaryImageID) {
+    await executeQuery(removePreviousPrimaryQuery, [salon_id, currentPrimaryImageID]);
+    await executeQuery(makePrimaryForSalonQuery, [image.image_url, salon_id]);
+  }
 };

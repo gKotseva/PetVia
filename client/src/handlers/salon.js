@@ -145,3 +145,21 @@ export const addImages = async (id, images) => {
         throw error;
     }
 }
+
+export const removeImage = async (id, image) => {
+    try {
+        const response = await request.remove(`/api/salon/delete-image`, {id, image});
+        return response;
+    } catch (error) {
+        throw error;
+    }
+}
+
+export const makeImagePrimary = async (image) => {
+    try {
+        const response = await request.put(`/api/salon/make-primary`, {image});
+        return response;
+    } catch (error) {
+        throw error;
+    }
+}

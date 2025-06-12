@@ -1,4 +1,4 @@
-const { getDetails, editDetails, getTeam, addTeamMember, getImages, addSalonImages, deleteTeamMember, getServices, addService, deleteService, editService, addSchedule, getReviews, getSchedule, editSchedule, getAppointmentsToday } = require('../db/salonQueries')
+const { getDetails, editDetails, getTeam, addTeamMember, getImages, addSalonImages, deleteTeamMember, getServices, addService, deleteService, editService, addSchedule, getReviews, getSchedule, editSchedule, getAppointmentsToday, deleteImage, makePrimary } = require('../db/salonQueries')
 const { hashPassword } = require('../utils/hash');
 const { upload } = require('../multer');
 const router = require('express').Router()
@@ -157,6 +157,38 @@ router.post('/add-images', upload.array('image', 10), async (req, res) => {
     })
 
     res.status(200).json({message: `Successfully added images!`})
+})
+
+router.delete('/delete-image', async (req, res) => {
+    const { id, image } = req.body
+
+    const imagePath = `../client/public/images/${image.image_url}`
+
+    console.log(imagePath)
+
+    const result = await deleteImage(image.image_id)
+
+    fs.unlink(imagePath, (err) => {
+        if (err) {
+          console.error('Error deleting file', err);
+        }
+      });
+
+    res.status(200).json({ message: 'Image removed' });
+})
+
+router.put('/make-primary', async (req, res) => {
+    const { image } = req.body
+    const isTherePrimary = await getImages(image.salon_id)
+    const primaryImage = isTherePrimary.filter(image => image.primary === 1)
+
+    if(primaryImage.length > 0) {
+        makePrimary(image.salon_id, image, primaryImage[0].image_id)
+    } else {
+        makePrimary(image.salon_id, image)
+    }
+
+    res.status(200).json({ message: 'Primary image updated' });
 })
 
 
