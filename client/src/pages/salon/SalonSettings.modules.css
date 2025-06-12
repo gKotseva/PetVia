@@ -360,6 +360,14 @@ input {
 .make-primary-button {
     border: none;
     border-radius: 2em;
+    padding: 5px;
+    background: var(--accent-color);
+    color: white;
+}
+
+.primary {
+    border: none;
+    border-radius: 2em;
     border: 1px solid mediumspringgreen;
     padding: 5px;
     background: rgb(21, 210, 21);
