@@ -149,6 +149,32 @@
     gap: 1em;
 }
 
+.review-container h2 {
+    text-transform: capitalize;
+}
+
+.right {
+    display: flex;
+    align-items: center;
+}
+
+.rate-salon {
+    border: none;
+    background: var(--accent-color);
+    color: white;
+    text-transform: uppercase;
+    padding: 1em 2em;
+    border-radius: 2em;
+    margin-left: 5em;
+    transition: 0.3s ease-in-out;
+    cursor: pointer;
+}
+
+.rate-salon:hover {
+    background: var(--light-color);
+    color: black;
+}
+
 @media (max-width: 1360px) {
     .service-container {
         min-width: auto;

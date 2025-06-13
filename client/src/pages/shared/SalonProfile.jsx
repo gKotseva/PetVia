@@ -10,24 +10,27 @@ import { Loading } from '../../components/Loading';
 import { displayReviewStars } from '../../components/DisplayReviewStars';
 import { Calendar } from '../../components/Calendar';
 import { useAuth } from '../../context/AuthContext';
+import { Modal } from '../../components/Modal';
+import { Form } from '../../components/Form';
 
-export function SalonProfile () {
+export function SalonProfile() {
     const { id } = useParams();
     const { auth } = useAuth()
     const [salonInfo, setSalonInfo] = useState({})
     const [openCalendar, setOpenCalendar] = useState(false)
     const [selectedService, setSelectedService] = useState(null)
+    const [showModal, setShowModal] = useState(false)
+
+    const fetchSalonInfo = async () => {
+        try {
+            const response = await getSalonDetails(id);
+            setSalonInfo(response.data)
+        } catch (error) {
+        }
+    };
 
     useEffect(() => {
-        const fetchSalonInfo = async () => {
-            try {
-                const response = await getSalonDetails(id);
-                setSalonInfo(response.data)
-            } catch (error) {
-            }
-        };
         fetchSalonInfo();
-
     }, [id]);
 
     const showCalendar = (e) => {
@@ -42,13 +45,22 @@ export function SalonProfile () {
             {Object.keys(salonInfo).length > 0 ? (
                 <>
                     <div className="salon-information">
-                        <div className="salon-contact-details">
-                            <h1>{salonInfo.salonDetails.name}</h1>
-                            <h4><MdLocationPin /> {salonInfo.salonDetails.state}, {salonInfo.salonDetails.city} {salonInfo.salonDetails.address}</h4>
+                        <div className="left">
+                            <div className="salon-contact-details">
+                                <h1>{salonInfo.salonDetails.name}</h1>
+                                <h4><MdLocationPin /> {salonInfo.salonDetails.state}, {salonInfo.salonDetails.city} {salonInfo.salonDetails.address}</h4>
+                            </div>
                         </div>
-                        <div className="salon-review-stars">
-                            <h2>{displayReviewStars(salonInfo.averageRating)}</h2>
-                            <h3>( {salonInfo.reviews.length} reviews )</h3>
+                        <div className="right">
+                            <div className="salon-review-stars">
+                                <h2>{displayReviewStars(salonInfo.averageRating)}</h2>
+                                <h3>( {salonInfo.reviews.length} reviews )</h3>
+                            </div>
+                            <div className="add-review-container">
+                                {auth.role === 'user' && (
+                                    <button className='rate-salon' onClick={() => setShowModal(true)}>Rate us!</button>
+                                )}
+                            </div>
                         </div>
                     </div>
                     <div className="salon-services">
@@ -112,6 +124,11 @@ export function SalonProfile () {
                 </>
             ) : (
                 <Loading />
+            )}
+            {showModal && (
+                <Modal onClose={() => setShowModal(false)}>
+                    <Form form='add-review' closeModal={() => setShowModal(false)} initialData={{ customerId: auth.id, salonId: id }} refreshData={fetchSalonInfo} />
+                </Modal>
             )}
         </div>
     )
