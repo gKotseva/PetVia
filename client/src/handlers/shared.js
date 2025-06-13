@@ -44,3 +44,12 @@ export const getSalonDetails = async (id) => {
         throw error;
     }
 }
+
+export const addReview = async (customerId, review) => {
+    try {
+        const response = await request.post(`/api/shared/add-review`, {customerId, review});
+        return response;
+    } catch (error) {
+        throw error;
+    }
+}

@@ -117,12 +117,18 @@
 
 .form.add-service textarea,
 .form.edit-service textarea,
-.form.edit-salon textarea {
+.form.edit-salon textarea,
+.form.add-review textarea {
     background: inherit;
 }
 
 .form.login input,
 .form.register input,
-.form.edit-schedule input  {
+.form.edit-schedule input,
+.form.add-review input   {
+    color: white;
+}
+
+.form.add-review textarea {
     color: white;
 }

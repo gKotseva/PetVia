@@ -164,8 +164,6 @@ router.delete('/delete-image', async (req, res) => {
 
     const imagePath = `../client/public/images/${image.image_url}`
 
-    console.log(imagePath)
-
     const result = await deleteImage(image.image_id)
 
     fs.unlink(imagePath, (err) => {
@@ -190,7 +188,5 @@ router.put('/make-primary', async (req, res) => {
 
     res.status(200).json({ message: 'Primary image updated' });
 })
-
-
 
 module.exports = router

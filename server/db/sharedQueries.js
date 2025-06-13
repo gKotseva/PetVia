@@ -71,3 +71,9 @@ exports.getSchedule = (id, date) => {
     const query = `SELECT * FROM salon_schedule WHERE salon_id = ? and work_date = ?`
     return executeQuery(query, [id, date])
 }
+
+exports.addReview = (reviewData) => {
+    const {customerId, salonId, rating, text} = reviewData
+    const query = `INSERT INTO reviews(user_id, salon_id, rating, comment) VALUES(?, ?, ?, ?)`
+    return executeQuery(query, [customerId, salonId, rating, text])
+}

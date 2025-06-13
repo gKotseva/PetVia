@@ -1,5 +1,5 @@
 const router = require('express').Router()
-const { getAllSalons, getAllAppointmentsCount, getAllServicesPerDetails, getSalonsPerData, getSalonReviews, getDetails, getTeam, getServices, getAppointments, getSchedule, getAllSalonsCount, getAllCustomersCount } = require('../db/sharedQueries');
+const { getAllSalons, getAllAppointmentsCount, getAllServicesPerDetails, getSalonsPerData, getSalonReviews, getDetails, getTeam, getServices, getAppointments, getSchedule, getAllSalonsCount, getAllCustomersCount, addReview } = require('../db/sharedQueries');
 const { generateSlots } = require('../utils/calendar');
 const { formatDate } = require('../utils/date');
 const { averageRating } = require('../utils/rating');
@@ -80,5 +80,14 @@ router.get('/slots', async(req, res) => {
     }
 
 })
+
+router.post('/add-review', async(req, res) => {
+    const {customerId, review} = req.body
+
+    await addReview(review)
+
+    res.status(200).json({message: 'Your review has been added!'})
+})
+
 
 module.exports = router

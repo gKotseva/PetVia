@@ -61,7 +61,7 @@ export function useForm(options = {}) {
                 response = await handler(auth.id, selectedDates, values)
                 closeModal()
                 refreshData()
-            } else if (form.formName === 'add-photos') {
+            } else if (form.formName === 'add-photos' || form.formName === 'add-review') {
                 response = await handler(auth.id, values)
                 closeModal()
                 refreshData()
