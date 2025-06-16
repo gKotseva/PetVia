@@ -113,8 +113,14 @@
     margin-top: 2em;
 }
 
-.working {
+.past.working {
     background: green;
     color: white;
     pointer-events: none;
+}
+
+.past { 
+    pointer-events: none;
+    background: rgb(120, 120, 120);
+    color: white;
 }

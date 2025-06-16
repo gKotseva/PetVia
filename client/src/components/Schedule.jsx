@@ -91,10 +91,12 @@ export function Schedule ({salonId, closeModal}) {
               return workDate === date;
             });
 
+            const isPast = date < formatDate(new Date())
+
             return (
               <p
                 key={day}
-                className={`small-calendar-day ${match ? 'working' : ''} ${isSelected ? 'selected' : ''}`}
+                className={`small-calendar-day ${isPast ? 'past' : ''} ${match ? 'working' : ''} ${isSelected ? 'selected' : ''}`}
                 onClick={() => toggleDateSelection(date.toString())}
               >
                 {day}
