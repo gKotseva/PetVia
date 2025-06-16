@@ -11,7 +11,7 @@
     justify-content: space-between;
     align-items: center;
     font-weight: bold;
-    padding: 1em 0em 0em 1em;
+    padding: 1em 0 0 1em;
 }
 
 .calendar-buttons {
@@ -57,6 +57,7 @@
     padding: 0.5em;
     color: white;
     border-radius: 60%;
+    cursor: pointer;
 }
 
 .day-slots {
@@ -79,23 +80,18 @@
     background-color: #fe4c3f;
 }
 
-.salon-break,
+.customer-booked,
 .customer-break,
-.customer-not-available,
-.customer-booked {
+.disabled-slot {
+    cursor: not-allowed !important;
     background-color: #BDBDBD;
     color: rgb(63, 62, 62);
 }
 
-.slot:hover {
-    cursor: pointer;
-}
-
-.customer-break,
-.customer-not-available,
-.customer-booked {
-    cursor: default !important;
-    pointer-events: none;
+.disabled-slot {
+    background-color: #ddd;
+    color: #999;
+    cursor: not-allowed !important;
 }
 
 .past {
@@ -130,11 +126,8 @@
     transform: scale(1.1);
 }
 
-.disabled-slot {
-    background-color: #ddd;
-    color: #999;
-    pointer-events: none;
-    cursor: not-allowed;
+.slot:not(.customer-booked):not(.customer-break):hover {
+    cursor: pointer;
 }
 
 @media (max-width: 1700px) {
@@ -153,6 +146,6 @@
 
     .calendar-container,
     .caledar-contents {
-        padding: 1em 0em;
+        padding: 1em 0;
     }
 }

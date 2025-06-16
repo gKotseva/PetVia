@@ -38,6 +38,7 @@ exports.generateSlots = (date, appointments, service_duration, user_type) => {
     const endOfDay = convertTimeToMinutes(date.close_time);
     const breakStart = convertTimeToMinutes(date.break_start) || null;
     const breakEnd = convertTimeToMinutes(date.break_end) || null;
+    const timeNow = convertTimeToMinutes(new Date().getHours() + ':' + new Date().getMinutes())
 
     let currentTime = startOfDay;
     let slots = [];
@@ -63,6 +64,12 @@ exports.generateSlots = (date, appointments, service_duration, user_type) => {
             }
         });
 
+        const isToday = formatDate(new Date(date.work_date)) === formatDate(new Date())
+
+        if (isToday && currentTime < timeNow) {
+            status = 'past';
+        }
+
         let slot = { slot: `${hours}:${minutes}`, status };
 
         appointment ? slot.appointment = appointment : null
@@ -77,7 +84,7 @@ exports.generateSlots = (date, appointments, service_duration, user_type) => {
         for (let i = 0; i < slots.length; i++) {
             if (slots[i].status === 'free') {
                 let canBook = true;
-                
+
                 for (let j = 0; j < requiredSlots; j++) {
                     if (!slots[i + j] || slots[i + j].status !== 'free') {
                         canBook = false;

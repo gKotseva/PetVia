@@ -116,7 +116,7 @@ export function Calendar({ userType, salonId, customerId, serviceDuration, servi
                 {slots.map((slot, index) => (
                   <div
                     key={index}
-                    className={`slot ${userType} ${userType}-${slot.status} ${slot.status === 'unavailable' ? 'disabled-slot' : ''}`}
+                    className={`slot ${userType} ${userType}-${slot.status} ${slot.status === 'unavailable' || slot.status === 'past' ? 'disabled-slot' : ''}`}
                     onClick={() => {
                       if (slot.status === 'free' && !isPast) {
                         setSelectedSlot({ date: formattedDate, slot });
