@@ -105,7 +105,7 @@ export function Schedule ({salonId, closeModal}) {
       </div>
       <div className="schedule-form-container">
         <h5>Enter time for selected dates:</h5>
-        <Form form={'add-schedule'} refreshData={fetchSchedule} initialData={selectedDates}/>
+        <Form form={'add-schedule'} refreshData={fetchSchedule} initialData={selectedDates} closeModal={closeModal}/>
       </div>
     </div>
   );

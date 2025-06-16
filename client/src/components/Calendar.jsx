@@ -183,7 +183,7 @@ export function Calendar({ userType, salonId, customerId, serviceDuration, servi
         })}
         {showModal && modalType === 'edit' && selectedSlot && userType === 'salon' && (
           <Modal onClose={() => setShowModal(false)}>
-            <Form formName='edit-schedule' closeModal={() => setShowModal(false)} openModal={null} editData={selectedSlot.date} refreshData={fetchSchedule} />
+            <Form form='edit-schedule' closeModal={() => setShowModal(false)} openModal={null} initialData={selectedSlot.date} refreshData={fetchSchedule} />
           </Modal>
         )}
       </div>
