@@ -1,0 +1,52 @@
+.time-picker {
+  position: relative;
+  display: inline-block;
+}
+
+.select {
+  border: 1px solid grey;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 10em;
+  padding: 0.5em 1em;
+  border-radius: 2em;
+  cursor: pointer;
+}
+
+.options {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-top: 0.5em;
+  display: flex;
+  background-color: white;
+  border: 1px solid #ccc;
+  padding: 1em;
+  border-radius: 1em;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+}
+
+.time-column {
+  margin: 0 0.3em;
+}
+
+.time-column select {
+  border: none;
+  outline: none;
+  overflow-y: scroll;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.time-column select::-webkit-scrollbar {
+  display: none;
+}
+
+.time-column select option {
+  text-align: center;
+  padding: 0.5em 1em;
+  border-radius: 1em;
+}
