@@ -8,6 +8,7 @@ import { useForm } from '../hooks/useForm';
 import { updateUserDetails } from '../handlers/customer';
 import { addImages, addSchedule, addService, addTeamMember, editSalonDetails, editSchedule, editService } from '../handlers/salon';
 import { addReview } from '../handlers/shared';
+import { TimePicker } from './TimePicker';
 
 
 export function Form(options = {}) {
@@ -166,7 +167,14 @@ export function Form(options = {}) {
                 />
                 {errors[form.name] && <p className="input-error">{errors[form.name]}</p>}
               </>
-            ) : (
+            ) : form.type === 'time' ? (
+              <TimePicker
+                name={form.name}
+                value={values[form.name] || '00:00'}
+                onChange={(newTime) => {
+                  onChange({ target: { name: form.name, value: newTime, type: 'time' } })
+                }}
+              />) : (
               <>
                 <input
                   type={form.type}
@@ -174,7 +182,7 @@ export function Form(options = {}) {
                   id={form.name}
                   onChange={onChange}
                   multiple={options.form === 'add-photos'}
-                  {...(options.form === 'add-review' && form.name === 'rating' ? {min:1, max:5} : {})}
+                  {...(options.form === 'add-review' && form.name === 'rating' ? { min: 1, max: 5 } : {})}
                   {...(form.type === 'file' ? {} : { value: values[form.name] ?? '' })}
                 />
                 {errors[form.name] && <p className="input-error">{errors[form.name]}</p>}
