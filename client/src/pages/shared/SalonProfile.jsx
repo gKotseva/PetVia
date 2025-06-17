@@ -57,7 +57,7 @@ export function SalonProfile() {
                                 <h3>( {salonInfo.reviews.length} reviews )</h3>
                             </div>
                             <div className="add-review-container">
-                                {auth.role === 'user' && (
+                                {auth?.role === 'user' && (
                                     <button className='rate-salon' onClick={() => setShowModal(true)}>Rate us!</button>
                                 )}
                             </div>
