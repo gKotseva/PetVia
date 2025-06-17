@@ -132,3 +132,7 @@
 .form.add-review textarea {
     color: white;
 }
+
+.form.add-schedule {
+    color: black;
+}

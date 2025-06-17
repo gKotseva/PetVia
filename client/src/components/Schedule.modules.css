@@ -119,6 +119,12 @@
     pointer-events: none;
 }
 
+.working {
+    background: green;
+    color: white;
+    pointer-events: none;
+}
+
 .past { 
     pointer-events: none;
     background: rgb(120, 120, 120);
